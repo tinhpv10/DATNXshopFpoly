@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('riview_media', function (Blueprint $table) {
+        Schema::create('review_media', function (Blueprint $table) {
             $table->id()->comment('Mã đánh giá có hình ảnh');
             $table->foreignIdFor(Review::class)->comment('Mã đánh giá');
             $table->string('review_media')->nullable()->comment('Hình ảnh đánh giá');
