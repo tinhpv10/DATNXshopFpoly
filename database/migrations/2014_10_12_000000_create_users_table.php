@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Shop;
 use App\Models\UserAddress;
+
 return new class extends Migration {
     /**
      * Run the migrations.
@@ -13,6 +14,7 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id()->comment('Mã người dùng');
+            $table->string('email')->unique();
             $table->string('full_name')->nullable(false)->comment('Tên người dùng');
             $table->date('birthday')->nullable()->comment('Sinh nhật');
             $table->enum('gender', ['male', 'female'])->nullable()->comment('Giới tính');
