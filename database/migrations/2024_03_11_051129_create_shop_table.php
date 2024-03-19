@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Province;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->string('email')->nullable(false)->comment('Email cửa hàng');
             $table->integer('phone')->nullable(false)->comment('Số điện thoại cửa hàng');
             $table->string('address')->nullable(false)->comment('Địa chỉ cửa hàng');
+            $table->foreignIdFor(Province::class)->comment('Địa chỉ');
             $table->text('description')->nullable(true)->comment('Mô tả cửa hàng');
             $table->integer('rating')->nullable(true)->comment('Đánh giá cửa hàng');
             $table->tinyInteger('status')->default(1)->comment('Trạng thái cửa hàng');
