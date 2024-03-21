@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "354f57898e2a3b337f2a7e216e0de3f1",
+    "content-hash": "0da2ed180d56a1215d58d22fce1fbe3e",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -1444,6 +1444,43 @@
             "time": "2024-01-15T12:25:21+00:00"
         },
         {
+            "name": "filament/spatie-laravel-tags-plugin",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filamentphp/spatie-laravel-tags-plugin.git",
+                "reference": "2c19f7bf9fec9294f0bb05665810a247d247d57c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filamentphp/spatie-laravel-tags-plugin/zipball/2c19f7bf9fec9294f0bb05665810a247d247d57c",
+                "reference": "2c19f7bf9fec9294f0bb05665810a247d247d57c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10.0",
+                "php": "^8.1",
+                "spatie/laravel-tags": "^4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Filament\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Filament support for `spatie/laravel-tags`.",
+            "homepage": "https://github.com/filamentphp/filament",
+            "support": {
+                "issues": "https://github.com/filamentphp/filament/issues",
+                "source": "https://github.com/filamentphp/filament"
+            },
+            "time": "2024-01-04T20:29:07+00:00"
+        },
+        {
             "name": "filament/support",
             "version": "v3.2.0",
             "source": {
@@ -2205,16 +2242,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.47.0",
+            "version": "v10.48.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "fce29b8de62733cdecbe12e3bae801f83fff2ea4"
+                "reference": "32a8bb151d748b579c3794dea53b56bd40dfbbd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/fce29b8de62733cdecbe12e3bae801f83fff2ea4",
-                "reference": "fce29b8de62733cdecbe12e3bae801f83fff2ea4",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/32a8bb151d748b579c3794dea53b56bd40dfbbd3",
+                "reference": "32a8bb151d748b579c3794dea53b56bd40dfbbd3",
                 "shasum": ""
             },
             "require": {
@@ -2262,6 +2299,7 @@
             "conflict": {
                 "carbonphp/carbon-doctrine-types": ">=3.0",
                 "doctrine/dbal": ">=4.0",
+                "mockery/mockery": "1.6.8",
                 "phpunit/phpunit": ">=11.0.0",
                 "tightenco/collect": "<5.5.33"
             },
@@ -2407,7 +2445,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-03-05T15:18:36+00:00"
+            "time": "2024-03-12T16:35:43+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -5027,6 +5065,80 @@
             "time": "2022-12-18T12:58:32+00:00"
         },
         {
+            "name": "spatie/eloquent-sortable",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/eloquent-sortable.git",
+                "reference": "d7940cc59af939b27422a8e7a4020ac8c5d93a77"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/eloquent-sortable/zipball/d7940cc59af939b27422a8e7a4020ac8c5d93a77",
+                "reference": "d7940cc59af939b27422a8e7a4020ac8c5d93a77",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^9.31|^10.0|^11.0",
+                "illuminate/support": "^9.31|^10.0|^11.0",
+                "nesbot/carbon": "^2.63|^3.0",
+                "php": "^8.1",
+                "spatie/laravel-package-tools": "^1.9"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0|^8.0|^9.0",
+                "phpunit/phpunit": "^9.5|^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\EloquentSortable\\EloquentSortableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\EloquentSortable\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be"
+                }
+            ],
+            "description": "Sortable behaviour for eloquent models",
+            "homepage": "https://github.com/spatie/eloquent-sortable",
+            "keywords": [
+                "behaviour",
+                "eloquent",
+                "laravel",
+                "model",
+                "sort",
+                "sortable"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/eloquent-sortable/issues",
+                "source": "https://github.com/spatie/eloquent-sortable/tree/4.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://spatie.be/open-source/support-us",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-02-26T11:54:22+00:00"
+        },
+        {
             "name": "spatie/invade",
             "version": "2.0.0",
             "source": {
@@ -5144,6 +5256,158 @@
                 }
             ],
             "time": "2024-03-07T07:35:57+00:00"
+        },
+        {
+            "name": "spatie/laravel-tags",
+            "version": "4.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-tags.git",
+                "reference": "73944e8bd7a341269c03959fe063d8714adbe5a6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-tags/zipball/73944e8bd7a341269c03959fe063d8714adbe5a6",
+                "reference": "73944e8bd7a341269c03959fe063d8714adbe5a6",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^8.67|^9.0|^10.0|^11.0",
+                "nesbot/carbon": "^2.63|^3.0",
+                "php": "^8.0",
+                "spatie/eloquent-sortable": "^3.10|^4.0",
+                "spatie/laravel-package-tools": "^1.4",
+                "spatie/laravel-translatable": "^4.6|^5.0|^6.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.13|^7.0|^8.0|^9.0",
+                "pestphp/pest": "^1.22|^2.0",
+                "phpunit/phpunit": "^9.5.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Tags\\TagsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Tags\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Add tags and taggable behaviour to your Laravel app",
+            "homepage": "https://github.com/spatie/laravel-tags",
+            "keywords": [
+                "laravel-tags",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-tags/issues",
+                "source": "https://github.com/spatie/laravel-tags/tree/4.6.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-01T12:44:53+00:00"
+        },
+        {
+            "name": "spatie/laravel-translatable",
+            "version": "6.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-translatable.git",
+                "reference": "529b4e89ad0b0982d9c635696260661d1cf2612c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-translatable/zipball/529b4e89ad0b0982d9c635696260661d1cf2612c",
+                "reference": "529b4e89ad0b0982d9c635696260661d1cf2612c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^9.0|^10.0|^11.0",
+                "illuminate/support": "^9.0|^10.0|^11.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.11"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4",
+                "orchestra/testbench": "^7.0|^8.0|^9.0",
+                "pestphp/pest": "^1.20|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Translatable\\TranslatableServiceProvider"
+                    ]
+                },
+                "aliases": {
+                    "Translatable": "Spatie\\Translatable\\Facades\\Translatable"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Translatable\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Sebastian De Deyne",
+                    "email": "sebastian@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A trait to make an Eloquent model hold translations",
+            "homepage": "https://github.com/spatie/laravel-translatable",
+            "keywords": [
+                "eloquent",
+                "i8n",
+                "laravel-translatable",
+                "model",
+                "multilingual",
+                "spatie",
+                "translate"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-translatable/issues",
+                "source": "https://github.com/spatie/laravel-translatable/tree/6.6.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-03-01T10:24:53+00:00"
         },
         {
             "name": "symfony/console",
@@ -8030,7 +8294,7 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.7",
+            "version": "1.6.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",

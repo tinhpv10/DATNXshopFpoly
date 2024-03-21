@@ -6,20 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserAddress extends Model
+class Post extends Model
 {
-    protected $table = 'user_address';
+    protected $table = 'posts';
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'phone',
-        'city',
-        'district',
-        'ward',
-        'is_default',
+        'category_post_id',
+        'title',
+        'slug',
+        'content',
+        'thumbnail',
+        'meta_title',
+        'meta_keyword',
         'user_id',
+        'tags',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->BelongsTo(Category::class);
+    }
 
     public function user(): BelongsTo
     {

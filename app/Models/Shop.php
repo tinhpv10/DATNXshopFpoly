@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 class Shop extends Model
 {
     protected $table = 'shops';
+
     use HasFactory;
+
     protected $fillable = [
         'name',
         'avatar',
@@ -23,8 +25,14 @@ class Shop extends Model
         'follower'
     ];
 
-    public function province(): HasMany
+    public function user(): BelongsTo
     {
-        return $this->HasMany(Province::class);
+        return $this->belongsTo(User::class);
     }
+
+    public function Category(): HasMany
+    {
+        return $this->HasMany(Category::class);
+    }
+
 }

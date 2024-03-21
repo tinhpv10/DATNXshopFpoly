@@ -6,19 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserAddress extends Model
+class PaymentMethod extends Model
 {
-    protected $table = 'user_address';
+    protected $table = 'payment_methods';
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'phone',
-        'city',
-        'district',
-        'ward',
-        'is_default',
-        'user_id',
+        'method_name',
     ];
 
     public function user(): BelongsTo
