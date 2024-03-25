@@ -15,6 +15,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -33,7 +34,7 @@ class PostResource extends Resource
                     ->columnSpan(2)
                     ->label('Ảnh đại diện'),
                 Select::make('category_post_id')
-                    ->relationship(name: 'Category', titleAttribute: 'name')
+                    ->relationship(name: 'CategoryPost', titleAttribute: 'name')
                     ->required()
                     ->label('Danh mục'),
                 TextInput::make('title')
@@ -41,7 +42,11 @@ class PostResource extends Resource
                     ->required(),
                 TextInput::make('slug')
                     ->label('Đường dẫn bài viết')
-                    ->required(),
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Đường dẫn đã tồn tại.',
+                    ]),
                 TextInput::make('meta_title')
                     ->label('Tiêu đề SEO')
                     ->maxLength(100)
@@ -69,7 +74,7 @@ class PostResource extends Resource
             ->schema([
                 TextEntry::make('title')
                     ->label('Tiêu đề bài viết'),
-                TextEntry::make('Category.name')
+                TextEntry::make('CategoryPost.name')
                     ->label('Danh mục bài viết'),
                 TextEntry::make('slug')
                     ->label('Đường dẫn bài viết'),
@@ -90,10 +95,13 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('thumbnail')
+                    ->label('Hình ảnh')
+                    ->searchable(),
                 TextColumn::make('title')
                     ->label('Tiêu đề bài viết')
                     ->searchable(),
-                TextColumn::make('Category.name')
+                TextColumn::make('CategoryPost.name')
                     ->label('Danh mục bài viết')
                     ->searchable(),
                 TextColumn::make('slug')

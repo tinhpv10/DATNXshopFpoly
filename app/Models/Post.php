@@ -22,10 +22,14 @@ class Post extends Model
         'user_id',
         'tags',
     ];
+    protected $casts = [
+        'tags' => 'array',
+        'meta_keyword' => 'array',
+    ];
 
-    public function category(): BelongsTo
+    public function categoryPost(): BelongsTo
     {
-        return $this->BelongsTo(Category::class);
+        return $this->BelongsTo(CategoryPost::class);
     }
 
     public function user(): BelongsTo
