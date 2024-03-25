@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable(false)->comment('Tên NCC');
             $table->string('email')->nullable(false)->comment('Email NCC');
-            $table->integer('phone')->nullable(false)->comment('SĐT NCC');
+            $table->string('phone')->nullable(false)->comment('SĐT NCC');
             $table->string('address')->nullable(false)->comment('Địa chỉ NCC');
             $table->string('website')->nullable()->comment('Website của NCC');
             $table->timestamps();
