@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
+use App\Models\CategoryPost;
 use App\Models\Post;
+use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -36,6 +38,8 @@ class PostResource extends Resource
                 Select::make('category_post_id')
                     ->relationship(name: 'CategoryPost', titleAttribute: 'name')
                     ->required()
+                    ->options(CategoryPost::all()->pluck('name', 'id'))
+                    ->searchable()
                     ->label('Danh mục'),
                 TextInput::make('title')
                     ->label('Tiêu đề bài viết')
@@ -56,6 +60,7 @@ class PostResource extends Resource
                     ->required(),
                 Select::make('user_id')
                     ->relationship(name: 'User', titleAttribute: 'name')
+                    ->options(User::all()->pluck('name', 'id'))
                     ->searchable()
                     ->label('Người viết'),
                 TagsInput::make('tags')
