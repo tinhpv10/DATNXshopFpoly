@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('meta_title')->nullable()->comment('Tiêu đề SEO');
             $table->text('meta_description')->nullable()->comment('Mô tả SEO');
             $table->string('meta_keyword')->nullable()->comment('Từ khóa SEO');
+            $table->tinyInteger('status')->default(1)->comment('Trạng thái cửa hàng');
             $table->timestamps();
         });
     }
