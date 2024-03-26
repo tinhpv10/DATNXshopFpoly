@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
+use App\Models\Shop;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -38,9 +39,12 @@ class CategoryResource extends Resource
                     ->required()
                     ->columnSpan(2),
                 Select::make('category_id')
-                    ->relationship(name: 'categories', titleAttribute: 'name')
+                    ->relationship(name: 'Category', titleAttribute: 'name')
+                    ->options(Category::all()->pluck('name', 'id'))
+                    ->searchable()
                     ->label('Thuộc danh mục'),
                 TextInput::make('name')
+                    ->maxLength(70)
                     ->label('Danh mục')
                     ->required(),
                 TextInput::make('category_slug')
@@ -48,7 +52,9 @@ class CategoryResource extends Resource
                     ->required(),
                 Select::make('shop_id')
                     ->relationship(name: 'shop', titleAttribute: 'name')
+                    ->options(shop::all()->pluck('name', 'id'))
                     ->label('Cửa hàng')
+                    ->searchable()
                     ->required(),
                 TextInput::make('meta_title')
                     ->label('Tiêu đề SEO')

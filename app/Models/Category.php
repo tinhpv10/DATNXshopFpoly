@@ -24,6 +24,9 @@ class Category extends Model
     ];
     use HasFactory;
 
+    protected $casts = [
+        'meta_keyword' => 'array',
+    ];
     public function shop(): BelongsTo
     {
         return $this->BelongsTo(Shop::class);
@@ -31,12 +34,12 @@ class Category extends Model
 
     public function categories(): HasMany
     {
-        return $this->HasMany(Category::class);
+        return $this->HasMany(Category::class, 'category_id');
     }
 
     public function category(): BelongsTo
     {
-        return $this->BelongsTo(Category::class);
+        return $this->BelongsTo(Category::class, 'category_id');
     }
 
     public function post(): BelongsTo

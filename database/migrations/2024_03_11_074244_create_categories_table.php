@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Shop;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Shop;
+
 return new class extends Migration
 {
     /**
@@ -15,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable(false)->comment('Tên danh mục');
             $table->string('image')->nullable()->comment('Hình ảnh');
-            $table->string('category_id')->nullable(false)->comment('Id danh mục');
-            $table->string('category_slug')->nullable()->comment('Slug danh mục');
+            $table->foreignIdFor(Category::class)->nullable()->comment('Id danh mục');
+            $table->string('category_slug')->nullable(false)->comment('Slug danh mục');
             $table->tinyInteger('status')->default(1)->comment('Trạng thái');
             $table->foreignIdFor(Shop::class)->comment('Mã nhà bán');
             $table->string('meta_title')->nullable()->comment('Tiêu đề SEO');
