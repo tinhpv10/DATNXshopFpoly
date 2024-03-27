@@ -35,4 +35,9 @@ class Shop extends Model
         return $this->HasMany(Category::class);
     }
 
+    public function shopInfo(): HasMany
+    {
+        return $this->HasMany(ShopInfo::class);
+    }
+
 }
