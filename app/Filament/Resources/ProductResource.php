@@ -28,6 +28,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Enums\FiltersLayout;
 
 
+use  App\Filament\Resources\ProductResource\RelationManagers;
+use App\Filament\Resources\ProductResource\RelationManagers\ProductVariationsRelationManager;
 
 class ProductResource extends Resource
 {
@@ -160,6 +162,10 @@ class ProductResource extends Resource
                 TextColumn::make('regular_price')
                     ->label('Giá'),
                 TextColumn::make('sale_price')
+                    ->money('VND')
+                    ->label('Giá'),
+                TextColumn::make('sale_price')
+                    ->money('VND')
                     ->label('Giá giảm'),
                 TextColumn::make('sku')
                     ->label('Mã SKU'),
