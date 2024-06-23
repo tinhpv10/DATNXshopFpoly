@@ -43,8 +43,6 @@ use Illuminate\Support\Facades\Mail;
 use Filament\Infolists\Components\IconEntry;
 use Illuminate\Support\Carbon;
 use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\ImageEntry;
-use mysql_xdevapi\Schema;
 
 
 class OrderResource extends Resource
@@ -253,16 +251,36 @@ class OrderResource extends Resource
                 Section::make('Sản phẩm trong giỏ hàng')
                     ->schema(function (Model $record) {
                         $OrderDetails = [];
+
+                        // Thêm tiêu đề cột
+                        $OrderDetails[] = Section::make('')->schema([
+                            TextEntry::make('STT')->label('STT')->columnSpan(1),
+                            TextEntry::make('Sản phẩm')->label('Sản phẩm')->columnSpan(1),
+                            TextEntry::make('Số lượng')->label('Số lượng')->columnSpan(1),
+                            TextEntry::make('Giá')->label('Giá')->columnSpan(1),
+                        ])->columns(4);
+
                         $record->loadMissing('OrderDetail.product');
                         foreach ($record->OrderDetail as $OrderDetail) {
-                            $OrderDetails[] = TextEntry::make($OrderDetail->product->name);
-                            $OrderDetails[] = TextEntry::make($OrderDetail->product_quantity);
-                            // Định dạng giá sử dụng number_format
-                            $formattedPrice = number_format($OrderDetail->product_price, 0, ',') . 'VND';
-                            $OrderDetails[] = TextEntry::make($formattedPrice);
+                            $formattedPrice = number_format($OrderDetail->product_price, 1, ',') . ' VND';
+
+                            $OrderDetails[] = Section::make('')->schema([
+                                TextEntry::make($OrderDetail->product->id)->columnSpan(1),
+                                TextEntry::make($OrderDetail->product->name)->columnSpan(1),
+                                TextEntry::make($OrderDetail->product_quantity)->columnSpan(1),
+                                TextEntry::make($formattedPrice)->columnSpan(1),
+                            ])->columns(4);
                         }
+                        $OrderDetails[] = Section::make('')->schema([
+
+                            TextEntry::make('')->columnSpan(1),
+                            TextEntry::make('')->columnSpan(1),
+                            TextEntry::make('Tổng tiền')->label('Tổng tiền :')->columnSpan(1),
+                            TextEntry::make(number_format($record->total_price, 1,',').'VND')->columnSpan(1),
+                        ])->columns(4);
                         return $OrderDetails;
                     })->columns(3)
+
             ]);
     }
 
