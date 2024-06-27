@@ -9,6 +9,7 @@
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>ShopX</title>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('Home/assets/images/icons/apple-touch-icon.png') }}">
@@ -36,6 +37,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     {{--  --}}
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/js/cart.js') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/slick-master/slick/slick.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/slick-master/slick/slick-theme.css') }}" />
 

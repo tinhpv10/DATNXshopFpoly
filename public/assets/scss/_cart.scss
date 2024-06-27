@@ -52,12 +52,46 @@
         }
     }
 
+    /* xóa bỏ nút tăng chỉnh trong number */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .input-group-prepend .btn,
+    .input-group-append .btn {
+        border-radius: 0.25rem;
+    }
+
+    .input-group-prepend .btn:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .input-group-append .btn:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
     /* Thu nhỏ lại card trên thiết bị di động */
     @media (max-width: 767.98px) {
         .card {
             width: 100%;
             /* Thu nhỏ card */
         }
+
+    }
+
+    .delete-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .delete-btn:hover {
+        color: red; /* Màu đỏ khi di chuột qua */
     }
 
     .cart-item {
@@ -217,4 +251,4 @@
 //         $active-border: $primary,
 //         $active-color: color-contrast($danger)
 //       )
-// } 
+// }

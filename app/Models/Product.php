@@ -61,6 +61,16 @@ class Product extends Model
         return $this->HasMany(Like::class);
     }
 
+    public function productMedia(): HasMany
+    {
+        return $this->hasMany(ProductMedia::class);
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     protected static function booted()
     {
         static::created(function ($product) {
@@ -76,12 +86,6 @@ class Product extends Model
                 $product->supplier->save();
             }
         });
-    }
-
-
-    public function productMedia(): HasMany
-    {
-        return $this->HasMany(ProductMedia::class);
     }
 
     public function productVariation(): HasMany

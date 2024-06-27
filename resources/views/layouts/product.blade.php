@@ -44,6 +44,7 @@
                                         <button class="seeAllButton" id="backToTopCategories">Quay lại</button>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -57,6 +58,13 @@
                                      data-bs-parent="#accordionFlush2">
                                     <div class="accordion-body">
                                         @foreach($Brands as $Brand)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="samsungCheckbox">
+                                                <label class="form-check-label" for="samsungCheckbox">
+                                                    {{ $Brand->name }}
+                                                </label>
+                                            </div>
                                             <div class="form-check"
                                                  style="{{ $loop->index < 5 ? '' : 'display:none;' }}">
                                                 <input class="form-check-input brand-checkbox" type="checkbox"
@@ -83,6 +91,12 @@
                                 <div id="flush-collapsePrice" class="accordion-collapse collapse"
                                      data-bs-parent="#accordioncollapsePrice">
                                     <div class="accordion-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                   id="metallicCheckbox">
+                                            <label class="form-check-label" for="metallicCheckbox">
+                                                Metallic
+                                            </label>
                                         <div class="range-slider">
                                             <label for="customRange2"></label><input type="range" class="form-range"
                                                                                      min="0" max="1000" value="0"
@@ -98,7 +112,35 @@
                                                                                       class="form-control small-input"
                                                                                       id="maxRangeInput"
                                                                                       placeholder="1000">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="plasticCheckbox">
+                                                <label class="form-check-label" for="plasticCheckbox">
+                                                    Plastic cover
+                                                </label>
                                         </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="ramCheckbox">
+                                                <label class="form-check-label" for="ramCheckbox">
+                                                    8GB Ram
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="powerCheckbox">
+                                                <label class="form-check-label" for="powerCheckbox">
+                                                    Super power
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="memoryCheckbox">
+                                                <label class="form-check-label" for="memoryCheckbox">
+                                                    Large Memory
+                                                </label>
+                                            </div>
+                                            <button class="seeAllButton" id="seeAllButtonFeatures">See All</button>
                                         <button id="applyButton" class="apply-button">Apply</button>
                                     </div>
                                 </div>
@@ -125,6 +167,19 @@
                                             </div>
                                         @endforeach
                                         <button class="seeAllButton" id="seeAllButtonFeatures">See All</button>
+
+                                            <div class="range-slider">
+                                                <input type="range" class="form-range" min="0" max="5" value="0"
+                                                       step="1"
+                                                       id="customRange2">
+                                            </div>
+                                            <div class="range-inputs">
+                                                <input type="number" class="form-control small-input" id="minRangeInput"
+                                                       placeholder="0">
+                                                <input type="number" class="form-control small-input" id="maxRangeInput"
+                                                       placeholder="999999999 ">
+                                            </div>
+                                            <button class="apply-button">Apply</button>
                                     </div>
                                 </div>
                             </div>
@@ -317,12 +372,108 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-md-4 mb-4 ">
+                                            <a href="{{ route('product.detail', ['id' => $product->id]) }}"
+                                               class="product-link text-decoration-none text-black">
+                                                <div class="product-card">
+                                                    <div class="product-img">
+                                                        <img src="{{ asset('storage/' . $product->main_image) }}"
+                                                             alt="Product Image">
+                                                    </div>
+                                                    <div class="product-info">
+                                                        <div class="product-price-item">
+                                                            <div class="price-item">
+                                                                <div
+                                                                    class="product-price">{{ $product->formattedRegularPrice }}
+                                                                    đ
+                                                                    @if($product->sale_price)
+                                                                        <div
+                                                                            class="product-price-discounted">{{ $product->formattedSalePrice }}
+                                                                            đ
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="rating">
+                                                                    <div class="star">
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                        <i class="bi bi-star-fill"></i>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-favorite d-flex align-items-center">
+                                                                <a href="{{ route('product.detail', ['id' => $product->id]) }}"><i
+                                                                        class="far fa-heart"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <p class="product-title">{{ $product->name }}</p>
+                                                        <p class="product-title">{{ $product->description }}</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
                                     @endforeach
                                 </div>
                             </div>
 
                             <div id="productColumn" class="product-column">
                                 @foreach ($products as $product)
+                                    <div class="product-card mb-3">
+                                        <div class="row">
+                                            <div class="col-12 col-lg-3">
+                                                <div class="product-img"><a href="index.html"><img
+                                                            src="{{ asset('storage/' . $product->main_image) }}"
+                                                            alt="Product 1 Image"></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-lg-9">
+                                                <div class="product-info">
+                                                    <div class="product-title-item">
+                                                        <p class="product-title">{{ $product->name }}</p>
+                                                        <div class="product-favorite d-flex align-items-center">
+                                                            <a href=""><i class="far fa-heart"></i></a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="price-item">
+                                                        <div class="product-price">{{ $product->formattedRegularPrice }}
+                                                            đ
+                                                            @if($product->sale_price)
+                                                                <div
+                                                                    class="product-price-discounted">{{ $product->formattedSalePrice }}
+                                                                    đ
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="rating">
+                                                            <div class="star">
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                                <i class="bi bi-star-fill"></i>
+                                                            </div>
+                                                            <div class="number-star">
+                                                                7.5
+                                                            </div>
+                                                            <div class="order">
+                                                                145 Orders
+                                                            </div>
+                                                            <div class="shipping">
+                                                                Free Ship
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="product-description">{{ $product->description }} </p>
+                                                    <div class="view-detail">
+                                                        <a href="">View Detail</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="product-card mb-3 product-item"
                                          data-category="{{ $product->category_id }}"
@@ -428,5 +579,40 @@
             </div>
         </div>
     </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    var gridButton = document.getElementById('gridButton');
+                    var columnButton = document.getElementById('columnButton');
+                    var productGrid = document.getElementById('productGrid');
+                    var productColumn = document.getElementById('productColumn');
+
+                    gridButton.disabled = true;
+                    columnButton.disabled = false;
+                    productGrid.style.display = 'block';
+                    productColumn.style.display = 'none';
+
+                    gridButton.addEventListener('click', function () {
+                        gridButton.disabled = true;
+                        columnButton.disabled = false;
+                        productGrid.style.display = 'block';
+                        productColumn.style.display = 'none';
+                    });
+
+                    columnButton.addEventListener('click', function () {
+                        gridButton.disabled = false;
+                        columnButton.disabled = true;
+                        productGrid.style.display = 'none';
+                        productColumn.style.display = 'block';
+                    });
+                });
+
+                // Lắng nghe sự kiện click cho mỗi sản phẩm
+                document.querySelectorAll('.product-link').forEach(item => {
+                    item.addEventListener('click', event => {
+                        // Chuyển hướng người dùng đến trang chi tiết tương ứng
+                        window.location.href = item.getAttribute('href');
+                    });
+                });
+            </script>
 @endsection
 {{--update--}}

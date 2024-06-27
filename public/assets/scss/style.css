@@ -5,7 +5,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 :root,
-[data-bs-theme="light"] {
+[data-bs-theme=light] {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
@@ -10340,6 +10340,11 @@ form {
   padding: 10px 11px;
   width: 100%; }
 
+input[type="text" i] {
+    padding-block: 1px;
+    padding-inline: 2px;
+}
+
 /* input:not([type="file" i], [type="image" i], [type="checkbox" i], [type="radio" i]) {}
 
 input {
@@ -10565,28 +10570,6 @@ a:-webkit-any-link {
 .nav-item a {
   text-decoration: none;
   color: black; }
-
-.offcanvas-backdrop.show {
-    opacity: .0;
-}
-
-.offcanvas.offcanvas-start {
-    top: 180px;
-    left: 0;
-    width: 300px;
-}
-
-.offcanvas-body {
-    height: calc(100vh - 60px);
-    /* Điều chỉnh giá trị 60px tương ứng với chiều cao của header */
-    overflow-y: auto;
-}
-
-.main {
-    padding-top: 100px;
-    /* Khoảng cách từ đỉnh trang đến phần nội dung bên dưới header */
-    /* Điều chỉnh giá trị 100px tùy thuộc vào chiều cao của header */
-}
 
 .breadcrumb {
   font-size: 16px;
@@ -11382,83 +11365,5 @@ a:-webkit-any-link {
 .payment-logo {
   width: 60px;
   height: 40px; }
-
-.profile-user {
-    font-size: 15px;
-}
-
-.icon1 {
-    font-size: 18px;
-    color: blue;
-    font-weight: 800;
-}
-
-.profile-li_text {
-    font-size: 15px;
-}
-
-.list-group-item i {
-    padding: 0;
-}
-
-.list-group-item a {
-    text-decoration: none;
-    padding: 0 0;
-}
-
-.list-group .item1 {
-    background-color: #f5f5f5;
-}
-
-#collapseExample {
-    border-top: 1px dashed #c7c7c7;
-}
-
-.h-500 {
-    height: 500px;
-    /* Thiết lập chiều cao cố định là 500px */
-}
-
-@media (max-width: 576px) {
-    .gender {
-        gap: 15px;
-    }
-
-    .avatar-first {
-        width: 80px;
-    }
-
-    .profile-user {
-        font-size: 12px;
-    }
-
-    .icon1 {
-        font-size: 15px;
-    }
-
-    .profile-li_text {
-        font-size: 12px;
-    }
-}
-
-/* box user first */
-.avatar-first {
-    border-radius: 50%;
-    /* Thiết lập bán kính bo tròn bằng 50% */
-    object-fit: cover;
-    clip-path: circle();
-    /* Cắt hình ảnh theo hình tròn */
-}
-
-.name-user {
-    width: 100px;
-    /* Chiều rộng hộp */
-    overflow: hidden;
-    /* Ẩn văn bản tràn ra ngoài */
-    text-overflow: ellipsis;
-    /* Hiển thị dấu ba chấm */
-    white-space: nowrap;
-    /* Không chèn xuống dòng */
-}
 
 /*# sourceMappingURL=style.css.map */

@@ -1,15 +1,13 @@
 <?php
 
 use App\Http\Controllers\Auth\Logout;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Client\Body;
-use App\Http\Controllers\Client\CartHome;
-use App\Http\Controllers\Client\Checkout;
-use App\Http\Controllers\Client\DetailHome;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\Home;
 use App\Http\Controllers\Client\Profile;
 use App\Http\Controllers\Gmail\OrderController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,15 +24,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('/')->group(function () {
-    Route::get('/', [Home::class, 'index']);
-    Route::get('/', [Body::class, 'index']);
-    Route::get('/product', [ProductController::class, 'index',])->name('products.index');
-    Route::get('/detail', [DetailHome::class, 'index']);
-    Route::get('/checkout', [Checkout::class, 'index']);
-    Route::get('/cart', [CartHome::class, 'index']);
-    Route::get('/post', [PostController::class, 'index']);
-    Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
-    Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');
+    Route::get('/', [HomeController::class, 'home']);
+
+    Route::get('/search', [ProductController::class, 'search'])->name('search');
+    Route::get('/product', [ProductController::class, 'index',]);
+    Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
+    Route::post('/add-to-cart', [ProductController::class, 'addToCart'])->name('product.addToCart');
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::post('/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/remove/{product_id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+
+
+
+
+
 });
 Route::post('/orders/{orderId}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 Route::post('/orders/{orderId}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
@@ -59,3 +64,4 @@ Route::get('/auth/google', [GoogleController::class, 'googlepage']);
 Route::get('/auth/google/callback', [GoogleController::class, 'googlecallback']);
 
 require __DIR__ . '/auth.php';
+

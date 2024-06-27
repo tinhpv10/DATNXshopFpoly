@@ -17,13 +17,16 @@ class ProductVariation extends Model
         'variation_name',
         'product_id'
     ];
-    public function Product(): BelongsTo
+
+    public function product(): BelongsTo
     {
-        return $this->BelongsTo(Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function productVariationValue(): HasMany
     {
-        return $this->HasMany(ProductVariationValue::class);
+        return $this->hasMany(ProductVariationValue::class);
     }
+
+
 }

@@ -7,29 +7,29 @@
     .box-img {
         width: 380px;
         height: 380px;
-    
+
         img {
             @include coverImage();
             border-radius: .375rem;
-             
+
         }
     }
-     
+
     .img-detail {
         margin-top: 12px;
         width: 380px;
         display: flex;
         justify-content: flex-start;
-    
+
         .img-item {
             width: 56px;
-            height: 56px; 
+            height: 56px;
             margin-right: auto;
             border-radius: .375rem;
             border: 1px solid #dee2e6;
             overflow: hidden;
 
-            
+
             img {
                 @include coverImage();
                 border-radius: .375rem;
@@ -41,8 +41,8 @@
                 }
             }
         }
-    
-        
+
+
     }
 }
 
@@ -51,19 +51,13 @@
     .price{
         font-size: 18px;
     }
-   
-    .short-info{
-        .short-title{
-            min-width: 150px;
-        }
-    }
-    
+
 }
 
 
 .box-right{
     .avatar-img{
-        @include boxImage(48, 48); 
+        @include boxImage(48, 48);
 
         img{
             @include coverImage();
@@ -87,7 +81,7 @@
 
 .block-detail{
     margin-top: 20px;
-    
+
     td{
         &:nth-child(1){
             width: 200px;
