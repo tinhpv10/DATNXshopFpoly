@@ -1,6 +1,6 @@
 @extends('index')
 @section('main')
-{{--    banner--}}
+    {{--    banner--}}
     @include('includes.banner')
     {{--Main body--}}
     <div class="main">
@@ -38,81 +38,40 @@
                                         <div class="countdown_label">Sec</div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
                     <div class="group-right">
                         <div class=" autoplay">
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/img2.jpg') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/img2.jpg') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/img2.jpg') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item ">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/img2.jpg') }}" alt=""></a>
-                                </div>
-                                <div class="box-info text-center">
-                                    <div class="title-product">Smart watchesss</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/image35.png') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/image35.png') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
-                            <div class="sale-item text-center">
-                                <div class="box-img d-flex justify-content-center">
-                                    <a href=""><img src="{{ asset('image/image35.png') }}" alt=""></a>
-                                </div>
-                                <div class="box-info ">
-                                    <div class="title-product">Smart watches</div>
-                                    <span class="badge  rounded-pill text-danger bg-danger-subtle">-15%</span>
-                                </div>
-                            </div>
+                            @foreach($products as $productss)
+                                @php
+                                    $regularPrice = $productss->regular_price;
+                                    $salePrice = $productss->sale_price;
 
+                                    if ($regularPrice > 0 && $regularPrice > $salePrice) {
+                                        $discountPercentage = (($regularPrice - $salePrice) / $regularPrice) * 100;
+                                        $discountPercentage = round($discountPercentage);
+                                    } else {
+                                        $discountPercentage = 0;
+                                    }
+                                @endphp
+                                <div class="sale-item text-center">
+                                    <a href="{{ route('product.detail', ['id' => $productss->id]) }}"
+                                       class="product-link text-decoration-none text-black">
+                                        <div class="box-img d-flex justify-content-center">
+                                            <img src="{{ asset('storage/' . $productss->main_image) }}"
+                                                 alt="img_product">
+                                        </div>
+                                        <div class="box-info ">
+                                            <div class="title-product">{{$productss->name}}</div>
+                                            <span class="badge  rounded-pill text-danger bg-danger-subtle">-{{ $discountPercentage }}%</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
-
             </div>
 
 
@@ -126,109 +85,22 @@
                             <button class="btn bg-white  ">Source now</button>
                         </div>
                     </div>
-                    <div class="autoplay-block">
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
+                    <div class="autoplay-block ">
+                        @foreach($categories as $categoriess)
+                            <a href="{{ route('products.category', ['category' => $categoriess->id]) }}" class="product-link text-decoration-none text-black">
+                            <div class="group-item p-2">
+                                <div class="content-item">
+                                    <h6>{{ $categoriess->name }}</h6>
+                                    <small>From USD 19 </small>
+                                </div>
+                                <div class="d-flex image-item justify-content-end">
+                                    <img src="{{ asset('storage/' . $categoriess->image) }}"
+                                         alt="{{ $categoriess->name }}" class="img-fluid w-50">
+                                </div>
                             </div>
-                            <div class="image-item">
-                                <img src="https://didongviet.vn/dchannel/wp-content/uploads/2023/08/hinh-nen-3d-hinh-nen-iphone-dep-3d-didongviet@2x-576x1024.jpg"
-                                     alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
-                        <div class="group-item p-2">
-                            <div class="content-item">
-                                <h6>Soft chairs</h6>
-                                <small>From USD 19 </small>
-                            </div>
-                            <div class="image-item">
-                                <img src="{{ asset('image/rasm.png') }}" alt="">
-                            </div>
-                        </div>
+                            </a>
+                        @endforeach
                     </div>
-
 
                 </div>
             </div>
@@ -284,122 +156,26 @@
             <div class="section-recommend">
                 <h4 class="mb-3">Recommended Items</h4>
                 <div class="list-product d-flex flex-wrap justify-content-between">
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img1.png') }}" alt="img_product">
+                    @foreach($products as $productss)
+                        <div class="product-item border rounded-2">
+                            <a href="{{ route('product.detail', ['id' => $productss->id]) }}"
+                               class="product-link text-decoration-none text-black">
+                                <div class="box-img">
+                                        <img src="{{ asset('storage/' . $productss->main_image) }}" alt="img_product">
+                                </div>
+                                <div class="info-product">
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="product-price text-decoration-line-through me-3">{{ $productss->formattedRegularPrice }}đ
+                                        </div>
+                                        <div class="salePrice">{{ $productss->formattedSalePrice }}đ</div>
+                                    </div>
+                                    <div class="title-name fs-5">{{$productss->name}}</div>
+                                    <div class="title-product">{{$productss->description}}</div>
+                                </div>
                             </a>
                         </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors, for men. T-shirts with multiple
-                                colors, for men</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img2.jpg') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="https://didongviet.vn/dchannel/wp-content/uploads/2023/08/hinh-nen-3d-hinh-nen-iphone-dep-3d-didongviet@2x-576x1024.jpg
-                                " alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors, for men. T-shirts with multiple
-                                colors, for men</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img2.jpg') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img1.png') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors, for men. T-shirts with multiple
-                                colors, for men</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img2.jpg') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img1.png') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors, for men. T-shirts with multiple
-                                colors, for men</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img2.jpg') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img1.png') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors, for men. T-shirts with multiple
-                                colors, for men</div>
-                        </div>
-                    </div>
-                    <div class="product-item border rounded-2">
-                        <div class="box-img">
-                            <a href="">
-                                <img src="{{ asset('image/img2.jpg') }}" alt="img_product">
-                            </a>
-                        </div>
-                        <div class="info-product">
-                            <ins class="price text-decoration-none">$10.30</ins>
-                            <div class="title-product">T-shirts with multiple colors</div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -572,7 +348,6 @@
                     </div>
                 </div>
             </div>
-
 
 
         </div>
