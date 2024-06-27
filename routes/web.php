@@ -63,5 +63,5 @@ Route::middleware('auth')->group(function () {
 Route::get('/auth/google', [GoogleController::class, 'googlepage']);
 Route::get('/auth/google/callback', [GoogleController::class, 'googlecallback']);
 
-require __DIR__ . '/auth.php';
+//require __DIR__ . '/auth.php';
 

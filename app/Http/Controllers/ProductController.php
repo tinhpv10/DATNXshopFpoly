@@ -25,15 +25,13 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             $product->main_image = $productMedia ? $productMedia->media : null;
-            $product->formattedRegularPrice = number_format($product->regular_price, 0, ',', '.');
-            $product->formattedSalePrice = number_format($product->sale_price, 0, ',', '.');
         }
         return view('layouts.product', [
             'products' => $products,
             'Brands' => $Brands,
             'Categories' => $Categories,
-
-        ]);
+            'productVariations' => $productVariations],
+            compact('products', 'itemsPerPage'));
     }
 
     public function search(Request $request)
@@ -88,6 +86,7 @@ class ProductController extends Controller
         $productVariations = ProductVariation::where('product_id', $product->id)->with('productVariationValue')->get();
 
 
+
         $favoriteProductIds = Wishlist::where('user_id', auth()->id())->pluck('product_id');
         $favoriteProducts = Product::whereIn('id', $favoriteProductIds)->get();
         foreach ($favoriteProducts as $favoriteProduct) {
@@ -96,36 +95,6 @@ class ProductController extends Controller
             $favoriteProduct->formattedRegularPrice = number_format($favoriteProduct->regular_price, 0, ',', '.');
             $favoriteProduct->formattedSalePrice = number_format($favoriteProduct->sale_price, 0, ',', '.');
         }
-        return view('layouts.product', [
-            'products' => $products,
-            'Brands' => $Brands,
-            'Categories' => $Categories,
-            'productVariations' => $productVariations],
-            compact('products', 'itemsPerPage'));
-    }
-
-    public function filter(Request $request)
-    {
-        $categoryId = $request->input('category_id');
-        $brandId = $request->input('brand_id');
-
-        $query = Product::query();
-
-        if ($categoryId) {
-            $query->whereHas('category', function ($q) use ($categoryId) {
-                $q->where('id', $categoryId);
-            });
-        }
-
-        if ($brandId) {
-            $query->whereHas('brand', function ($q) use ($brandId) {
-                $q->where('id', $brandId);
-            });
-        }
-
-        $products = $query->paginate(9);
-
-        return view('layouts.product', compact('products', 'Categories', 'Brands'));
 
         return view('layouts.detail', [
             'product' => $product,
@@ -180,4 +149,6 @@ class ProductController extends Controller
         Session::put('cartItems', $cartItems);
         return redirect()->route('cart.view');
     }
+
+}
 
