@@ -38,9 +38,30 @@ class CategoryResource extends Resource
                     ->label('Ảnh đại diện')
                     ->required()
                     ->columnSpan(2),
-                Select::make('category_id')
-                    ->relationship(name: 'Category', titleAttribute: 'name')
-                    ->options(Category::all()->pluck('name', 'id'))
+                Select::make('parent_id')
+                    ->options(function () {
+                        $categories = Category::whereNull('parent_id')->with('children')->get();
+                        $options = [];
+
+                        // Hàm đệ quy để lấy danh mục con
+                        $addChildrenToOptions = function ($categories, $indentation = '') use (&$options, &$addChildrenToOptions) {
+                            foreach ($categories as $category) {
+                                // Thêm thụt lề vào danh mục
+                                $options[$category->id] = $indentation . $category->name;
+                                if ($category->children) {
+                                    // Thêm một khoảng thụt lề cho các cấp con
+                                    $newIndentation = $indentation . '_ '; // Thêm khoảng trắng để thụt lề
+                                    $addChildrenToOptions($category->children, $newIndentation);
+                                }
+                            }
+                        };
+
+                        // Gọi hàm đệ quy với danh mục cấp 1
+                        $addChildrenToOptions($categories);
+
+                        return $options;
+                    })
+
                     ->searchable()
                     ->label('Thuộc danh mục'),
                 TextInput::make('name')
@@ -53,12 +74,6 @@ class CategoryResource extends Resource
                     ->validationMessages([
                         'unique' => 'Slug này đã được thêm rồi',
                     ])
-                    ->required(),
-                Select::make('shop_id')
-                    ->relationship(name: 'shop', titleAttribute: 'name')
-                    ->options(shop::all()->pluck('name', 'id'))
-                    ->label('Cửa hàng')
-                    ->searchable()
                     ->required(),
                 TextInput::make('meta_title')
                     ->label('Tiêu đề SEO')
@@ -79,18 +94,19 @@ class CategoryResource extends Resource
 
     public static function infolist(Infolist $infolist): Infolist
     {
+
         return $infolist
             ->schema([
                 TextEntry::make('image')
                     ->label('Ảnh đại diện'),
-                TextEntry::make('category.name')
-                    ->label('Thuộc danh mục'),
-                TextEntry::make('name')
-                    ->label('Danh mục'),
+                TextEntry::make('indented_children_names')
+                    ->label('Danh mục')
+                    ->formatStateUsing(function ($state, $record) {
+                        return nl2br(e($record->indented_children_names));
+                    })
+                    ->html(), // Cho phép hiển thị HTML
                 TextEntry::make('category_slug')
                     ->label('Slug Danh mục'),
-                TextEntry::make('Shop.name')
-                    ->label('Cửa hàng'),
                 TextEntry::make('meta_title')
                     ->label('Tiêu đề SEO'),
                 TextEntry::make('meta_description')
@@ -101,26 +117,24 @@ class CategoryResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Category::query()->whereNull('parent_id')->with('children'))
+//            ->query(Category::query()->whereNull('parent_id')->with('children'))
+            ->defaultGroup('name')
             ->columns([
                 ImageColumn::make('image')
                     ->width(100)
                     ->height(100)
                     ->label('Ảnh đại diện'),
-                TextColumn::make('category.name')
-                    ->label('Thuộc danh mục')
-                    ->searchable(),
-                TextColumn::make('name')
+                TextColumn::make('indented_name')
                     ->label('Danh mục')
-                    ->searchable(),
-                TextColumn::make('category_slug')
-                    ->label('Slug Danh mục')
-                    ->searchable(),
-                TextColumn::make('Shop.name')
-                    ->label('Cửa hàng')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state, $record) {
+                        return $record->indented_name;
+                    }),
                 ToggleColumn::make('status')
                     ->label('Trạng thái'),
             ])
@@ -129,6 +143,7 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
