@@ -22,11 +22,11 @@ return new class extends Migration
             $table->foreignIdFor(Shop::class)->nullable()->comment('Mã nhà bán');
             $table->foreignIdFor(Brand::class)->comment('Mã thương hiệu');
             $table->string('name')->nullable(false)->comment('Tên sản phẩm');
-            $table->string('slug')->nullable()->comment('Đường dẫn sản phẩm ');
+            $table->string('slug')->nullable()->comment('Đường dẫn sản phẩm');
             $table->decimal('regular_price', 15, 2)->nullable(false)->comment('Giá');
             $table->decimal('sale_price', 15, 2)->nullable()->comment('Giá giảm');
             $table->string('sku')->nullable(false)->comment('Mã SKU');
-            $table->integer('rating')->nullable()->comment('Đánh giá');
+            $table->float('rating', 3, 1)->default(0)->comment('Đánh giá'); // Cập nhật ở đây
             $table->integer('view_count')->nullable()->comment('Lượt xem');
             $table->integer('sold_count')->nullable()->comment('Lượt bán');
             $table->text('description')->nullable()->comment('Mô tả');
