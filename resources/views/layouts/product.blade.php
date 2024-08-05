@@ -23,31 +23,20 @@
                                 <input type="hidden" name="brand_ids[]" value="{{ $brandId }}">
                             @endforeach
                             <input type="hidden" name="sort" id="selectedSort" value="{{ request('sort', '0') }}">
+
+                            <!-- Danh mục sản phẩm -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseOne" aria-expanded="false"
-                                            aria-controls="flush-collapseOne">
+                                    <button class="accordion-button custom-button" type="button" aria-expanded="true">
                                         <span>Danh mục sản phẩm</span>
                                     </button>
                                 </h2>
-                                <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                <div id="flush-collapseOne" class="accordion-collapse show"
                                      data-bs-parent="#accordionFlush1">
                                     <div class="accordion-body">
                                         <ul class="list-group">
-                                            @php
-                                                $displayedCategories = 0;
-                                            @endphp
                                             @foreach($Categories as $category)
-                                                <li class="category-item" data-category="{{ $category->id }}"
-                                                    style="{{ $displayedCategories < 5 ? '' : 'display:none;' }}">
-                                                    <a href="#" class="category-link"
-                                                       data-id="{{ $category->id }}">{{ $category->name }}</a>
-                                                </li>
-                                                @php
-                                                    $displayedCategories++;
-                                                @endphp
+                                                @include('partials.category-item', ['category' => $category, 'level' => 0, 'products' => $products ?? collect()])
                                             @endforeach
                                         </ul>
                                         <button type="button" class="seeAllButton" id="seeAllButtonCategories">Xem Tất
@@ -59,20 +48,18 @@
                                 </div>
                             </div>
 
+                            <!-- Thương hiệu -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseTwo" aria-expanded="false"
-                                            aria-controls="flush-collapseTwo">
+                                    <button class="accordion-button custom-button" type="button" aria-expanded="true">
                                         <span>Thương hiệu</span>
                                     </button>
                                 </h2>
-                                <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                <div id="flush-collapseTwo" class="accordion-collapse show"
                                      data-bs-parent="#accordionFlush2">
                                     <div class="accordion-body">
                                         @foreach($Brands as $Brand)
-                                            <div class="form-check"
+                                            <div class="form-check brand-item"
                                                  style="{{ $loop->index < 5 ? '' : 'display:none;' }}">
                                                 <input class="form-check-input brand-checkbox" type="checkbox"
                                                        name="brand_ids[]" value="{{ $Brand->id }}"
@@ -84,22 +71,21 @@
                                         @endforeach
                                         <button type="button" class="seeAllButton" id="seeAllButtonBrands">Xem Tất Cả
                                         </button>
-                                        <button type="button" class="seeAllButton" id="backToTopBrands">Quay lại
+                                        <button type="button" class="seeAllButton" id="backToTopBrands"
+                                                style="display:none;">Quay lại
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Giá -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapsePrice" aria-expanded="false"
-                                            aria-controls="flush-collapsePrice">
+                                    <button class="accordion-button custom-button" type="button" aria-expanded="true">
                                         <span>Giá</span>
                                     </button>
                                 </h2>
-                                <div id="flush-collapsePrice" class="accordion-collapse collapse"
+                                <div id="flush-collapsePrice" class="accordion-collapse show"
                                      data-bs-parent="#accordioncollapsePrice">
                                     <div class="accordion-body">
                                         <div class="price-buttons">
@@ -112,8 +98,7 @@
                                             <button type="button" class="price-button" data-min="1000000"
                                                     data-max="5000000">1.000.000 - 5.000.000
                                             </button>
-                                            <button type="button" class="price-button" data-min="5000000">Trên
-                                                5.000.000
+                                            <button type="button" class="price-button" data-min="5000000">Trên 5.000.000
                                             </button>
                                         </div>
                                         <div class="range-inputs">
@@ -129,80 +114,39 @@
                                             </div>
                                         </div>
                                         <button type="button" class="apply-button">Áp dụng</button>
-                                        <!-- Nút áp dụng vẫn hiện -->
                                     </div>
                                 </div>
                             </div>
 
-
+                            <!-- Xếp hạng -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button custom-button collapsed" type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseRating" aria-expanded="false"
-                                            aria-controls="flush-collapseRating">
+                                    <button class="accordion-button custom-button" type="button" aria-expanded="true">
                                         <span>Xếp hạng</span>
                                     </button>
                                 </h2>
-                                <div id="flush-collapseRating" class="accordion-collapse collapse"
+                                <div id="flush-collapseRating" class="accordion-collapse show"
                                      data-bs-parent="#accordioncollapseRating">
                                     <div class="accordion-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="5" id="star5">
-                                            <label class="form-check-label" for="star5">
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="4" id="star4">
-                                            <label class="form-check-label" for="star4">
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="3" id="star3">
-                                            <label class="form-check-label" for="star3">
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="2" id="star2">
-                                            <label class="form-check-label" for="star2">
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="1" id="star1">
-                                            <label class="form-check-label" for="star1">
-                                                <i class="fa fa-star star"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                                <i class="fa fa-star star-gray"></i>
-                                            </label>
-                                        </div>
-
+                                        @for($i = 5; $i >= 1; $i--)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="ratings[]"
+                                                       value="{{ $i }}"
+                                                       id="star{{ $i }}" {{ in_array($i, request('ratings', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="star{{ $i }}">
+                                                    @for($j = 1; $j <= 5; $j++)
+                                                        <i class="fa fa-star star {{ $j <= $i ? '' : 'star-gray' }}"></i>
+                                                    @endfor
+                                                </label>
+                                            </div>
+                                        @endfor
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
+
+
                     <div class="col-md-9 content">
                         <div class="content-top">
                             <div class="row align-items-center">
@@ -304,10 +248,26 @@
         </span>
                             @endif
 
-                            @if(request('category_id') || request('brand_ids') || request('min_price') || request('max_price'))
+                            @if(request('ratings'))
+                                @foreach(request('ratings') as $rating)
+                                    <span class="filter-btn">
+
+               <label class="form-check-label" for="star{{ $rating }}">
+    @for($j = 1; $j <= 5; $j++)
+                       <i class="fa fa-star {{ $j <= $rating ? 'text-warning' : 'text-muted' }}"></i>
+                   @endfor
+</label>
+                <button type="button" class="remove-filter" data-filter-type="rating"
+                        data-filter-value="{{ $rating }}">x</button>
+            </span>
+                                @endforeach
+                            @endif
+
+                            @if(request('category_id') || request('brand_ids') || request('min_price') || request('max_price') || request('ratings'))
                                 <button type="button" class="seeAllButton" id="clearFilters">Xóa tất cả bộ lọc</button>
                             @endif
                         </div>
+
                         <div class="product">
 
                             <div id="productGrid" class="product-grid">
@@ -343,17 +303,25 @@
                                                                     @endif
                                                                 </div>
 
-                                                                <div class="rating">
+                                                                <div class="rating1">
+                                                                        <?php
+                                                                        // Lấy số sao và số sao lẻ
+                                                                        $fullStars = floor($product->rating); // Số sao đầy đủ
+                                                                        $halfStar = ($product->rating - $fullStars) >= 0.1 ? 1 : 0; // Kiểm tra xem có sao lẻ không
+                                                                        ?>
+
                                                                         <?php for ($i = 1;
                                                                                    $i <= 5;
                                                                                    $i++): ?>
-                                                                        <?php if ($i <= $product->rating): ?>
+                                                                        <?php if ($i <= $fullStars): ?>
                                                                     <i class="bi bi-star-fill" style="color: gold;"></i>
-                                                                    <?php elseif ($i - $product->rating < 1): ?>
+                                                                    <!-- Sao đầy đủ -->
+                                                                    <?php elseif ($i == $fullStars + 1 && $halfStar): ?>
                                                                     <i class="bi bi-star-half" style="color: gold;"></i>
+                                                                    <!-- Sao lẻ -->
                                                                     <?php else: ?>
-                                                                    <i class="bi bi-star-fill"
-                                                                       style="color: lightgray;"></i>
+                                                                    <i class="bi bi-star" style="color: gold;"></i>
+                                                                    <!-- Sao trống -->
                                                                     <?php endif; ?>
                                                                     <?php endfor; ?>
                                                                 </div>

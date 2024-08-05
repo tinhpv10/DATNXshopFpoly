@@ -20,25 +20,29 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
+        // Các tham số khác
         $itemsPerPage = $request->input('items_per_page', 9);
         $categoryId = $request->input('category_id');
         $brandIds = $request->input('brand_ids', []);
         $minPrice = $request->input('min_price', 0);
-        $maxPrice = $request->input('max_price', 500000000); // Set a default max price if not provided
-        $sortBy = $request->input('sort', '0'); // Default sorting option
+        $maxPrice = $request->input('max_price', 500000000); // Giá tối đa mặc định
+        $sortBy = $request->input('sort', '0'); // Mặc định sắp xếp
+        $ratings = $request->input('ratings', []); // Thêm tham số ratings
 
-        $query = Product::query();
-
+        $query = Product::query()->where('pause', 0);
         $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
 
+        // Điều kiện lọc danh mục
         if ($categoryId) {
             $query->where('category_id', $categoryId);
         }
 
+        // Điều kiện lọc thương hiệu
         if (!empty($brandIds)) {
             $query->whereIn('brand_id', $brandIds);
         }
 
+        // Điều kiện lọc giá
         if ($minPrice !== null && $maxPrice !== null) {
             $query->havingBetween('displayedPrice', [(float)$minPrice, (float)$maxPrice]);
         } elseif ($minPrice !== null) {
@@ -47,6 +51,21 @@ class ProductController extends Controller
             $query->having('displayedPrice', '<=', (float)$maxPrice);
         }
 
+        if (!empty($ratings)) {
+            // Lấy phần nguyên của xếp hạng
+            $integerRatings = array_map(function ($rating) {
+                return floor((float)$rating); // Lấy phần nguyên
+            }, $ratings);
+
+            // Lọc sản phẩm có xếp hạng lớn hơn hoặc bằng các xếp hạng đã chọn
+            $query->where(function ($q) use ($integerRatings) {
+                foreach ($integerRatings as $rating) {
+                    $q->orWhere('rating', '>=', $rating);
+                }
+            });
+        }
+
+        // Điều kiện sắp xếp
         switch ($sortBy) {
             case '1':
                 $query->orderBy('displayedPrice', 'asc');
@@ -63,14 +82,17 @@ class ProductController extends Controller
                 break;
         }
 
+        // Phân trang
         $products = $query->paginate($itemsPerPage)->appends($request->except('page'));
 
-        $Categories = Category::all();
+        // Dữ liệu cần thiết khác
+        $Categories = Category::with('children')->whereNull('parent_id')->get();
         $Brands = Brand::all();
         $productVariations = ProductVariation::all();
         $productProductVariationValue = ProductVariationValue::all();
         $maxProductPrice = Product::max('sale_price');
 
+        // Format lại dữ liệu sản phẩm
         foreach ($products as $product) {
             $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             $product->main_image = $productMedia ? $productMedia->media : null;
@@ -81,6 +103,7 @@ class ProductController extends Controller
             $product->formattedDisplayedPrice = number_format($product->displayedPrice, 0, ',', '.');
         }
 
+        // Trả về view
         return view('layouts.product', [
             'products' => $products,
             'Brands' => $Brands,
@@ -93,6 +116,7 @@ class ProductController extends Controller
             'maxPrice' => $maxPrice,
             'maxProductPrice' => $maxProductPrice,
             'sortBy' => $sortBy,
+            'ratings' => $ratings, // Truyền giá trị ratings vào view
         ]);
     }
 
@@ -102,7 +126,7 @@ class ProductController extends Controller
         $query = $request->input('query');
         $itemsPerPage = $request->input('items_per_page', 9);
         $sortBy = $request->input('sort', '0'); // Default sorting option
-
+        $Categories = Category::with('children')->whereNull('parent_id')->get(); // Thay đổi dòng này
         $queryBuilder = Product::query();
         $queryBuilder->where('name', 'like', '%' . $query . '%')
             ->select('*')
@@ -135,7 +159,6 @@ class ProductController extends Controller
             $product->formattedDisplayedPrice = number_format($product->displayedPrice, 0, ',', '.');
         }
 
-        $Categories = Category::all();
         $Brands = Brand::all();
 
         return view('layouts.product', [

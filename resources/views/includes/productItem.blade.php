@@ -1,4 +1,4 @@
-<div class="product-item border rounded-2 mb-3">
+<div class="box-product-item border rounded-2 mb-3">
     @if($productItem->sale_price != 0)
         <div class="sale-off fw-bolder">
             -{{ round(100 - ($productItem->sale_price * 100 / $productItem->regular_price))  }}%

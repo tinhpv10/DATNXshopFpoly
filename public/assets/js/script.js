@@ -1,6 +1,4 @@
-// ---------------
-// change image
-// ---------------
+
 function changeImg(pic) {
     document.getElementById('change_image').src = pic;
 }
@@ -40,61 +38,88 @@ window.addEventListener('DOMContentLoaded', function () {
 document.querySelector('#sort-form select[name="sort"]').addEventListener('change', function () {
     document.querySelector('#sort-form').submit();
 });
-// Ẩn nút "Quay lại" ban đầu
-document.getElementById('backToTopCategories').style.display = 'none';
-document.getElementById('backToTopBrands').style.display = 'none';
 
-document.getElementById('seeAllButtonCategories').addEventListener('click', function () {
-    var categoryItems = document.querySelectorAll('.category-item');
-    categoryItems.forEach(function (item) {
-        item.style.display = 'block';
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButtons = document.querySelectorAll('.toggle-subcategories');
+
+    toggleButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            const subcategories = this.nextElementSibling; // Lấy phần tử <ul> tiếp theo
+            const isExpanded = subcategories.classList.toggle('expanded'); // Mở hoặc đóng
+
+            if (isExpanded) {
+                // Khi mở, cập nhật nút thành '-'
+                this.textContent = '-';
+                subcategories.style.display = 'block'; // Hiện danh mục con
+            } else {
+                // Khi đóng, cập nhật nút thành '+'
+                this.textContent = '+';
+                subcategories.style.display = 'none'; // Ẩn danh mục con
+            }
+        });
     });
-    // Hiển thị nút "Quay lại" và ẩn nút "Xem Tất Cả"
-    document.getElementById('backToTopCategories').style.display = 'inline-block';
-    this.style.display = 'none';
-});
 
-document.getElementById('seeAllButtonBrands').addEventListener('click', function () {
-    var brandCheckboxes = document.querySelectorAll('.form-check');
-    brandCheckboxes.forEach(function (checkbox) {
-        checkbox.style.display = 'block';
-    });
-    // Hiển thị nút "Quay lại" và ẩn nút "Xem Tất Cả"
-    document.getElementById('backToTopBrands').style.display = 'inline-block';
-    this.style.display = 'none';
-});
+    // Ẩn nút "Quay lại" ban đầu
+    document.getElementById('backToTopCategories').style.display = 'none';
 
-document.getElementById('backToTopCategories').addEventListener('click', function () {
-    var categoryItems = document.querySelectorAll('.category-item');
-    categoryItems.forEach(function (item, index) {
+    // Chỉ hiển thị 5 danh mục cha đầu tiên
+    const parentCategoryItems = document.querySelectorAll('.parent-category');
+    parentCategoryItems.forEach(function (item, index) {
         if (index >= 5) {
             item.style.display = 'none';
         }
     });
-    // Hiển thị nút "Xem Tất Cả" và ẩn nút "Quay lại"
-    document.getElementById('seeAllButtonCategories').style.display = 'inline-block';
-    this.style.display = 'none';
+
+    document.getElementById('seeAllButtonCategories').addEventListener('click', function () {
+        parentCategoryItems.forEach(item => item.style.display = 'block');
+        document.getElementById('backToTopCategories').style.display = 'inline-block';
+        this.style.display = 'none';
+    });
+
+    document.getElementById('backToTopCategories').addEventListener('click', function () {
+        parentCategoryItems.forEach((item, index) => {
+            if (index >= 5) {
+                item.style.display = 'none';
+            }
+        });
+        document.getElementById('seeAllButtonCategories').style.display = 'inline-block';
+        this.style.display = 'none';
+    });
+});
+document.getElementById('seeAllButtonBrands').addEventListener('click', function () {
+    const brandItems = document.querySelectorAll('.brand-item');
+    brandItems.forEach(item => {
+        item.style.display = 'block';
+    });
+    this.style.display = 'none'; // Ẩn nút "Xem Tất Cả"
+    document.getElementById('backToTopBrands').style.display = 'block'; // Hiện nút "Quay lại"
 });
 
 document.getElementById('backToTopBrands').addEventListener('click', function () {
-    var brandCheckboxes = document.querySelectorAll('.form-check');
-    brandCheckboxes.forEach(function (checkbox, index) {
-        if (index >= 5) {
-            checkbox.style.display = 'none';
-        }
+    const brandItems = document.querySelectorAll('.brand-item');
+    brandItems.forEach((item, index) => {
+        item.style.display = (index < 5) ? 'block' : 'none';
     });
-    // Hiển thị nút "Xem Tất Cả" và ẩn nút "Quay lại"
-    document.getElementById('seeAllButtonBrands').style.display = 'inline-block';
-    this.style.display = 'none';
+    this.style.display = 'none'; // Ẩn nút "Quay lại"
+    document.getElementById('seeAllButtonBrands').style.display = 'block'; // Hiện nút "Xem Tất Cả"
 });
-//Lọc theo danh mục
-document.querySelectorAll('.category-link').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.getElementById('selectedCategoryId').value = this.dataset.id;
-        document.getElementById('filterForm').submit();
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toggle-subcategories').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const categoryId = this.dataset.category;
+            const subcategories = document.querySelector(`ul[data-parent-category='${categoryId}']`);
+            if (subcategories.style.display === 'none' || subcategories.style.display === '') {
+                subcategories.style.display = 'block';
+                this.textContent = '-';
+            } else {
+                subcategories.style.display = 'none';
+                this.textContent = '+';
+            }
+        });
     });
 });
+
 // Lọc theo danh mục
 document.querySelectorAll('.category-link').forEach(link => {
     link.addEventListener('click', function (e) {
@@ -173,6 +198,50 @@ document.querySelectorAll('.price-button').forEach(button => {
         window.location.href = url.toString();
     });
 });
+//Lọc theo xếp hạng
+
+document.addEventListener('DOMContentLoaded', function () {
+    const ratingCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="star"]');
+    const filterForm = document.getElementById('filterForm');
+
+    ratingCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            // Khi checkbox được chọn hoặc bỏ chọn, gửi form
+            filterForm.submit();
+        });
+    });
+
+    filterForm.addEventListener('submit', function (event) {
+        // Ngăn chặn hành động gửi form mặc định
+        event.preventDefault();
+
+        // Lưu trữ các xếp hạng đã chọn
+        const selectedRatings = [];
+        ratingCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedRatings.push(checkbox.value);
+            }
+        });
+
+        // Xóa tất cả các input xếp hạng cũ
+        const existingRatingInputs = filterForm.querySelectorAll('input[name="ratings[]"]');
+        existingRatingInputs.forEach(input => input.remove());
+
+        // Thêm các xếp hạng đã chọn dưới dạng input ẩn
+        selectedRatings.forEach(rating => {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'ratings[]';
+            hiddenInput.value = rating;
+            filterForm.appendChild(hiddenInput);
+        });
+
+        // Gửi form sau khi đã thêm input ẩn
+        filterForm.submit();
+    });
+});
+
+
 // Sắp xếp
 document.querySelector('#sort-form select').addEventListener('change', function () {
     const selectedSort = this.value;
@@ -250,11 +319,17 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (filterType === 'price') {
                 url.searchParams.delete('min_price');
                 url.searchParams.delete('max_price');
+            } else if (filterType === 'rating') { // Logic for rating filter
+                let ratings = url.searchParams.getAll('ratings[]');
+                ratings = ratings.filter(rating => rating !== filterValue);
+                url.searchParams.delete('ratings[]');
+                ratings.forEach(rating => url.searchParams.append('ratings[]', rating));
             }
 
             window.location.href = url.toString();
         });
     });
+
     // Clear all filters
     document.getElementById('clearFilters').addEventListener('click', function () {
         let url = new URL(window.location.href);
@@ -262,11 +337,12 @@ document.addEventListener('DOMContentLoaded', function () {
         url.searchParams.delete('brand_ids[]');
         url.searchParams.delete('min_price');
         url.searchParams.delete('max_price');
-        url.searchParams.delete('sort');
+        url.searchParams.delete('ratings[]'); // Xóa bộ lọc xếp hạng khi xóa tất cả
         window.location.href = url.toString();
     });
-
 });
+
+
 
 
 

@@ -8,17 +8,6 @@
         </div>
         <form id="search-form" method="GET" action="{{ route('product.search') }}">
             <input class="input" type="text" placeholder="Tìm kiếm" id="search-input" name="query">
-            {{--            <div class="search-category">--}}
-            {{--                <select name="category_id" id="category-select">--}}
-            {{--                    <option value="">All categories</option>--}}
-            {{--                    @foreach($categories as $category)--}}
-            {{--                        <option value="{{ $category->id }}">{{ $category->name }}</option>--}}
-            {{--                    @endforeach--}}
-            {{--                </select>--}}
-            {{--                <img width="24px" height="24px"--}}
-            {{--                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACzSURBVHgB7Y+xDkExFIb/cwd3MfRRvILHEItVDBhY1XpFrkXYOgkbb+AVPIrNIFqnJuGW9s7nS5o2+U//rwUEQQiijVHF9jD8N1esd72yNCqUZ6GgecuPZB+rxWY/C80sOSOCueeNU7LAOjfm7QpndZXEl1vOyPkZjEI9hB/w91v8wjMfFSjTk35n/llugfZ00L3UElRJstfv4sqjBF8SfymyPFrwLuFyxJYn4yV+QRCEJJ4dZFRfSSCAagAAAABJRU5ErkJggg=="--}}
-            {{--                     alt="expand">--}}
-            {{--            </div>--}}
             <button class="search-button" type="submit"><i class="bi bi-search"></i></button>
         </form>
 

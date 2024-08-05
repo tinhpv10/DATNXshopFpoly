@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
+use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewMedia;
 use App\Models\User;
@@ -96,6 +97,7 @@ class CommentController extends Controller
             $user_id = $user->id;
         }
 
+        // Tạo một review mới
         $review = Review::create([
             'content' => $request->comment_content,
             'rating' => $request->rating,
@@ -103,8 +105,12 @@ class CommentController extends Controller
             'product_id' => $product_id,
         ]);
 
+        // Cập nhật rating cho sản phẩm
+        $this->updateProductRating($product_id);
+
         $listImage = session('uploaded_files', []);
 
+        // Xử lý hình ảnh (không thay đổi)
         for ($i = 0; $i < sizeof($listImage); $i++) {
             $image = $listImage[$i]['filepath'];
             $moderationResult = Cloudinary::upload($image)->getSecurePath();
@@ -129,13 +135,41 @@ class CommentController extends Controller
                 'review_id' => $review->id,
                 'review_media' => $imageDB,
             ]);
+        }
 
-        }//foreach
         Session::forget('uploaded_files');
 
         return redirect()->route('product.detail', $product_id);
-
     }
+
+    private function updateProductRating($productId)
+    {
+        // Lấy sản phẩm theo ID
+        $product = Product::findOrFail($productId);
+
+        // Lấy tất cả các review của sản phẩm đó
+        $reviews = Review::where('product_id', $productId)->get();
+
+        // Kiểm tra xem có review nào không
+        if ($reviews->isEmpty()) {
+            // Nếu không có review, đặt rating là 0
+            $product->rating = 0.0; // Sử dụng số thực
+        } else {
+            // Tính tổng số sao
+            $totalRating = $reviews->sum('rating');
+            // Lấy số lượng đánh giá
+            $numberOfReviews = $reviews->count();
+            // Tính trung bình cộng rating
+            $averageRating = $totalRating / $numberOfReviews;
+            // Cập nhật rating cho sản phẩm
+            $product->rating = (float)$averageRating; // Đảm bảo là số thực
+        }
+
+        // Lưu sản phẩm với rating mới
+        $product->save();
+    }
+
+
 
 
     private function checkUrlImg($imageUrl)
