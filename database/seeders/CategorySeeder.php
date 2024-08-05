@@ -17,7 +17,7 @@ class CategorySeeder extends Seeder
         // Thời Trang Nữ
         $fashionFemale = Category::create([
             'name' => 'Thời Trang Nữ',
-            'category_slug' => 'thoi-trang-nu',
+            'category_slug' => 'thoi-nu-123456',
             'status' => 1,
             'meta_title' => 'Thời Trang Nữ',
             'meta_description' => 'Các sản phẩm thời trang dành cho nữ',
@@ -27,7 +27,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Áo',
             'parent_id' => $fashionFemale->id,
-            'category_slug' => 'ao',
+            'category_slug' => 'ao-12345789',
             'status' => 1,
             'meta_title' => 'Áo Thời Trang Nữ',
             'meta_description' => 'Các loại áo thời trang dành cho nữ',
@@ -37,7 +37,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Quần',
             'parent_id' => $fashionFemale->id,
-            'category_slug' => 'quan',
+            'category_slug' => 'quan-127893',
             'status' => 1,
             'meta_title' => 'Quần Thời Trang Nữ',
             'meta_description' => 'Các loại quần thời trang dành cho nữ',
@@ -47,7 +47,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Váy',
             'parent_id' => $fashionFemale->id,
-            'category_slug' => 'vay',
+            'category_slug' => 'va23',
             'status' => 1,
             'meta_title' => 'Váy Thời Trang Nữ',
             'meta_description' => 'Các loại váy thời trang dành cho nữ',
@@ -57,7 +57,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đầm',
             'parent_id' => $fashionFemale->id,
-            'category_slug' => 'dam',
+            'category_slug' => 'dam-123',
             'status' => 1,
             'meta_title' => 'Đầm Thời Trang Nữ',
             'meta_description' => 'Các loại đầm thời trang dành cho nữ',
@@ -67,7 +67,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đồ ngủ & đồ lót',
             'parent_id' => $fashionFemale->id,
-            'category_slug' => 'do-ngu-do-lot',
+            'category_slug' => 'do-ngu-do-lot-123',
             'status' => 1,
             'meta_title' => 'Đồ Ngủ & Đồ Lót Thời Trang Nữ',
             'meta_description' => 'Các loại đồ ngủ và đồ lót thời trang dành cho nữ',
@@ -77,7 +77,7 @@ class CategorySeeder extends Seeder
         // Thời Trang Nam
         $fashionMale = Category::create([
             'name' => 'Thời Trang Nam',
-            'category_slug' => 'thoi-trang-nam',
+            'category_slug' => 'thoi-trang-nam-123',
             'status' => 1,
             'meta_title' => 'Thời Trang Nam',
             'meta_description' => 'Các sản phẩm thời trang dành cho nam',
@@ -87,7 +87,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Áo Nam',
             'parent_id' => $fashionMale->id,
-            'category_slug' => 'ao-nam',
+            'category_slug' => 'ao-nam-123',
             'status' => 1,
             'meta_title' => 'Áo Thời Trang Nam',
             'meta_description' => 'Các loại áo thời trang dành cho nam',
@@ -97,7 +97,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Quần Nam',
             'parent_id' => $fashionMale->id,
-            'category_slug' => 'quan-nam',
+            'category_slug' => 'quan-nam-123',
             'status' => 1,
             'meta_title' => 'Quần Thời Trang Nam',
             'meta_description' => 'Các loại quần thời trang dành cho nam',
@@ -107,7 +107,7 @@ class CategorySeeder extends Seeder
         // Điện Thoại & Phụ Kiện
         $electronics = Category::create([
             'name' => 'Điện Thoại & Phụ Kiện',
-            'category_slug' => 'dien-thoai-phu-kien',
+            'category_slug' => 'dien-thoai-phu-kien-123',
             'status' => 1,
             'meta_title' => 'Điện Thoại & Phụ Kiện',
             'meta_description' => 'Các sản phẩm điện thoại và phụ kiện',
@@ -117,7 +117,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Điện Thoại Di Động',
             'parent_id' => $electronics->id,
-            'category_slug' => 'dien-thoai-di-dong',
+            'category_slug' => 'dien-thoai-di-dong-123',
             'status' => 1,
             'meta_title' => 'Điện Thoại Di Động',
             'meta_description' => 'Các loại điện thoại di động',
@@ -127,7 +127,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Ốp Lưng & Miếng Dán',
             'parent_id' => $electronics->id,
-            'category_slug' => 'op-lung-mieng-dan',
+            'category_slug' => 'op-lung-mieng-dan-123',
             'status' => 1,
             'meta_title' => 'Ốp Lưng & Miếng Dán',
             'meta_description' => 'Các loại ốp lưng và miếng dán',
@@ -137,7 +137,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Tai Nghe',
             'parent_id' => $electronics->id,
-            'category_slug' => 'tai-nghe',
+            'category_slug' => 'tai-nghe-123',
             'status' => 1,
             'meta_title' => 'Tai Nghe',
             'meta_description' => 'Các loại tai nghe',
@@ -147,7 +147,7 @@ class CategorySeeder extends Seeder
         // Máy Tính & Laptop
         $computers = Category::create([
             'name' => 'Máy Tính & Laptop',
-            'category_slug' => 'may-tinh-laptop',
+            'category_slug' => 'may-tinh-laptop-123',
             'status' => 1,
             'meta_title' => 'Máy Tính & Laptop',
             'meta_description' => 'Các sản phẩm máy tính và laptop',
@@ -157,7 +157,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Laptop',
             'parent_id' => $computers->id,
-            'category_slug' => 'laptop',
+            'category_slug' => 'laptop-123',
             'status' => 1,
             'meta_title' => 'Laptop',
             'meta_description' => 'Các loại laptop',
@@ -167,7 +167,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Máy Tính Bàn',
             'parent_id' => $computers->id,
-            'category_slug' => 'may-tinh-ban',
+            'category_slug' => 'may-tinh-ban-123',
             'status' => 1,
             'meta_title' => 'Máy Tính Bàn',
             'meta_description' => 'Các loại máy tính bàn',
@@ -177,7 +177,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Linh Kiện Máy Tính',
             'parent_id' => $computers->id,
-            'category_slug' => 'linh-kien-may-tinh',
+            'category_slug' => 'linh-kien-may-tinh-123',
             'status' => 1,
             'meta_title' => 'Linh Kiện Máy Tính',
             'meta_description' => 'Các loại linh kiện máy tính',
@@ -187,7 +187,7 @@ class CategorySeeder extends Seeder
         // Nhà Cửa & Đời Sống
         $homeLiving = Category::create([
             'name' => 'Nhà Cửa & Đời Sống',
-            'category_slug' => 'nha-cua-doi-song',
+            'category_slug' => 'nha-cua-doi-song-123',
             'status' => 1,
             'meta_title' => 'Nhà Cửa & Đời Sống',
             'meta_description' => 'Các sản phẩm nhà cửa và đời sống',
@@ -197,7 +197,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đồ Gia Dụng',
             'parent_id' => $homeLiving->id,
-            'category_slug' => 'do-gia-dung',
+            'category_slug' => 'do-gia-dung-123',
             'status' => 1,
             'meta_title' => 'Đồ Gia Dụng',
             'meta_description' => 'Các loại đồ gia dụng',
@@ -207,7 +207,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đồ Trang Trí Nhà Cửa',
             'parent_id' => $homeLiving->id,
-            'category_slug' => 'do-trang-tri-nha-cua',
+            'category_slug' => 'do-trang-tri-nha-cua-123',
             'status' => 1,
             'meta_title' => 'Đồ Trang Trí Nhà Cửa',
             'meta_description' => 'Các loại đồ trang trí nhà cửa',
@@ -217,7 +217,7 @@ class CategorySeeder extends Seeder
         // Sức Khỏe & Sắc Đẹp
         $healthBeauty = Category::create([
             'name' => 'Sức Khỏe & Sắc Đẹp',
-            'category_slug' => 'suc-khoe-sac-dep',
+            'category_slug' => 'suc-khoe-sac-dep-123',
             'status' => 1,
             'meta_title' => 'Sức Khỏe & Sắc Đẹp',
             'meta_description' => 'Các sản phẩm sức khỏe và sắc đẹp',
@@ -227,7 +227,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Mỹ Phẩm',
             'parent_id' => $healthBeauty->id,
-            'category_slug' => 'my-pham',
+            'category_slug' => 'my-pham-123',
             'status' => 1,
             'meta_title' => 'Mỹ Phẩm',
             'meta_description' => 'Các loại mỹ phẩm',
@@ -237,7 +237,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Chăm Sóc Da',
             'parent_id' => $healthBeauty->id,
-            'category_slug' => 'cham-soc-da',
+            'category_slug' => 'cham-soc-da-123',
             'status' => 1,
             'meta_title' => 'Chăm Sóc Da',
             'meta_description' => 'Các sản phẩm chăm sóc da',
@@ -247,7 +247,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Chăm Sóc Tóc',
             'parent_id' => $healthBeauty->id,
-            'category_slug' => 'cham-soc-toc',
+            'category_slug' => 'cham-soc-toc-123',
             'status' => 1,
             'meta_title' => 'Chăm Sóc Tóc',
             'meta_description' => 'Các sản phẩm chăm sóc tóc',
@@ -257,7 +257,7 @@ class CategorySeeder extends Seeder
         // Thể Thao & Du Lịch
         $sportsTravel = Category::create([
             'name' => 'Thể Thao & Du Lịch',
-            'category_slug' => 'the-thao-du-lich',
+            'category_slug' => 'the-thao-du-lich-123',
             'status' => 1,
             'meta_title' => 'Thể Thao & Du Lịch',
             'meta_description' => 'Các sản phẩm thể thao và du lịch',
@@ -267,7 +267,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Trang Phục Thể Thao',
             'parent_id' => $sportsTravel->id,
-            'category_slug' => 'trang-phuc-the-thao',
+            'category_slug' => 'trang-phuc-the-thao-123',
             'status' => 1,
             'meta_title' => 'Trang Phục Thể Thao',
             'meta_description' => 'Các loại trang phục thể thao',
@@ -277,7 +277,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Dụng Cụ Thể Thao',
             'parent_id' => $sportsTravel->id,
-            'category_slug' => 'dung-cu-the-thao',
+            'category_slug' => 'dung-cu-the-thao-123',
             'status' => 1,
             'meta_title' => 'Dụng Cụ Thể Thao',
             'meta_description' => 'Các loại dụng cụ thể thao',
@@ -287,7 +287,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Thiết Bị Cắm Trại',
             'parent_id' => $sportsTravel->id,
-            'category_slug' => 'thiet-bi-cam-trai',
+            'category_slug' => 'thiet-bi-cam-trai-123',
             'status' => 1,
             'meta_title' => 'Thiết Bị Cắm Trại',
             'meta_description' => 'Các loại thiết bị cắm trại',
@@ -297,7 +297,7 @@ class CategorySeeder extends Seeder
         // Mẹ & Bé
         $momBaby = Category::create([
             'name' => 'Mẹ & Bé',
-            'category_slug' => 'me-be',
+            'category_slug' => 'me-be-123',
             'status' => 1,
             'meta_title' => 'Mẹ & Bé',
             'meta_description' => 'Các sản phẩm cho mẹ và bé',
@@ -307,7 +307,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Quần Áo Trẻ Em',
             'parent_id' => $momBaby->id,
-            'category_slug' => 'quan-ao-tre-em',
+            'category_slug' => 'quan-ao-tre-em-123',
             'status' => 1,
             'meta_title' => 'Quần Áo Trẻ Em',
             'meta_description' => 'Các loại quần áo trẻ em',
@@ -317,7 +317,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đồ Chơi Trẻ Em',
             'parent_id' => $momBaby->id,
-            'category_slug' => 'do-choi-tre-em',
+            'category_slug' => 'do-choi-tre-em-123',
             'status' => 1,
             'meta_title' => 'Đồ Chơi Trẻ Em',
             'meta_description' => 'Các loại đồ chơi trẻ em',
@@ -327,7 +327,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Sữa & Thực Phẩm Cho Bé',
             'parent_id' => $momBaby->id,
-            'category_slug' => 'sua-thuc-pham-cho-be',
+            'category_slug' => 'sua-thuc-pham-cho-be-123',
             'status' => 1,
             'meta_title' => 'Sữa & Thực Phẩm Cho Bé',
             'meta_description' => 'Các loại sữa và thực phẩm cho bé',
@@ -337,7 +337,7 @@ class CategorySeeder extends Seeder
         // Thực Phẩm & Đồ Uống
         $foodDrink = Category::create([
             'name' => 'Thực Phẩm & Đồ Uống',
-            'category_slug' => 'thuc-pham-do-uong',
+            'category_slug' => 'thuc-pham-do-uong-123',
             'status' => 1,
             'meta_title' => 'Thực Phẩm & Đồ Uống',
             'meta_description' => 'Các loại thực phẩm và đồ uống',
@@ -347,7 +347,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Thực Phẩm Tươi Sống',
             'parent_id' => $foodDrink->id,
-            'category_slug' => 'thuc-pham-tuoi-song',
+            'category_slug' => 'thuc-pham-tuoi-song-123',
             'status' => 1,
             'meta_title' => 'Thực Phẩm Tươi Sống',
             'meta_description' => 'Các loại thực phẩm tươi sống',
@@ -357,7 +357,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Đồ Uống',
             'parent_id' => $foodDrink->id,
-            'category_slug' => 'do-uong',
+            'category_slug' => 'do-uong-123',
             'status' => 1,
             'meta_title' => 'Đồ Uống',
             'meta_description' => 'Các loại đồ uống',
@@ -367,7 +367,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Thực Phẩm Chế Biến',
             'parent_id' => $foodDrink->id,
-            'category_slug' => 'thuc-pham-che-bien',
+            'category_slug' => 'thuc-pham-che-bien-123',
             'status' => 1,
             'meta_title' => 'Thực Phẩm Chế Biến',
             'meta_description' => 'Các loại thực phẩm chế biến',
@@ -377,7 +377,7 @@ class CategorySeeder extends Seeder
         // Sách, VPP & Quà Tặng
         $booksStationery = Category::create([
             'name' => 'Sách, VPP & Quà Tặng',
-            'category_slug' => 'sach-vpp-qua-tang',
+            'category_slug' => 'sach-vpp-qua-tang-123',
             'status' => 1,
             'meta_title' => 'Sách, VPP & Quà Tặng',
             'meta_description' => 'Các sản phẩm sách, văn phòng phẩm và quà tặng',
@@ -387,7 +387,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Sách',
             'parent_id' => $booksStationery->id,
-            'category_slug' => 'sach',
+            'category_slug' => 'sach-123',
             'status' => 1,
             'meta_title' => 'Sách',
             'meta_description' => 'Các loại sách',
@@ -397,7 +397,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'Văn Phòng Phẩm',
             'parent_id' => $booksStationery->id,
-            'category_slug' => 'van-phong-pham',
+            'category_slug' => 'van-phong-pham-123',
             'status' => 1,
             'meta_title' => 'Văn Phòng Phẩm',
             'meta_description' => 'Các loại văn phòng phẩm',
