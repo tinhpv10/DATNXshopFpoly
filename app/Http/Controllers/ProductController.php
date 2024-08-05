@@ -34,7 +34,13 @@ class ProductController extends Controller
 
         // Điều kiện lọc danh mục
         if ($categoryId) {
-            $query->where('category_id', $categoryId);
+            // Lấy danh mục
+            $category = Category::find($categoryId);
+            if ($category) {
+                // Lấy tất cả ID danh mục con và danh mục cha
+                $categoryIds = $category->getAllDescendantIds();
+                $query->whereIn('category_id', $categoryIds);
+            }
         }
 
         // Điều kiện lọc thương hiệu

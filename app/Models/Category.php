@@ -145,4 +145,17 @@ class Category extends Model
 
         return $category;
     }
+
+    public function getAllDescendantIds()
+    {
+        $ids = [$this->id]; // Bắt đầu với ID của danh mục hiện tại
+
+        foreach ($this->children as $child) {
+            // Gọi đệ quy để lấy tất cả ID của danh mục con
+            $ids = array_merge($ids, $child->getAllDescendantIds());
+        }
+
+        return $ids;
+    }
+
 }
