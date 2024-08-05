@@ -191,7 +191,8 @@
 
                 .content-item {
                     height: 50%;
-
+                    font-weight: bold;
+                    text-align: center;
                     small {
                         @include text(13, $color-icon);
                     }

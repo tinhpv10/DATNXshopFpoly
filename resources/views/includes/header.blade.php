@@ -6,7 +6,7 @@
                                                                                                         src="{{ asset('image/logo-doanvth-pro 1.png') }}"
                                                                                                         alt="brand"></a>
         </div>
-        <form id="search-form" method="GET" action="{{ route('product.search') }}">
+        <form id="search-form" method="GET" action="{{ route('product.index') }}">
             <input class="input" type="text" placeholder="Tìm kiếm" id="search-input" name="query">
             <button class="search-button" type="submit"><i class="bi bi-search"></i></button>
         </form>
@@ -75,10 +75,10 @@
                         </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hot offers</a>
+                        <a class="nav-link" href="{{ url('/product') }}">Sản phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Gift boxes</a>
+                        <a class="nav-link" href="{{ url('/post') }}">Tin tức</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Projects</a>
@@ -90,37 +90,6 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
                             Help
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="navbar-nav text-end mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            English, USD
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            Ship to
-                            <img src="/public/image/DE@2x.png" alt="">
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Action</a></li>

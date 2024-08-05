@@ -39,11 +39,6 @@
                                                 @include('partials.category-item', ['category' => $category, 'level' => 0, 'products' => $products ?? collect()])
                                             @endforeach
                                         </ul>
-                                        <button type="button" class="seeAllButton" id="seeAllButtonCategories">Xem Tất
-                                            Cả
-                                        </button>
-                                        <button type="button" class="seeAllButton" id="backToTopCategories">Quay lại
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -146,7 +141,6 @@
                         </form>
                     </div>
 
-
                     <div class="col-md-9 content">
                         <div class="content-top">
                             <div class="row align-items-center">
@@ -189,11 +183,10 @@
                                             </div>
                                         </form>
                                         <div class="btn-group me-3 switchView">
-                                            <div id="gridButton" onclick="switchView('grid')"><i
-                                                    class="bi bi-grid-3x3-gap-fill"></i></div>
-                                            <div id="columnButton" onclick="switchView('column')"><i
-                                                    class="bi bi-list"></i>
-                                            </div>
+                                            <a href="{{ route('product.index', array_merge(request()->query(), ['view' => 'grid'])) }}"
+                                               id="gridButton"><i class="bi bi-grid-3x3-gap-fill"></i></a>
+                                            <a href="{{ route('product.index', array_merge(request()->query(), ['view' => 'column'])) }}"
+                                               id="columnButton"><i class="bi bi-list"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -267,168 +260,12 @@
                                 <button type="button" class="seeAllButton" id="clearFilters">Xóa tất cả bộ lọc</button>
                             @endif
                         </div>
-
                         <div class="product">
-
-                            <div id="productGrid" class="product-grid">
-                                <div class="row">
-                                    @foreach ($products as $product)
-                                        <div class="col-md-4 pb-4 product-item"
-                                             data-category="{{ $product->category_id }}"
-                                             data-brand="{{ $product->brand_id }}"
-                                             data-price="{{ $product->price }}">
-                                            <a href="{{ route('product.detail', ['id' => $product->id]) }}"
-                                               class="product-link text-decoration-none text-black">
-                                                <div class="product-card h-100">
-                                                    <div class="product-img">
-                                                        @if ($product->main_image)
-                                                            <img src="{{ asset('storage/' . $product->main_image) }}"
-                                                                 alt="Product Image">
-                                                        @else
-                                                            <img
-                                                                src="https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg"
-                                                                alt="Default Image">
-                                                        @endif
-                                                    </div>
-
-                                                    <div class="product-info">
-                                                        <div class="product-price-item">
-                                                            <div class="price-item">
-                                                                <div class="product-price">
-                                                                    {{ $product->formattedDisplayedPrice ? $product->formattedDisplayedPrice : 'Price not available' }}
-                                                                    @if($product->sale_price)
-                                                                        <div class="product-price-discounted">
-                                                                            {{ $product->formattedRegularPrice ? $product->formattedRegularPrice : '' }}
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-
-                                                                <div class="rating1">
-                                                                        <?php
-                                                                        // Lấy số sao và số sao lẻ
-                                                                        $fullStars = floor($product->rating); // Số sao đầy đủ
-                                                                        $halfStar = ($product->rating - $fullStars) >= 0.1 ? 1 : 0; // Kiểm tra xem có sao lẻ không
-                                                                        ?>
-
-                                                                        <?php for ($i = 1;
-                                                                                   $i <= 5;
-                                                                                   $i++): ?>
-                                                                        <?php if ($i <= $fullStars): ?>
-                                                                    <i class="bi bi-star-fill" style="color: gold;"></i>
-                                                                    <!-- Sao đầy đủ -->
-                                                                    <?php elseif ($i == $fullStars + 1 && $halfStar): ?>
-                                                                    <i class="bi bi-star-half" style="color: gold;"></i>
-                                                                    <!-- Sao lẻ -->
-                                                                    <?php else: ?>
-                                                                    <i class="bi bi-star" style="color: gold;"></i>
-                                                                    <!-- Sao trống -->
-                                                                    <?php endif; ?>
-                                                                    <?php endfor; ?>
-                                                                </div>
-                                                            </div>
-                                                            <div class="product-favorite d-flex align-items-center">
-                                                                @if(Auth::check())
-                                                                    <a onclick="insertWishlist({{ $product->id }}, '{{ addslashes($product->name) }}')"
-                                                                       id="wishlist-{{ $product->id }}"><i
-                                                                            class="{{ in_array($product->id, $wishlistItems) ? 'fas fa-heart' : 'far fa-heart' }}"></i></a>
-                                                                @else
-                                                                    <a onclick="insertWishlist({{ $product->id }}, '{{ addslashes($product->name) }}')"><i
-                                                                            class="far fa-heart"></i></a>
-                                                                @endif
-                                                            </div>
-
-                                                        </div>
-                                                        <p class="product-title">{{ $product->name }}</p>
-                                                        <p class="product-description">{{ $product->description }}</p>
-                                                    </div>
-                                                    @if($product->sale_price != 0)
-                                                        <div class="sale-off fw-bolder">
-                                                            -{{ round(100 - ($product->sale_price * 100 / $product->regular_price))  }}
-                                                            %
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                            </a>
-                                        </div>
-
-                                    @endforeach
-                                </div>
-                            </div>
-                            <div id="productColumn" class="product-column">
-                                @foreach ($products as $product)
-
-                                    <div class="product-card mb-3 product-item"
-                                         data-category="{{ $product->category_id }}"
-                                         data-brand="{{ $product->brand_id }}"
-                                         data-price="{{ $product->price }}">
-                                        <div class="row">
-                                            <div class="col-12 col-lg-3">
-                                                <div class="product-img"><a href="checkout.blade.php"><img
-                                                            src="{{ asset('storage/' . $product->main_image) }}"
-                                                            alt="Product 1 Image"></a>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-lg-9">
-                                                <div class="product-info">
-                                                    <div class="product-title-item">
-                                                        <p class="product-title">{{ $product->name }}</p>
-                                                        <div class="product-favorite d-flex align-items-center">
-                                                            @if(Auth::check())
-                                                                <a onclick="insertWishlist({{ $product->id }}, '{{ addslashes($product->name) }}')"
-                                                                   id="wishlist-{{ $product->id }}"><i
-                                                                        class="{{ in_array($product->id, $wishlistItems) ? 'fas fa-heart' : 'far fa-heart' }}"></i></a>
-                                                            @else
-                                                                <a onclick="insertWishlist({{ $product->id }}, '{{ addslashes($product->name) }}')"><i
-                                                                        class="far fa-heart"></i></a>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="price-item">
-                                                        <div class="product-price">
-                                                            {{ $product->formattedDisplayedPrice ? $product->formattedDisplayedPrice : 'Price not available' }}
-                                                            @if($product->sale_price)
-                                                                <div class="product-price-discounted">
-                                                                    {{ $product->formattedRegularPrice ? $product->formattedRegularPrice : '' }}
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        <div class="rating">
-                                                            <div class="star">
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                                <i class="bi bi-star-fill"></i>
-                                                            </div>
-                                                            <div class="number-star">
-                                                                7.5
-                                                            </div>
-                                                            <div class="order">
-                                                                145 Orders
-                                                            </div>
-                                                            <div class="shipping">
-                                                                Free Ship
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <p class="product-description">{{ $product->description }} </p>
-                                                    <div class="view-detail">
-                                                        <a href="">View Detail</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @if($product->sale_price != 0)
-                                            <div class="sale-off fw-bolder">
-                                                -{{ round(100 - ($product->sale_price * 100 / $product->regular_price))  }}
-                                                %
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                @endforeach
-                            </div>
+                            @if($view == 'grid')
+                                @include('layouts.product-grid')
+                            @else
+                                @include('layouts.product-column')
+                            @endif
                             <div class="pagination-menu">
                                 {{ $products->render() }}
                             </div>

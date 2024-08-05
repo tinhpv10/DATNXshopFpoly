@@ -49,7 +49,8 @@ class HomeController extends Controller
             $product->formattedRegularPrice = number_format($product->regular_price, 0, ',', '.');
             $product->formattedSalePrice = number_format($product->sale_price, 0, ',', '.');
         }
-        $categoryBanners = Category::withCount('products')
+        $categoryBanners = Category::whereNull('parent_id')
+            ->withCount('products')
             ->orderBy('products_count', 'desc')
             ->take(9)
             ->get();

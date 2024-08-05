@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="autoplay-block ">
-                        @foreach($categories as $categoriess)
+                        @foreach($categoryBanners as $categoriess)
                             <a href="{{ route('products.category', ['category' => $categoriess->id]) }}" class="product-link text-decoration-none text-black">
                             <div class="group-item p-2">
                                 <div class="content-item">

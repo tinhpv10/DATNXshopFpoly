@@ -2,38 +2,7 @@
 function changeImg(pic) {
     document.getElementById('change_image').src = pic;
 }
-document.addEventListener('DOMContentLoaded', function () {
-    const clearAllButton = document.getElementById('Clearallfilter');
-    clearAllButton.style.display = 'none';
-});
 
-
-//Chuyển đổi hiển thị dạng cột và dạng mảng
-window.addEventListener('DOMContentLoaded', function () {
-    var gridButton = document.getElementById('gridButton');
-    var columnButton = document.getElementById('columnButton');
-    var productGrid = document.getElementById('productGrid');
-    var productColumn = document.getElementById('productColumn');
-
-    gridButton.disabled = true;
-    columnButton.disabled = false;
-    productGrid.style.display = 'block';
-    productColumn.style.display = 'none';
-
-    gridButton.addEventListener('click', function () {
-        gridButton.disabled = true;
-        columnButton.disabled = false;
-        productGrid.style.display = 'block';
-        productColumn.style.display = 'none';
-    });
-
-    columnButton.addEventListener('click', function () {
-        gridButton.disabled = false;
-        columnButton.disabled = true;
-        productGrid.style.display = 'none';
-        productColumn.style.display = 'block';
-    });
-});
 //Lọc giá trị thấp cao
 document.querySelector('#sort-form select[name="sort"]').addEventListener('change', function () {
     document.querySelector('#sort-form').submit();
@@ -60,31 +29,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Ẩn nút "Quay lại" ban đầu
-    document.getElementById('backToTopCategories').style.display = 'none';
 
     // Chỉ hiển thị 5 danh mục cha đầu tiên
-    const parentCategoryItems = document.querySelectorAll('.parent-category');
-    parentCategoryItems.forEach(function (item, index) {
-        if (index >= 5) {
-            item.style.display = 'none';
-        }
-    });
+    // const parentCategoryItems = document.querySelectorAll('.parent-category');
+    // parentCategoryItems.forEach(function (item, index) {
+    //     if (index >= 5) {
+    //         item.style.display = 'none';
+    //     }
+    // });
 
-    document.getElementById('seeAllButtonCategories').addEventListener('click', function () {
-        parentCategoryItems.forEach(item => item.style.display = 'block');
-        document.getElementById('backToTopCategories').style.display = 'inline-block';
-        this.style.display = 'none';
-    });
-
-    document.getElementById('backToTopCategories').addEventListener('click', function () {
-        parentCategoryItems.forEach((item, index) => {
-            if (index >= 5) {
-                item.style.display = 'none';
-            }
-        });
-        document.getElementById('seeAllButtonCategories').style.display = 'inline-block';
-        this.style.display = 'none';
-    });
 });
 document.getElementById('seeAllButtonBrands').addEventListener('click', function () {
     const brandItems = document.querySelectorAll('.brand-item');

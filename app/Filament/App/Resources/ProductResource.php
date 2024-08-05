@@ -2,11 +2,10 @@
 
 namespace App\Filament\App\Resources;
 
-use App\Enums\RatingRole;
 use App\Filament\App\Resources\ProductResource\Pages;
-use  App\Filament\App\Resources\ProductResource\RelationManagers;
+use App\Filament\App\Resources\ProductResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Product;
-use Filament\Forms;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
@@ -19,13 +18,10 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Category;
 
 class ProductResource extends Resource
 {
@@ -111,7 +107,6 @@ class ProductResource extends Resource
                     ->suffix('vnđ')
                     ->label('Giá'),
                 TextInput::make('sale_price')
-                    ->required()
                     ->mask(RawJs::make('$money($input)'))
                     ->stripCharacters(',')
                     ->numeric()

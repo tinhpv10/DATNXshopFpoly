@@ -26,7 +26,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
 
-    Route::get('/search', [ProductController::class, 'search'])->name('product.search');
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
@@ -47,9 +46,6 @@ Route::prefix('/')->group(function () {
     Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
     Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
 });
-Route::get('/post', [PostController::class, 'index']);
-Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
-Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');
 Route::get('/post', [PostController::class, 'index']);
 Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
 Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');

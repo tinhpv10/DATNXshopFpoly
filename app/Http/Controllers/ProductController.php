@@ -28,9 +28,16 @@ class ProductController extends Controller
         $maxPrice = $request->input('max_price', 500000000); // Giá tối đa mặc định
         $sortBy = $request->input('sort', '0'); // Mặc định sắp xếp
         $ratings = $request->input('ratings', []); // Thêm tham số ratings
+        $view = $request->input('view', 'grid'); // Thêm tham số view, mặc định là 'grid'
+        $queryText = $request->input('query'); // Thêm tham số query để tìm kiếm
 
         $query = Product::query()->where('pause', 0);
         $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
+
+        // Điều kiện tìm kiếm
+        if ($queryText) {
+            $query->where('name', 'like', '%' . $queryText . '%');
+        }
 
         // Điều kiện lọc danh mục
         if ($categoryId) {
@@ -57,6 +64,7 @@ class ProductController extends Controller
             $query->having('displayedPrice', '<=', (float)$maxPrice);
         }
 
+        // Điều kiện lọc xếp hạng
         if (!empty($ratings)) {
             // Lấy phần nguyên của xếp hạng
             $integerRatings = array_map(function ($rating) {
@@ -107,6 +115,7 @@ class ProductController extends Controller
 
             $product->displayedPrice = $product->sale_price ? $product->sale_price : $product->regular_price;
             $product->formattedDisplayedPrice = number_format($product->displayedPrice, 0, ',', '.');
+            $product->sold_count = $product->sold_count;
         }
 
         // Trả về view
@@ -123,59 +132,11 @@ class ProductController extends Controller
             'maxProductPrice' => $maxProductPrice,
             'sortBy' => $sortBy,
             'ratings' => $ratings, // Truyền giá trị ratings vào view
+            'view' => $view, // Truyền giá trị view vào view
+            'searchQuery' => $queryText, // Truyền giá trị query vào view
         ]);
     }
 
-
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $itemsPerPage = $request->input('items_per_page', 9);
-        $sortBy = $request->input('sort', '0'); // Default sorting option
-        $Categories = Category::with('children')->whereNull('parent_id')->get(); // Thay đổi dòng này
-        $queryBuilder = Product::query();
-        $queryBuilder->where('name', 'like', '%' . $query . '%')
-            ->select('*')
-            ->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
-
-        switch ($sortBy) {
-            case '1':
-                $queryBuilder->orderBy('displayedPrice', 'asc');
-                break;
-            case '2':
-                $queryBuilder->orderBy('displayedPrice', 'desc');
-                break;
-            case '3':
-                $queryBuilder->whereNotNull('sale_price')
-                    ->orderByRaw('(100 - (sale_price * 100 / regular_price)) DESC');
-                break;
-            default:
-                $queryBuilder->latest();
-                break;
-        }
-
-        $products = $queryBuilder->paginate($itemsPerPage)->appends($request->except('page'));
-
-        foreach ($products as $product) {
-            $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
-            $product->main_image = $productMedia ? $productMedia->media : null;
-            $product->formattedRegularPrice = number_format($product->regular_price, 0, ',', '.');
-            $product->formattedSalePrice = number_format($product->sale_price, 0, ',', '.');
-            $product->displayedPrice = $product->sale_price ? $product->sale_price : $product->regular_price;
-            $product->formattedDisplayedPrice = number_format($product->displayedPrice, 0, ',', '.');
-        }
-
-        $Brands = Brand::all();
-
-        return view('layouts.product', [
-            'products' => $products,
-            'Brands' => $Brands,
-            'Categories' => $Categories,
-            'searchQuery' => $query,
-            'sortBy' => $sortBy,
-            'itemsPerPage' => $itemsPerPage,
-        ]);
-    }
 
 
     public function showByCategory($categoryId)
