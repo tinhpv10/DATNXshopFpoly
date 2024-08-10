@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CartController;
@@ -19,9 +18,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileEditController;
 use App\Http\Controllers\RedirectloggeInAppController;
 use App\Http\Controllers\ShopController;
-use App\Http\Controllers\WishListController;
+use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\WishlistController;
+use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
@@ -35,17 +47,32 @@ Route::prefix('/')->group(function () {
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('product.addToCart');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::post('/update-cart', [CartController::class, 'updateQuantity'])->name('update.cart');
-    Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart/remove/{cartItemId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::post('/cart/retail-price', [CartController::class, 'getRetailPrice'])->name('cart.getRetailPrice');
     Route::post('/cart/update-selected-items', [CartController::class, 'updateSelectedItems'])->name('cart.update-selected-items');
     Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::post('/uploadComment', [CommentController::class, 'uploadComment'])->name('uploadComment');
-
-    Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
-    Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
-    Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
 });
+//VNPAY thanh toán
+Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
+Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
+Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
+Route::group(['middleware' => ['auth']], function () {
+    Route::post('/payment', [VNPayController::class, 'create'])->name('vnpay.payment');
+    Route::get('/payment-callback', [VNPayController::class, 'paymentCallback'])->name('payment.callback');
+
+});
+Route::get('/order/success/{order_id}', function ($order_id) {
+    $order = Order::find($order_id);
+    return view('layouts.success', ['order' => $order]);
+})->name('order.success');
+
+Route::get('/order/failure', function () {
+    return view('layouts.failure');
+})->name('order.failure');
+//Route::get('/vnpay-success', [VNPayController::class, 'paymentSuccess']);
+//Route::get('/vnpay/return', [VNPayController::class, 'processPayment'])->name('vnpay.return');
 Route::get('/post', [PostController::class, 'index']);
 Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
 Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');
@@ -63,6 +90,8 @@ Route::prefix('/dashboard')->group(function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/edit', [ProfileEditController::class, 'index'])->name('profile.edit');
     Route::get('/profile/edit', [ProfileEditController::class, 'edit']);

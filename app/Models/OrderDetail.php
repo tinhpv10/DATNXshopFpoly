@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrderDetail extends Model
 {
@@ -18,7 +17,8 @@ class OrderDetail extends Model
         'product_image',
         'product_price',
         'product_id',
-        'product_quantity'
+        'product_quantity',
+        'product_stock_id',
     ];
     public function order()
     {

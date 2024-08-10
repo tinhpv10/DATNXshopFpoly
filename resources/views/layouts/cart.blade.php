@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="col-6 col-md-1 col-lg-1 d-flex justify-content-center">
                                         <div class="delete">
-                                            <form action="{{ route('cart.remove', ['id' => $cartItem->id]) }}"
+                                            <form action="{{ route('cart.remove', ['cartItemId' => $cartItem->id]) }}"
                                                   method="POST">
                                                 @csrf
                                                 @method('DELETE')

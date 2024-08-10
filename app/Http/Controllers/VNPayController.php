@@ -5,31 +5,38 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\ProductStock;
 use App\Models\UserAddress;
+use App\Services\ApService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class VNPayController extends Controller
 {
+
+    public function __construct(ApService $apSer)
+    {
+        $this->middleware('auth');
+        $this->apSer = $apSer;
+    }
+
     public function create(Request $request)
     {
-//        session(['total_payment' => $request->total_payment]);
-//        session(['shipping_fee' => $request->shipping_fee]);
-        session(['cost_id' => $request->id]);
+        $this->middleware('auth');
+
+
         session(['url_prev' => url()->previous()]);
 
         $vnp_TmnCode = "93QX4E2D";
         $vnp_HashSecret = "ZPKCTSJQALKCIQZQQQQBQHWMLKTWUQGY";
         $vnp_Url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
-        $vnp_Returnurl = route('vnpay.return');
+        $vnp_Returnurl = route('payment.callback');
         $vnp_TxnRef = uniqid(); // Tạo mã đơn hàng ngẫu nhiên
         $vnp_OrderInfo = "Thanh toán hóa đơn phí dịch vụ";
         $vnp_OrderType = 'billpayment';
 
-        // Lấy totalPayment và shippingFee từ session và chuyển đổi sang đơn vị VNĐ
         $totalPayment = session('total_payment', 0);
         $shippingFee = session('shipping_fee', 0);
         $vnp_Amount = ($totalPayment + $shippingFee) * 100;
@@ -56,7 +63,6 @@ class VNPayController extends Controller
             $inputData['vnp_BankCode'] = $request->input('vnp_BankCode');
         }
 
-        // Sắp xếp các tham số theo thứ tự bảng chữ cái
         ksort($inputData);
 
         $hashdata = "";
@@ -79,89 +85,70 @@ class VNPayController extends Controller
             $vnp_Url .= '&vnp_SecureHashType=SHA512&vnp_SecureHash=' . $vnpSecureHash;
         }
 
+        // Tạo đơn hàng mới
+        $order = new Order();
+        $order->user_id = Auth::id();
+        $order->status = OrderStatus::Pending;
+        $order->total_price = $totalPayment;
+        $order->shipping_unit = 'default_value';
+        $order->payment_method_id = 1;
+        $order->code = strtoupper(Str::random(10));
+        $defaultAddress = UserAddress::where('user_id', Auth::id())->where('is_default', 1)->first();
+        if (!$defaultAddress) {
+            return redirect()->back()->with('success', 'Không tìm thấy địa chỉ mặc định.');
+        }
+        $order->user_address_id = $defaultAddress->id;
+        $cartItems = Session::get('cart_data', []);
+        if (!empty($cartItems)) {
+            $shopIds = collect($cartItems)->pluck('shop_id')->unique();
+            $order->shop_id = $shopIds->first();
+        }
+        $order->save();
+
+        session(['cost_id' => $order->id]);
+
+        foreach ($cartItems as $cartItem) {
+            $orderDetail = new OrderDetail();
+            $orderDetail->order_id = $order->id;
+            $orderDetail->product_id = $cartItem['product_id'];
+            $orderDetail->product_stock_id = $cartItem['product_stock_id'];
+            $orderDetail->product_image = $cartItem['media'];
+            $orderDetail->product_price = $cartItem['price'];
+            $orderDetail->product_quantity = $cartItem['quantity'];
+            $orderDetail->shop_id = $cartItem['shop_id'];
+            $orderDetail->save();
+        }
+
+        // Xóa session cart sau khi đã lưu chi tiết đơn hàng
+        Session::forget('cart');
+        Session::forget('cart_data');
+
         return redirect($vnp_Url);
     }
 
-    public function processPayment(Request $request)
+    public function paymentCallback(Request $request)
     {
-        $vnp_Amount = $request->input('vnp_Amount');
-        $vnp_ResponseCode = $request->input('vnp_ResponseCode');
+        $url = session('url_prev', '/');
 
-        if ($vnp_ResponseCode === '00') {
-            $userId = auth()->id();
-            $defaultAddress = UserAddress::where('user_id', $userId)
-                ->where('is_default', 1)
-                ->first();
+        $ss = Session::get('cost_id');
 
-            if (!$defaultAddress) {
-                return redirect()->back()->with('error', 'Không tìm thấy địa chỉ mặc định.');
-            }
-
-            // Tạo đơn hàng mới
-            $order = Order::create([
-                'user_address_id' => $defaultAddress->id,
-                'delivery_date' => now()->addDays(3),
-                'total_price' => $vnp_Amount / 100,
-                'shipping_unit' => 'Standard',
-                'user_id' => Auth::id(),
-                'voucher_id' => $request->voucher_id ?? null,
-                'status' => OrderStatus::Processing,
-                'code' => uniqid('order_'),
-                'payment_method_id' => $request->payment_method_id ?? 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-                'shop_id' => $request->shop_id,
-                'cancel_reason' => null,
-                'on_hold' => false,
-                'is_paid' => true,
-                'day_paid' => now()
-            ]);
-
-            if (!$order) {
-                return redirect()->back()->with('error', 'Không thể tạo đơn hàng.');
-            }
-
-            // Lấy thông tin giỏ hàng từ session
-            $cartItems = Session::get('cartItems', []);
-            \Log::info('Cart Items:', $cartItems);
-            if (empty($cartItems)) {
-                return redirect()->back()->with('error', 'Giỏ hàng trống.');
-            }
-
-
-            // Lưu chi tiết đơn hàng
-            foreach ($cartItems as $cartItem) {
-                $productStock = ProductStock::find($cartItem['product_stock_id']);
-
-                if ($productStock) {
-                    try {
-                        $orderDetail = OrderDetail::create([
-                            'order_id' => $order->id,
-                            'shop_id' => $request->shop_id,
-                            'product_image' => $cartItem['media'],
-                            'product_price' => $productStock->retail_price,
-                            'product_id' => $cartItem['product_id'],
-                            'product_quantity' => $cartItem['quantity'],
-                        ]);
-
-                        // Debug thông tin OrderDetail đã lưu
-                        \Log::info('Order Detail Created:', $orderDetail->toArray());
-                    } catch (\Exception $e) {
-                        \Log::error('Error saving order detail: ' . $e->getMessage());
-                        return redirect()->back()->with('error', 'Không thể lưu chi tiết đơn hàng: ' . $e->getMessage());
-                    }
-                } else {
-                    return redirect()->back()->with('error', 'Không tìm thấy thông tin sản phẩm.');
-                }
-            }
-
-            // Xóa giỏ hàng sau khi thanh toán thành công
-            Session::forget('cartItems');
-
-            return view('layouts.success');
+        if ($request->vnp_ResponseCode == "00") {
+            $this->apSer->thanhtoanonline($ss);
+            return redirect($url)->with('success', 'Đã thanh toán phí dịch vụ');
         } else {
-            return view('layouts.failure', ['message' => 'Thanh toán không thành công']);
+            $order = Order::where('id', $ss)->first();
+            if ($order) {
+                $order->on_hold = '1';
+                $order->save();
+                return redirect($url)->with('success', 'chưa thanh toán phí dịch vụ');
+            }
         }
+
+        session()->forget('url_prev');
+        session()->forget('cost_id');
+
+        return redirect($url)->with('success', 'Lỗi trong quá trình thanh toán phí dịch vụ');
     }
 
 }
+
