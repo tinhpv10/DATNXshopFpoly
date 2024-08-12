@@ -12,10 +12,13 @@ use App\Mail\OrderShippedMail;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\UserAddress;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -26,9 +29,8 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Mail;
@@ -40,7 +42,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Đơn hàng';
 
     protected static ?string $label = 'Đơn hàng';
@@ -184,7 +186,9 @@ class OrderResource extends Resource
                 TextEntry::make('code')
                     ->badge()
                     ->label('Mã đơn hàng'),
-                TextEntry::make('ShippingAddress.name')
+                TextEntry::make('shop.name')
+                    ->label('Đơn hàng của shop'),
+                TextEntry::make('UserAddress.name')
                     ->label('Địa chỉ người dùng'),
                 TextEntry::make('OrderDetail.Product.name')
                     ->label('Sản phẩm'),
@@ -202,6 +206,8 @@ class OrderResource extends Resource
                     ->label('Trạng thái đơn hàng'),
                 TextEntry::make('PaymentMethod.method_name')
                     ->label('Trạng thái đơn hàng'),
+                TextEntry::make('canceled_by')
+                    ->label('Huỷ bởi'),
             ]);
     }
 
@@ -227,20 +233,26 @@ class OrderResource extends Resource
                     ->label('Người dùng'),
                 TextColumn::make('Voucher.name')
                     ->label('Giảm giá'),
-                TextColumn::make('status')
-                    ->searchable()
-                    ->badge()
+                SelectColumn::make('status')
+                    ->options(Order::getOrderStatusOptions())
+                    ->default(function ($record) {
+                        return $record->status->value;
+                    })
                     ->label('Trạng thái đơn hàng'),
-                IconColumn::make('on_hold')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-badge')
-                    ->falseIcon('heroicon-o-clock')
-                    ->label('Tạm giữ'),
-                IconColumn::make('is_paid')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-badge')
-                    ->falseIcon('heroicon-o-clock')
-                    ->label('Đã thanh toán'),
+                TextColumn::make('DaysSinceCustomTime')
+                    ->label('Ngày trễ đơn')
+                    ->formatStateUsing(fn($state) => $state)
+
+//                IconColumn::make('on_hold')
+//                    ->boolean()
+//                    ->trueIcon('heroicon-o-check-badge')
+//                    ->falseIcon('heroicon-o-clock')
+//                    ->label('Tạm giữ'),
+//                IconColumn::make('is_paid')
+//                    ->boolean()
+//                    ->trueIcon('heroicon-o-check-badge')
+//                    ->falseIcon('heroicon-o-clock')
+//                    ->label('Đã thanh toán'),
 
             ])
             ->filters([
@@ -253,16 +265,68 @@ class OrderResource extends Resource
                 SelectFilter::make('payment_method_id')
                     ->relationship(name: 'PaymentMethod', titleAttribute: 'method_name')
                     ->label('Phương thức thanh toán'),
-            ], layout: FiltersLayout::AboveContent)
+            ])
             ->actions([
+                Tables\Actions\Action::make('Duyệt')
+                    ->label('Duyệt')
+                    ->color('success')
+                    ->modalSubmitActionLabel('Duyệt')
+                    ->form([
+                        Section::make('Thông tin đơn hàng')
+                            ->schema([
+                                Placeholder::make('Mã đơn hàng')
+                                    ->content(fn($record): string => $record->code),
+                                Placeholder::make('Thuộc shop')
+                                    ->content(fn($record): string => $record->shop->name),
+                                Placeholder::make('Phương thức thanh toán')
+                                    ->content(fn($record): string => $record->PaymentMethod->method_name),
+                                Placeholder::make('Thương hiệu')
+                                    ->content(fn($record): string => $record->is_paid == 1 ? 'Đã thanh toán' : 'Chưa thanh toán'),
+                            ])->columns(2),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $record->status = OrderStatus::Waitingdelivery->value;
+                        $randomMVD = 'MVD' . $record->code . random_int(100000, 999999);
+                        $record->lading_code = $randomMVD;
+                        $record->custom_time = Carbon::now();
+                        $record->save();
+//                        $shopOwner = $record->shop->user;
+//                        // gửi thông báo xét duyệt thành công
+//                        Notification::make()
+//                            ->title('Sản phẩm Duyệt thành công')
+//                            ->icon('heroicon-o-squares-2x2')
+//                            ->success()
+//                            ->body('Sản phẩm Đã được xét duyệt: ' . $record->name)
+//                            ->sendToDatabase($shopOwner);
+                    })
+                    ->hidden(fn($record) => $record->status->value !== 'Đang xử lý'),
+                Tables\Actions\Action::make('Huỷ đơn')
+                    ->label('Huỷ đơn')
+                    ->color('danger')
+                    ->modalSubmitActionLabel('Xác nhận')
+                    ->form([
+                        \Filament\Forms\Components\Section::make('Huỷ đơn hàng')
+                            ->schema([
+                                Select::make('cancel_reason')
+                                    ->label('Lý do huỷ đơn')
+                                    ->options([
+                                        'Người Bán không xử lý đơn hàng đúng hạn' => 'Người Bán không xử lý đơn hàng đúng hạn',
+                                    ])
+
+                            ]),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $record->status = OrderStatus::Cancelled;
+                        $record->canceled_by = 'Dona';
+                        $record->save();
+                    })
+                    ->hidden(fn($record) => !in_array($record->status->value, ['Chưa xử lý'])),
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 
@@ -356,8 +420,8 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
+//            'create' => Pages\CreateOrder::route('/create'),
+//            'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }

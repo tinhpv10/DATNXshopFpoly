@@ -5,15 +5,11 @@ namespace App\Filament\App\Resources;
 use App\Filament\App\Resources\CategoryShopResource\Pages;
 use App\Filament\App\Resources\CategoryShopResource\RelationManagers;
 use App\Models\CategoryShop;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 
 class CategoryShopResource extends Resource
 {
@@ -23,7 +19,7 @@ class CategoryShopResource extends Resource
 
     protected static ?string $label = 'Danh mục';
     protected static ?string $navigationGroup = 'Sản phẩm';
-    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -60,17 +56,7 @@ class CategoryShopResource extends Resource
             ]);
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
 
-        if (Auth::check()) {
-            $shopId = Auth::user()->shop_id;
-            return $query->where('shop_id', $shopId);
-        }
-
-        return $query;
-    }
     public static function getRelations(): array
     {
         return [
