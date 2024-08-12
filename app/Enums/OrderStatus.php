@@ -14,11 +14,12 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
     case Processing = 'Đang xử lý';
     case Shipped = 'Đã vận chuyển';
     case Delivered = 'Đã giao hàng';
+    case Waitingdelivery = 'Chờ lấy hàng';
     case Cancelled = 'Đã hủy bỏ';
-    case OnHold = 'Đơn tạm giữ';
-
-    case Success = 'Thành công'; // Thêm giá trị mới
-    case Pending = 'Pending';
+    const OnHold = 'Đơn tạm giữ';
+    case Successprocessed = 'Đã xử lý';
+    case NotProcessed = 'Chưa xử lý';
+    case Pending = 'Pending';// các đơn mà shop chưa xử lý
 
     public function getLabel(): string
     {
@@ -29,8 +30,11 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
             self::Delivered => 'Đã giao hàng',
             self::Cancelled => 'Đã hủy bỏ',
             self::OnHold => 'Đơn tạm giữ',
-            self::Success => 'Thành công', // Thêm label cho giá trị mới
-            self::Pending => 'Chờ thanh toán',
+//            self::Success => 'Thành công', // Thêm label cho giá trị mới
+//            self::Pending => 'Chờ thanh toán',
+            self::Waitingdelivery => 'Chờ lấy hàng',
+            self::Successprocessed => 'Đã xử lý',
+            self::NotProcessed => 'Chưa xử lý'
         };
     }
 
@@ -38,12 +42,12 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
     {
         return match ($this) {
             self::New => 'info',
-            self::Processing => 'warning',
-            self::Shipped, self::Delivered => 'success',
+            self::Processing, self::Waitingdelivery, self::NotProcessed => 'warning',
+            self::Shipped, self::Delivered, self::Successprocessed => 'success',
             self::Cancelled => 'danger',
             self::OnHold => 'gray',
             self::Pending => 'Pending',
-            self::Success => 'success', // Thêm color cho giá trị mới
+//            self::Success => 'success', // Thêm color cho giá trị mới
         };
     }
 
@@ -51,13 +55,37 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
     {
         return match ($this) {
             self::New => 'heroicon-m-sparkles',
-            self::Processing => 'heroicon-m-arrow-path',
+            self::Processing, self::Waitingdelivery => 'heroicon-m-arrow-path',
             self::Shipped => 'heroicon-m-truck',
             self::Delivered => 'heroicon-m-check-badge',
             self::Cancelled => 'heroicon-m-x-circle',
             self::OnHold => 'heroicon-m-finger-print',
+            self::Successprocessed => 'heroicon-m-check',
+            self::NotProcessed => 'heroicon-m-clock',
             self::Pending => '',
-            self::Success => 'heroicon-m-check-circle', // Thêm icon cho giá trị mới
+
         };
+    }
+
+    // Phương thức để lấy tất cả các tùy chọn cho SelectColumn
+    public static function options(): array
+    {
+        return array_map(
+            fn($case) => $case->getLabel(),
+            self::cases()
+        );
+    }
+
+    // Phương thức để lấy giá trị cho SelectColumn
+    public static function optionsWithValues(): array
+    {
+        return array_reduce(
+            self::cases(),
+            function ($carry, $case) {
+                $carry[$case->getLabel()] = $case->value;
+                return $carry;
+            },
+            []
+        );
     }
 }
