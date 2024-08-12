@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\Auth\Logout;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CartController;
@@ -18,22 +19,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileEditController;
 use App\Http\Controllers\RedirectloggeInAppController;
 use App\Http\Controllers\ShopController;
-use App\Http\Controllers\VNPayController;
-use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\WishListController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Route;
 
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
@@ -53,15 +42,17 @@ Route::prefix('/')->group(function () {
     Route::post('/cart/update-selected-items', [CartController::class, 'updateSelectedItems'])->name('cart.update-selected-items');
     Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::post('/uploadComment', [CommentController::class, 'uploadComment'])->name('uploadComment');
-});
-//VNPAY thanh toán
-Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
-Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
-Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
-Route::group(['middleware' => ['auth']], function () {
-    Route::post('/payment', [VNPayController::class, 'create'])->name('vnpay.payment');
-    Route::get('/payment-callback', [VNPayController::class, 'paymentCallback'])->name('payment.callback');
+    Route::post('/upload-reply', [CommentController::class, 'uploadReply'])->name('uploadReply');
+// routes/web.php
+    Route::post('/reviews/{review}/like', [CommentController::class, 'like']);
+    Route::post('/uploadImage', [CommentController::class, 'uploadImage'])->name('uploadImage');
+    Route::post('/deleteImage', [CommentController::class, 'deleteImage'])->name('deleteImage');
+    Route::post('/product/{id}', [ProductController::class, 'showPost']);
 
+
+    Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
+    Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
 });
 Route::get('/order/success/{order_id}', function ($order_id) {
     $order = Order::find($order_id);
@@ -90,8 +81,6 @@ Route::prefix('/dashboard')->group(function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
-
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/edit', [ProfileEditController::class, 'index'])->name('profile.edit');
     Route::get('/profile/edit', [ProfileEditController::class, 'edit']);
