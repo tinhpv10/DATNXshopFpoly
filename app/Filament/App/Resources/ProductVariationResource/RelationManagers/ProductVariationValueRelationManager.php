@@ -2,19 +2,16 @@
 
 namespace App\Filament\App\Resources\ProductVariationResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductVariationValueRelationManager extends RelationManager
 {
-    protected static string $relationship = 'productVariationValue';
+    protected static string $relationship = 'appProductVariationValue';
     protected static ?string $label = 'Giá trị biến thể';
 
     public function form(Form $form): Form

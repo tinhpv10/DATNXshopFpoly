@@ -2,15 +2,12 @@
 
 namespace App\Filament\App\Resources\ProductResource\RelationManagers;
 
+use App\Models\AppProductMedia;
+use App\Models\AppProductStock;
+use App\Models\AppProductVariationValue;
 use App\Models\ProductAttribute;
-use App\Models\ProductMedia;
-use App\Models\ProductStock;
 use App\Models\ProductVariation;
-use App\Models\ProductVariationValue;
-use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -19,14 +16,10 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductStockRelationManager extends RelationManager
 {
@@ -54,11 +47,11 @@ class ProductStockRelationManager extends RelationManager
                                             ->where('product_id', $this->ownerRecord->id)
                                             ->pluck('variation_name', 'id'))
                                         ->live(),
-                                    Select::make("product_variation_value_id[{$index}]")
+                                    Select::make("app_product_variation_value_id[{$index}]")
                                         ->reactive()
                                         ->label('Giá trị biến thể')
                                         ->filled()
-                                        ->options(fn(Get $get) => ProductVariationValue::query()
+                                        ->options(fn(Get $get) => AppProductVariationValue::query()
                                             ->where('product_variation_id', $get("product_variation_id[{$index}]"))
                                             ->pluck('variation_value_name', 'id'))
                                         ->live(),
@@ -70,7 +63,7 @@ class ProductStockRelationManager extends RelationManager
                 Select::make('media')
                     ->required()
                     ->label('Ảnh')
-                    ->options(fn(Get $get) => ProductMedia::query()
+                    ->options(fn(Get $get) => AppProductMedia::query()
                         ->where('product_id', $this->ownerRecord->id)
                         ->get()
                         ->mapWithKeys(fn($item) => [$item->media => $item->name_media]))
@@ -107,8 +100,8 @@ class ProductStockRelationManager extends RelationManager
                         $attributeNames = [];
 
                         foreach ($listProductAttribute as $attr) {
-                            $value = $attr->productVariationValue->variation_value_name ?? NULL;
-                            $label = $attr->productVariationValue->productVariation->variation_name;
+                            $value = $attr->appProductVariationValue->variation_value_name ?? NULL;
+                            $label = $attr->appProductVariationValue->productVariation->variation_name;
 
                             // Concatenate label and value
                             $attributeNames[] = "{$label} : {$value}";
@@ -141,7 +134,7 @@ class ProductStockRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\Action::make('Thêm vào kho')
                     ->form([
-                        Repeater::make('ProductVariationValue')
+                        Repeater::make('AppProductVariationValue')
                             ->schema([
                                 Section::make('')
                                     ->schema(function () {
@@ -159,11 +152,11 @@ class ProductStockRelationManager extends RelationManager
                                                             ->where('product_id', $this->ownerRecord->id)
                                                             ->pluck('variation_name', 'id'))
                                                         ->live(),
-                                                    Select::make("product_variation_value_id[{$index}]")
+                                                    Select::make("app_product_variation_value_id[{$index}]")
                                                         ->reactive()
                                                         ->label('Giá trị biến thể')
                                                         ->filled()
-                                                        ->options(fn(Get $get) => ProductVariationValue::query()
+                                                        ->options(fn(Get $get) => AppProductVariationValue::query()
                                                             ->where('product_variation_id', $get("product_variation_id[{$index}]"))
                                                             ->pluck('variation_value_name', 'id'))
                                                         ->live(),
@@ -175,7 +168,7 @@ class ProductStockRelationManager extends RelationManager
                                 Select::make('media')
                                     ->required()
                                     ->label('Ảnh')
-                                    ->options(fn(Get $get) => ProductMedia::query()
+                                    ->options(fn(Get $get) => AppProductMedia::query()
                                         ->where('product_id', $this->ownerRecord->id)
                                         ->pluck('name_media', 'id'))
                                     ->live(),
@@ -206,7 +199,7 @@ class ProductStockRelationManager extends RelationManager
                             return;
                         }
 
-                        foreach ($data['ProductVariationValue'] as $variationData) {
+                        foreach ($data['AppProductVariationValue'] as $variationData) {
                             $sku = $variationData['sku'];
                             $importPrice = $variationData['import_price'];
                             $retailPrice = $variationData['retail_price'];
@@ -214,12 +207,12 @@ class ProductStockRelationManager extends RelationManager
                             $qtyInventory = $variationData['qty_inventory'];
                             $mediaId = $variationData['media'];
 
-                            // Truy xuất giá trị media từ ProductMedia
-                            $productMedia = ProductMedia::find($mediaId);
+                            // Truy xuất giá trị media từ AppProductMedia
+                            $productMedia = AppProductMedia::find($mediaId);
                             $mediaPath = $productMedia ? $productMedia->media : null;
 
-                            // Tạo hoặc cập nhật ProductStock
-                            $productStock = ProductStock::updateOrCreate(
+                            // Tạo hoặc cập nhật AppProductStock
+                            $productStock = AppProductStock::updateOrCreate(
                                 ['sku' => $sku],
                                 [
                                     'product_id' => $productId,
@@ -237,15 +230,15 @@ class ProductStockRelationManager extends RelationManager
                                 if (strpos($key, 'product_variation_id') === 0) {
                                     $index = str_replace(['product_variation_id[', ']'], '', $key);
                                     $productVariationId = $value;
-                                    $productVariationValueIdKey = "product_variation_value_id[{$index}]";
+                                    $productVariationValueIdKey = "app_product_variation_value_id[{$index}]";
                                     if (isset($variationData[$productVariationValueIdKey])) {
                                         $productVariationValueId = $variationData[$productVariationValueIdKey];
                                         // Tạo hoặc cập nhật ProductAttribute
                                         $productAttribute = ProductAttribute::updateOrCreate(
                                             [
                                                 'variation_id' => $productVariationId,
-                                                'product_variation_value_id' => $productVariationValueId,
-                                                'product_stock_id' => $productStockId,
+                                                'app_product_variation_value_id' => $productVariationValueId,
+                                                'app_product_stock_id' => $productStockId,
                                             ]
                                         );
                                     }

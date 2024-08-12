@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProductStock extends Model
+class AppProductStock extends Model
 {
     use HasFactory;
 
@@ -34,6 +34,6 @@ class ProductStock extends Model
 
     public function productMedia(): BelongsTo
     {
-        return $this->BelongsTo(ProductMedia::class);
+        return $this->BelongsTo(AppProductMedia::class);
     }
 }

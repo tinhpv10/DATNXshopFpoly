@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppProductMedia;
+use App\Models\AppProductStock;
+use App\Models\AppProductVariationValue;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductMedia;
-use App\Models\ProductStock;
 use App\Models\ProductVariation;
-use App\Models\ProductVariationValue;
 use App\Models\Review;
 use App\Models\Shop;
 use App\Models\Wishlist;
@@ -103,16 +103,15 @@ class ProductController extends Controller
         $Categories = Category::with('children')->whereNull('parent_id')->get();
         $Brands = Brand::all();
         $productVariations = ProductVariation::all();
-        $productProductVariationValue = ProductVariationValue::all();
+        $productProductVariationValue = AppProductVariationValue::all();
         $maxProductPrice = Product::max('sale_price');
 
         // Format lại dữ liệu sản phẩm
         foreach ($products as $product) {
-            $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
+            $productMedia = AppProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             $product->main_image = $productMedia ? $productMedia->media : null;
             $product->formattedRegularPrice = number_format($product->regular_price, 0, ',', '.');
             $product->formattedSalePrice = number_format($product->sale_price, 0, ',', '.');
-
             $product->displayedPrice = $product->sale_price ? $product->sale_price : $product->regular_price;
             $product->formattedDisplayedPrice = number_format($product->displayedPrice, 0, ',', '.');
             $product->sold_count = $product->sold_count;
@@ -137,15 +136,13 @@ class ProductController extends Controller
         ]);
     }
 
-
-
     public function showByCategory($categoryId)
     {
         $category = Category::findOrFail($categoryId);
         $products = Product::where('category_id', $category->id)->get();
         $Brands = Brand::all();
         foreach ($products as $product) {
-            $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
+            $productMedia = AppProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             $product->main_image = $productMedia ? $productMedia->media : null;
             $product->formattedRegularPrice = number_format($product->regular_price, 0, ',', '.');
             $product->formattedSalePrice = number_format($product->sale_price, 0, ',', '.');
@@ -157,23 +154,25 @@ class ProductController extends Controller
             'selectedCategory' => $category
         ]);
     }
-
     public function show($id)
     {
         $products = Product::findOrFail($id);
         $products->view_count++;
         $products->save();
-        $productMedia = ProductMedia::where('product_id', $products->id)->get();
+        $productMedia = AppProductMedia::where('product_id', $products->id)->get();
         $products->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
-        $formattedRegularPrice = number_format($products->regular_price, 0, ',', '.');
-        $formattedSalePrice = number_format($products->sale_price, 0, ',', '.');
-        $productVariations = ProductVariation::where('product_id', $products->id)->with('productVariationValue')->get();
-
+        $products->formattedRegularPrice = number_format($products->regular_price, 0, ',', '.');
+        $products->formattedSalePrice = number_format($products->sale_price, 0, ',', '.');
+        $products->displayedPrice = $products->sale_price ? $products->sale_price : $products->regular_price;
+        $products->formattedDisplayedPrice = number_format($products->displayedPrice, 0, ',', '.');
+        $productVariations = ProductVariation::where('product_id', $products->id)->with('appProductVariationValue')->get();
+        $query = Product::query()->where('pause', 0);
+        $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
 
         $favoriteProductIds = Wishlist::where('user_id', auth()->id())->pluck('product_id');
         $favoriteProducts = Product::whereIn('id', $favoriteProductIds)->get();
         foreach ($favoriteProducts as $favoriteProduct) {
-            $favoriteProductMedia = ProductMedia::where('product_id', $favoriteProduct->id)->first();
+            $favoriteProductMedia = AppProductMedia::where('product_id', $favoriteProduct->id)->first();
             $favoriteProduct->main_image = $favoriteProductMedia ? $favoriteProductMedia->media : null;
             $favoriteProduct->formattedRegularPrice = number_format($favoriteProduct->regular_price, 0, ',', '.');
             $favoriteProduct->formattedSalePrice = number_format($favoriteProduct->sale_price, 0, ',', '.');
@@ -191,8 +190,6 @@ class ProductController extends Controller
             'product' => $products,
             'productMedia' => $productMedia,
             'productVariations' => $productVariations,
-            'formattedRegularPrice' => $formattedRegularPrice,
-            'formattedSalePrice' => $formattedSalePrice,
             'favoriteProducts' => $favoriteProducts,
             'selected_variation_id' => $selected_variation_id,
             'shop' => $shop,
@@ -236,7 +233,7 @@ class ProductController extends Controller
         // Tìm product_stock_id xuất hiện đúng số lần bằng với số lượng biến thể đã chọn
         foreach ($matchedStockIds as $stockId => $count) {
             if ($count == count($selectedVariations)) {
-                $productStock = ProductStock::find($stockId);
+                $productStock = AppProductStock::find($stockId);
 
                 if ($productStock) {
                     $retailPriceFormatted = number_format($productStock->retail_price, 0, ',', '.');

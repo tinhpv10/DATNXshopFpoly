@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\AppProductMedia;
 use App\Models\User;
-use App\Models\ProductMedia;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProductMediaPolicy
@@ -21,7 +21,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ProductMedia $productMedia): bool
+    public function view(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('view_product::media');
     }
@@ -37,7 +37,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ProductMedia $productMedia): bool
+    public function update(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('update_product::media');
     }
@@ -45,7 +45,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ProductMedia $productMedia): bool
+    public function delete(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('delete_product::media');
     }
@@ -61,7 +61,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, ProductMedia $productMedia): bool
+    public function forceDelete(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('force_delete_product::media');
     }
@@ -77,7 +77,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, ProductMedia $productMedia): bool
+    public function restore(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('restore_product::media');
     }
@@ -93,7 +93,7 @@ class ProductMediaPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, ProductMedia $productMedia): bool
+    public function replicate(User $user, AppProductMedia $productMedia): bool
     {
         return $user->can('replicate_product::media');
     }

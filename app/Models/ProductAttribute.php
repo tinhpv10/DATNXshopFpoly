@@ -14,19 +14,19 @@ class ProductAttribute extends Model
     protected $fillable = [
         'attribute_id',
         'variation_id',
-        'product_stock_id',
+        'app_product_stock_id',
         'media',
-        'product_variation_value_id',
+        'app_product_variation_value_id',
     ];
 
     public function productStock(): BelongsTo
     {
-        return $this->BelongsTo(ProductStock::class);
+        return $this->BelongsTo(AppProductStock::class);
     }
 
-    public function productVariationValue(): BelongsTo
+    public function appProductVariationValue(): BelongsTo
     {
-        return $this->BelongsTo(ProductVariationValue::class);
+        return $this->BelongsTo(AppProductVariationValue::class);
     }
 
 }

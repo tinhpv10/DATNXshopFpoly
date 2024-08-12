@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProductVariationValue extends Model
+class AppProductVariationValue extends Model
 {
     protected $table = 'product_variation_values';
     protected $fillable = [

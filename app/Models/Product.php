@@ -66,7 +66,7 @@ class Product extends Model
 
     public function productMedia(): HasMany
     {
-        return $this->hasMany(ProductMedia::class);
+        return $this->hasMany(AppProductMedia::class);
     }
 
     public function wishlist()
@@ -144,7 +144,7 @@ class Product extends Model
 
     public function productStock(): HasMany
     {
-        return $this->HasMany(ProductStock::class);
+        return $this->HasMany(AppProductStock::class);
     }
 
     // Hàm đêm số lượng chờ duyệt

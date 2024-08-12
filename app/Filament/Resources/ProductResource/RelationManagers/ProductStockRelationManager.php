@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
+use App\Models\AppProductMedia;
+use App\Models\AppProductVariationValue;
 use App\Models\ProductAttribute;
-use App\Models\ProductMedia;
 use App\Models\ProductStock;
 use App\Models\ProductVariation;
-use App\Models\ProductVariationValue;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -50,7 +50,7 @@ class ProductStockRelationManager extends RelationManager
                                         ->reactive()
                                         ->label('Giá trị biến thể')
                                         ->filled()
-                                        ->options(fn(Get $get) => ProductVariationValue::query()
+                                        ->options(fn(Get $get) => AppProductVariationValue::query()
                                             ->where('product_variation_id', $get("product_variation_id[{$index}]"))
                                             ->pluck('variation_value_name', 'id'))
                                         ->live(),
@@ -62,7 +62,7 @@ class ProductStockRelationManager extends RelationManager
                 Select::make('media')
                     ->required()
                     ->label('Ảnh')
-                    ->options(fn(Get $get) => ProductMedia::query()
+                    ->options(fn(Get $get) => AppProductMedia::query()
                         ->where('product_id', $this->ownerRecord->id)
                         ->get()
                         ->mapWithKeys(fn($item) => [$item->media => $item->name_media]))
@@ -133,7 +133,7 @@ class ProductStockRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\Action::make('Thêm vào kho')
                     ->form([
-                        Repeater::make('ProductVariationValue')
+                        Repeater::make('AppProductVariationValue')
                             ->schema([
                                 Section::make('')
                                     ->schema(function () {
@@ -155,7 +155,7 @@ class ProductStockRelationManager extends RelationManager
                                                         ->reactive()
                                                         ->label('Giá trị biến thể')
                                                         ->filled()
-                                                        ->options(fn(Get $get) => ProductVariationValue::query()
+                                                        ->options(fn(Get $get) => AppProductVariationValue::query()
                                                             ->where('product_variation_id', $get("product_variation_id[{$index}]"))
                                                             ->pluck('variation_value_name', 'id'))
                                                         ->live(),
@@ -167,7 +167,7 @@ class ProductStockRelationManager extends RelationManager
                                 Select::make('media')
                                     ->required()
                                     ->label('Ảnh')
-                                    ->options(fn(Get $get) => ProductMedia::query()
+                                    ->options(fn(Get $get) => AppProductMedia::query()
                                         ->where('product_id', $this->ownerRecord->id)
                                         ->pluck('name_media', 'id'))
                                     ->live(),
@@ -198,7 +198,7 @@ class ProductStockRelationManager extends RelationManager
                             return;
                         }
 
-                        foreach ($data['ProductVariationValue'] as $variationData) {
+                        foreach ($data['AppProductVariationValue'] as $variationData) {
                             $sku = $variationData['sku'];
                             $importPrice = $variationData['import_price'];
                             $retailPrice = $variationData['retail_price'];
@@ -206,8 +206,8 @@ class ProductStockRelationManager extends RelationManager
                             $qtyInventory = $variationData['qty_inventory'];
                             $mediaId = $variationData['media'];
 
-                            // Truy xuất giá trị media từ ProductMedia
-                            $productMedia = ProductMedia::find($mediaId);
+                            // Truy xuất giá trị media từ AppProductMedia
+                            $productMedia = AppProductMedia::find($mediaId);
                             $mediaPath = $productMedia ? $productMedia->media : null;
 
                             // Tạo hoặc cập nhật ProductStock
