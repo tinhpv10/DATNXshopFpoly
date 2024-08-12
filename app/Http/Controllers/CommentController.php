@@ -2,27 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UploadImage;
 use App\Http\Requests\CommentRequest;
-use App\Models\Product;
 use App\Models\Review;
-use App\Models\ReviewMedia;
 use App\Models\User;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Storage;
 
 class CommentController extends Controller
 {
-    private $_API;
-
-    public function __construct()
-    {
-        $this->_API = env('WEBPURIFY_API_KEY');
-    }
 
     public function uploadImage(Request $request)
     {
@@ -85,171 +76,52 @@ class CommentController extends Controller
     {
         set_time_limit(250);
         $product_id = $request->product_id;
-        if (Auth::check()) {
-            $user_id = Auth::user()->id;
-        } else {
-            // Tạo người dùng mới nếu chưa đăng nhập
-            $user = User::create([
-                'name' => $request->user_name,
-                'email' => $request->email,
-                'password' => $request->password,
-            ]);
-            $user_id = $user->id;
-        }
 
-        // Tạo một review mới
-        $review = Review::create([
-            'content' => $request->comment_content,
-            'rating' => $request->rating,
-            'user_id' => $user_id,
-            'product_id' => $product_id,
-        ]);
+        DB::beginTransaction();
 
-        // Cập nhật rating cho sản phẩm
-        $this->updateProductRating($product_id);
-
-        $listImage = session('uploaded_files', []);
-
-        // Xử lý hình ảnh (không thay đổi)
-        for ($i = 0; $i < sizeof($listImage); $i++) {
-            $image = $listImage[$i]['filepath'];
-            $moderationResult = Cloudinary::upload($image)->getSecurePath();
-
-            $resultId = $this->checkUrlImg($moderationResult);
-            $resultStatus = $this->checkStatusImg($resultId);
-
-            if ($resultStatus['rsp']['status'] === 'declined') {
-                $blurImgUrl = Cloudinary::upload($image, [
-                    'transformation' => [
-                        'effect' => 'blur:500'
-                    ]
-                ])->getSecurePath();
+        try {
+            if (Auth::check()) {
+                $user_id = Auth::user()->id;
             } else {
-                $blurImgUrl = $moderationResult;
+                // Tạo người dùng mới nếu chưa đăng nhập
+                $user = User::create([
+                    'name' => $request->user_name,
+                    'email' => $request->email,
+                    'password' => $request->password,
+                ]);
+                $user_id = $user->id;
             }
 
-            $imageName = $this->saveImage($blurImgUrl);
-            $imageDB = asset('storage/commentImg/' . $imageName);
-
-            ReviewMedia::create([
-                'review_id' => $review->id,
-                'review_media' => $imageDB,
+            $review = Review::create([
+                'content' => $request->comment_content,
+                'rating' => $request->rating,
+                'user_id' => $user_id,
+                'product_id' => $product_id,
+                'processing' => !empty(session('uploaded_files', [])),
             ]);
-        }
 
-        Session::forget('uploaded_files');
+            $listImage = session('uploaded_files', []);
 
-        return redirect()->route('product.detail', $product_id);
-    }
-
-    private function updateProductRating($productId)
-    {
-        // Lấy sản phẩm theo ID
-        $product = Product::findOrFail($productId);
-
-        // Lấy tất cả các review của sản phẩm đó
-        $reviews = Review::where('product_id', $productId)->get();
-
-        // Kiểm tra xem có review nào không
-        if ($reviews->isEmpty()) {
-            // Nếu không có review, đặt rating là 0
-            $product->rating = 0.0; // Sử dụng số thực
-        } else {
-            // Tính tổng số sao
-            $totalRating = $reviews->sum('rating');
-            // Lấy số lượng đánh giá
-            $numberOfReviews = $reviews->count();
-            // Tính trung bình cộng rating
-            $averageRating = $totalRating / $numberOfReviews;
-            // Cập nhật rating cho sản phẩm
-            $product->rating = (float)$averageRating; // Đảm bảo là số thực
-        }
-
-        // Lưu sản phẩm với rating mới
-        $product->save();
-    }
-
-
-
-
-    private function checkUrlImg($imageUrl)
-    {
-        $response = Http::post("https://im-api1.webpurify.com/services/rest/?method=webpurify.live.imgcheck&api_key=$this->_API&imgurl=$imageUrl&format=json");
-        $responseData = $response->json();
-        $imageId = $responseData['rsp']['imgid'];
-
-        return $imageId;
-    }
-
-    private function checkStatusImg($imageId, $waitTimeInSeconds = 15)
-    {
-        //$retryCount: số lần thử
-        //$waitTimeInSeconds: thời gian chờ giữa các lần thử
-        try {
-            $status = 'pending';
-            $attempt = 0;
-
-            while ($status === 'pending') {
-                $response = Http::post("https://im-api1.webpurify.com/services/rest/?method=webpurify.live.imgstatus&api_key=$this->_API&imgid=$imageId&format=json");
-                $responseData = $response->json();
-
-                if (isset($responseData['rsp']['status'])) {
-                    $status = $responseData['rsp']['status'];
-                } else {
-                    $status = 'error';
-                    break;
-                }
-                if ($status === 'pending') {
-                    sleep($waitTimeInSeconds);
-                }
-//                $attempt++;
+            if (!empty($listImage)) {
+                $message = 'Đánh giá của bạn đã được gửi đi chờ kiểm duyệt';
+                event(new UploadImage($listImage, $review));
+            } else {
+                $message = '';
             }
-            return $responseData;
+
+            DB::commit();
+            Session::forget('uploaded_files');
+
+            return redirect()->route('product.detail', $product_id)->with('success', $message);
 
         } catch (\Exception $e) {
-            Log::error('Error uploading and moderating image: ' . $e->getMessage());
-            return response()->json(['error' => 'Lỗi xử lý hình ảnh.'], 500);
+            DB::rollback();
+            Log::error('Error uploading comment: ' . $e->getMessage());
+            Session::forget('uploaded_files');
+
+            return redirect()->route('product.detail', $product_id)->with('error', 'Có lỗi xảy ra khi gửi đánh giá của bạn.');
         }
 
     }
-
-    private function saveImage($url)
-    {
-        // Tải nội dung hình ảnh từ URL
-        $imageContents = file_get_contents($url);
-
-        // Lấy tên hình ảnh từ URL
-        $imageName = basename($url);
-
-        // Tạo đường dẫn lưu trữ hình ảnh trong thư mục public/imgUpload
-        $localPath = "public/commentImg/$imageName";
-
-        // Lưu hình ảnh vào thư mục storage/app/public/imgUpload
-        Storage::put($localPath, $imageContents);
-
-        // Trả về đường dẫn lưu trữ cục bộ của hình ảnh
-        return $imageName;
-    }
-
-    public function like(Review $review)
-    {
-        try {
-            // Tăng giá trị cột 'like_count' lên 1 và lưu vào cơ sở dữ liệu
-            $review->increment('like_count');
-            $review->save();
-
-            return response()->json([
-                'success' => true,
-                'like_count' => $review->like_count,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi khi tăng like count: ' . $e->getMessage(),
-            ]);
-        }
-    }
-
-
 
 }

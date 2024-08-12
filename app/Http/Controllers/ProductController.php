@@ -185,6 +185,7 @@ class ProductController extends Controller
         $listComment = Review::with('user')
             ->with('reviewMedia')
             ->where('product_id', $id)
+            ->where('processing', false)
             ->paginate(5);
         return view('layouts.detail', [
             'product' => $products,
@@ -197,6 +198,10 @@ class ProductController extends Controller
             'listComment' => $listComment,
         ]);
 
+    }
+
+    public function showPost()
+    {
     }
 
     public function getRetailPrice(Request $request)

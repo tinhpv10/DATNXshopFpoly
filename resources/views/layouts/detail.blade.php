@@ -259,6 +259,11 @@
                                         {{-- form bình luận --}}
                                         <div class="mb-3">
                                             <h5>VIẾT ĐÁNH GIÁ CỦA BẠN: </h5>
+                                            @if(session('success'))
+                                                <div class="alert alert-success" role="alert">
+                                                    {{ session('success')  }}
+                                                </div>
+                                            @endif
                                             <form action="{{ route('uploadComment') }}" method="POST"
                                                   enctype="multipart/form-data" id="commentForm">
                                                 @csrf
@@ -438,13 +443,7 @@
                                                                     </a>
                                                                 </div>
                                                             @endforeach
-                                                        </div>
-                                                        <div class="like-comment">
-                                                            <button class="btn btn-link like-btn"
-                                                                    data-id="{{ $itemComment->id }}">
-                                                                <i class="bi bi-hand-thumbs-up"></i>
-                                                            </button>
-                                                            <span>{{ $itemComment->like_count }}</span>
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -509,6 +508,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Sign in / Register Modal -->
     <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -825,37 +825,5 @@
                 new StarRating('rating-container', 'rating-value');
             });
         })();
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.like-btn').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    var reviewId = this.getAttribute('data-id');
-                    var likeButton = this;
-
-                    fetch(`/reviews/${reviewId}/like`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({review_id: reviewId})
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                var likeCountSpan = likeButton.nextElementSibling;
-                                likeCountSpan.textContent = data.like_count + ' Likes';
-                            } else {
-                                console.error(data.message); // Log lỗi nếu có
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-
-                });
-            });
-        });
-
-
     </script>
 @endpush

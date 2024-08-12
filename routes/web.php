@@ -27,11 +27,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
 
+    Route::get('/search', [ProductController::class, 'search'])->name('product.search');
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
     Route::post('/add-to-cart', [ProductController::class, 'addToCart'])->name('product.addToCart');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('product.detail');
+    Route::post('/product/{id}', [ProductController::class, 'showPost']);
     Route::post('/get-retail-price', [ProductController::class, 'getRetailPrice']);
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('product.addToCart');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
@@ -42,9 +43,6 @@ Route::prefix('/')->group(function () {
     Route::post('/cart/update-selected-items', [CartController::class, 'updateSelectedItems'])->name('cart.update-selected-items');
     Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::post('/uploadComment', [CommentController::class, 'uploadComment'])->name('uploadComment');
-    Route::post('/upload-reply', [CommentController::class, 'uploadReply'])->name('uploadReply');
-// routes/web.php
-    Route::post('/reviews/{review}/like', [CommentController::class, 'like']);
     Route::post('/uploadImage', [CommentController::class, 'uploadImage'])->name('uploadImage');
     Route::post('/deleteImage', [CommentController::class, 'deleteImage'])->name('deleteImage');
     Route::post('/product/{id}', [ProductController::class, 'showPost']);
@@ -62,8 +60,9 @@ Route::get('/order/success/{order_id}', function ($order_id) {
 Route::get('/order/failure', function () {
     return view('layouts.failure');
 })->name('order.failure');
-//Route::get('/vnpay-success', [VNPayController::class, 'paymentSuccess']);
-//Route::get('/vnpay/return', [VNPayController::class, 'processPayment'])->name('vnpay.return');
+Route::get('/post', [PostController::class, 'index']);
+Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
+Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');
 Route::get('/post', [PostController::class, 'index']);
 Route::get('/post-detail/{id}', [PostController::class, 'detail'])->name('detailPost');
 Route::get('/category-post/{id}', [CategoryPostController::class, 'postByCategory'])->name('postByCategory');
