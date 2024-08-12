@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AppProductStock;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\ProductStock;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->id()->comment('Mã giỏ hàng');
             $table->bigInteger('price')->nullable(false)->comment('Giá');
             $table->string('quantity')->nullable(false)->comment('Số lượng');
-            $table->foreignIdFor(ProductStock::class)->comment('Mã sản phẩm biến thể');
+            $table->foreignIdFor(AppProductStock::class)->comment('Mã sản phẩm biến thể');
             $table->foreignIdFor(Product::class)->comment('Mã sản phẩm');
             $table->foreignIdFor(Shop::class)->comment('Mã nhà bán');
             $table->foreignIdFor(Cart::class)->comment('Mã giỏ hàng');

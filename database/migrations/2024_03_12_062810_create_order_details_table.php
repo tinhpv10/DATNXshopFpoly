@@ -1,8 +1,8 @@
 <?php
 
+use App\Models\AppProductStock;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\ProductStock;
 use App\Models\Shop;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('product_image')->nullable()->comment('Ảnh sản phẩm');
             $table->string('product_price')->nullable()->comment('Giá sản phẩm');
             $table->foreignIdFor(Product::class)->comment('Sản phẩm');
-            $table->foreignIdFor(ProductStock::class)->nullable()->comment('sku');
+            $table->foreignIdFor(AppProductStock::class)->nullable()->comment('sku');
             $table->string('product_quantity')->nullable()->comment('Số lượng sản phẩm');
             $table->timestamps();
         });

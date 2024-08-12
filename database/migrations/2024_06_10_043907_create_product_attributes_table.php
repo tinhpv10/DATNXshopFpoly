@@ -14,8 +14,8 @@ return new class extends Migration {
             // Remove the default id primary key and replace it with attribute_id which can be duplicated
             $table->id('attribute_id')->comment('ID ');
             $table->unsignedBigInteger('variation_id')->comment('ID Biến thể');
-            $table->foreignIdFor(\App\Models\ProductVariationValue::class)->nullable(false)->comment('Mã Thuộc tính');
-            $table->foreignIdFor(\App\Models\ProductStock::class)->nullable(false)->comment('sku');
+            $table->foreignIdFor(\App\Models\AppProductVariationValue::class)->nullable(false)->comment('Mã Thuộc tính');
+            $table->foreignIdFor(\App\Models\AppProductStock::class)->nullable(false)->comment('sku');
             $table->timestamps();
 
         });

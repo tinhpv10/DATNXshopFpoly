@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id()->comment('Mã đánh giá');
             $table->string('content')->nullable(false)->comment('Nội dung');
             $table->string('image')->nullable()->comment('Hình ảnh');
-            $table->integer('rating')->nullable(false)->comment('Chất lượng (sao)');
+            $table->integer('rating')->nullable()->comment('Chất lượng (sao)');
             $table->integer('like_count')->nullable()->comment('Lượt thích');
             $table->foreignIdFor(Review::class)->nullable()->comment('Mã đánh giá chính');
             $table->foreignIdFor(User::class)->comment('Mã người dùng');
