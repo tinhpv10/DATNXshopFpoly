@@ -98,6 +98,15 @@ class ProfileAddressController extends Controller
         $userAddress->user_id = auth()->user()->id; // Assuming authenticated user
         $userAddress->save();
 
+
+        $defaultAddress = UserAddress::where('user_id', auth()->user()->id)
+            ->where('is_default', 1)
+            ->first();
+        if ($defaultAddress) {
+            $user = auth()->user();
+            $user->user_address_id = $defaultAddress->id;
+            $user->save();
+        }
         // Redirect or do something else after saving
         return redirect()->route('profile.address')->with('success', 'Địa chỉ đã được thêm thành công!');
 
@@ -151,6 +160,15 @@ class ProfileAddressController extends Controller
 
         // Đặt địa chỉ được chọn thành mặc định
         UserAddress::where('id', $id)->update(['is_default' => 1]);
+
+        $defaultAddress = UserAddress::where('user_id', auth()->user()->id)
+            ->where('is_default', 1)
+            ->first();
+        if ($defaultAddress) {
+            $user = auth()->user();
+            $user->user_address_id = $defaultAddress->id;
+            $user->save();
+        }
 
         return redirect()->route('cart.view')->with('success', 'Đã thiết lập địa chỉ mặc định thành công!');
     }
