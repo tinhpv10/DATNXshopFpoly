@@ -11,6 +11,7 @@ use App\Mail\OrderOnHoldMail;
 use App\Mail\OrderPaidMail;
 use App\Mail\OrderProcessingMail;
 use App\Mail\OrderShippedMail;
+use Filament\Forms\Components\Placeholder;
 use Filament\Notifications\Notification;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -45,6 +46,9 @@ use Illuminate\Support\Facades\Mail;
 use Filament\Infolists\Components\IconEntry;
 use Illuminate\Support\Carbon;
 use Filament\Infolists\Components\Section;
+use Filament\Tables\Filters\QueryBuilder\Constraints\TextConstraint;
+use Filament\Actions;
+use Illuminate\Support\Facades\Redirect;
 
 
 class OrderResource extends Resource
@@ -62,10 +66,8 @@ class OrderResource extends Resource
         $user = Auth::user();
         // Đếm số lượng đơn hàng có cùng shop_id
         $count = static::getModel()::where('shop_id', $user->shop_id)->count();
-        return (string) $count; // Trả về số lượng đơn hàng
+        return (string)$count; // Trả về số lượng đơn hàng
     }
-
-
 
 
     public static function form(Form $form): Form
@@ -188,7 +190,7 @@ class OrderResource extends Resource
                                         ->default(function ($record) {
                                             if ($record == 0) {
                                                 return PaymentStatus::Unpaid->value; // Giá trị mặc định nếu không có bản ghi
-                                            }else{
+                                            } else {
                                                 return PaymentStatus::Paid->value;
                                             }
                                         })
@@ -270,8 +272,6 @@ class OrderResource extends Resource
                         TextEntry::make('code')
                             ->badge()
                             ->label('Mã đơn hàng'),
-                        TextEntry::make('address')
-                            ->label('Địa chỉ người dùng'),
                         TextEntry::make('shipping_unit')
                             ->label('Đơn vị vận chuyển'),
                         TextEntry::make('User.name')
@@ -287,6 +287,8 @@ class OrderResource extends Resource
                             ->label('Trạng thái đơn hàng'),
                         TextEntry::make('PaymentMethod.method_name')
                             ->label('Phương thức thanh toán'),
+                        TextEntry::make('UserAddressFormatted')
+                            ->label('Địa chỉ giao hàng'),
                         TextEntry::make('day_paid')
                             ->dateTime('d-m-Y H:i:s')
                             ->label('Ngày giờ thanh toán đơn hàng'),
@@ -322,7 +324,7 @@ class OrderResource extends Resource
                             TextEntry::make('')->columnSpan(1),
                             TextEntry::make('')->columnSpan(1),
                             TextEntry::make('Tổng tiền')->label('Tổng tiền :')->columnSpan(1),
-                            TextEntry::make(number_format($record->total_price, 1,',').'VND')->columnSpan(1),
+                            TextEntry::make(number_format($record->total_price, 1, ',') . 'VND')->columnSpan(1),
                         ])->columns(4);
                         return $OrderDetails;
                     })->columns(3)
@@ -358,11 +360,7 @@ class OrderResource extends Resource
                 TextColumn::make('created_at')
                     ->label('Đã đặt')
                     ->date('d-m-Y'),
-                IconColumn::make('on_hold')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-badge')
-                    ->falseIcon('heroicon-o-clock')
-                    ->label('Tạm giữ'),
+
                 IconColumn::make('is_paid')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-badge')
@@ -413,14 +411,66 @@ class OrderResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\Action::make('Chuẩn bị hàng')
+                    ->label('chuẩn bị hàng')
+                    ->color('success')
+                    ->modalSubmitActionLabel('Xác nhận')
+                    ->form([
+                        \Filament\Forms\Components\Section::make('Giao đơn hàng')
+                            ->schema([
+                                Placeholder::make('Mã đơn hàng')
+                                    ->content(fn($record): string => $record->lading_code)
+                                    ->label('Mã vận đơn'),
+
+                                Placeholder::make('Bạn hãy gửi hàng đến bưu cục vận chuyển')
+                            ]),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $record->status = OrderStatus::Successprocessed;
+                        $record->check_order_shop = 1;
+                        $record->save();
+
+                        Notification::make()
+                            ->title('Chuẩn bị hàng thành công')
+                            ->icon('heroicon-o-squares-2x2')
+                            ->success();
+
+                    })
+                    ->hidden(fn($record) => $record->status->value !== 'Chờ lấy hàng'),
+                Tables\Actions\Action::make('Huỷ đơn')
+                    ->label('Huỷ đơn')
+                    ->color('danger')
+                    ->modalSubmitActionLabel('Xác nhận')
+                    ->form([
+                        \Filament\Forms\Components\Section::make('Huỷ đơn hàng')
+                            ->schema([
+                                Select::make('cancel_reason')
+                                    ->label('Lý do huỷ đơn')
+                                    ->options([
+                                        'Hết sản phẩm' => 'Hết sản phẩm',
+                                        'Khác' => 'Khác',
+
+                                    ])
+
+                            ]),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $record->status = OrderStatus::Cancelled;
+                        $record->canceled_by = 'Cửa hàng';
+                        $record->save();
+                        })
+                    ->hidden(fn($record) => !in_array($record->status->value, ['Chờ lấy hàng', 'Đang xử lý'])),
+
+                Tables\Actions\Action::make('In phiếu giao')
+                    ->url(fn(Order $record) => route('order.pdf', $record))
+                    ->openUrlInNewTab()
+                    ->hidden(fn($record) => $record->status->value !== 'Đã xử lý'),
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 
@@ -517,9 +567,9 @@ class OrderResource extends Resource
     {
         return [
             'index' => Pages\ListOrders::route('/'),
-            'create' => Pages\CreateOrder::route('/create'),
+//            'create' => Pages\CreateOrder::route('/create'),
             'view' => Pages\ViewOrder::route('/{record}'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
+//            'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
 }
