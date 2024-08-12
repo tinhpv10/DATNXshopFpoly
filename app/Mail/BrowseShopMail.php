@@ -18,7 +18,7 @@ class BrowseShopMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($shop)
+    public function __construct(Shop $shop)
     {
         $this->shop = $shop;
     }

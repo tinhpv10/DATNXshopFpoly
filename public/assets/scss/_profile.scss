@@ -1,5 +1,6 @@
 .profile-user {
     font-size: 15px;
+    padding-bottom: 100px;
 }
 
 .icon1 {
@@ -128,3 +129,193 @@
     max-height: 350px;
     overflow-y: auto;
 }
+
+.password {
+    padding: 0px 40px;
+}
+
+.address {
+    padding: 0px 20px;
+}
+
+.nav-tabs .nav-link:hover {
+    text-decoration: none;
+}
+
+// thanh search trong đơn hàng của tôi
+.input-group {
+    position: relative;
+}
+
+.search-input {
+    padding-left: 2.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    background-color: #e9ecef;
+}
+
+.search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 35%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.25rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+// my order
+.img-thumbnails {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.orders-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.price-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.price-container p {
+    display: flex;
+    white-space: nowrap;
+    margin: 0;
+}
+
+//.orders-container {
+//    height: 400px;
+//}
+
+.box-myorder_img {
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: column; /* Xếp dọc hình ảnh và văn bản */
+}
+
+.background-image {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.box-myorder_img span {
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 20px;
+}
+/// canceled my order layout
+
+.custom-container {
+    max-width: 800px;
+}
+
+.custom-back-button {
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.custom-alert {
+    background-color: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFEEBA;
+    font-size: 14px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-order-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+.custom-shop-name {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.custom-shop-name span {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.custom-shop-name a {
+    font-size: 14px;
+}
+
+.custom-order-details {
+    display: flex;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+}
+
+.custom-order-details img {
+    width: 80px;
+    height: 80px;
+    margin-right: 15px;
+    border: 1px solid #ddd;
+}
+
+.custom-order-info {
+    flex: 1;
+}
+
+.custom-order-info p {
+    margin: 0;
+}
+
+.custom-order-price {
+    text-align: right;
+}
+
+.custom-order-price p {
+    margin: 0;
+}
+
+.custom-order-actions {
+    padding-top: 10px;
+}
+
+.custom-order-actions table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.custom-order-actions th,
+.custom-order-actions td {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: right;
+}
+
+.custom-reason {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.custom-reason p {
+    font-size: 14px;
+    margin: 0;
+}
+/// End canceled my order layout

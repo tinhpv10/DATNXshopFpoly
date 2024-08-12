@@ -3,9 +3,9 @@
     <div class="col-sm-9 h-500" style="background-color: white;">
         <div class="row" style="height: 100%;">
             <div class="col-md-12 border-bottom gap-5 d-flex align-items-center" style="height: 15%;">
-                <h5 class="card-title mt-0 ms-3 w-50">Đổi mật khẩu</h5>
+                <h5 class="card-title mt-0 ms-3 w-50 border-0">Đổi mật khẩu</h5>
             </div>
-            <div class="list-group list-group-flush container ms-4">
+            <div class="list-group list-group-flush password">
                 <form method="post" action="{{ route('update_password') }}">
                     @csrf
                     <div class="mb-3">

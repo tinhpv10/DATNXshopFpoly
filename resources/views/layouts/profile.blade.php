@@ -27,7 +27,7 @@
                                             Mật Khẩu</a>
                                     </li>
                                     <li class="list-group-item item1 border-0">
-                                        <i class="bi bi-receipt icon1"></i> <a href="">Đơn mua</a>
+                                        <i class="bi bi-receipt icon1"></i> <a href="{{ route('myorder') }}">Đơn mua</a>
                                     </li>
                                     <li class="list-group-item item1 border-0">
                                         <i class="bi bi-bell icon1"></i> <a href="">Thông báo</a>

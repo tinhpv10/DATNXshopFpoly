@@ -1,0 +1,76 @@
+
+
+/* Định dạng tổng quát cho các bảng */
+.custom-table {
+    border-spacing: 0;
+    width: 100%;
+}
+
+.custom-table td, .custom-table th, p {
+    font-size: 13px !important;
+}
+
+.custom-table img {
+    border: 3px solid #F1F5F9;
+    padding: 6px;
+    background-color: #F1F5F9;
+}
+
+/* Định dạng bảng không có biên */
+.custom-table-no-border {
+    border-collapse: collapse;
+}
+
+.custom-table-no-border .custom-width-50 {
+    width: 50%;
+}
+
+.custom-table-no-border .custom-width-70 {
+    width: 70%;
+    text-align: left;
+}
+
+.custom-table-no-border .custom-width-30 {
+    width: 30%;
+}
+
+.custom-margin-top {
+    margin-top: 40px;
+}
+
+/* Định dạng bảng sản phẩm */
+.custom-product-table {
+    margin-top: 20px;
+    width: 100%;
+    border-width: 0px;
+}
+
+.custom-product-table thead th {
+    background-color: #60A5FA;
+    color: white;
+    padding: 5px;
+    text-align: left;
+    padding: 5px 15px;
+}
+
+.custom-product-table tbody td {
+    background-color: #F1F5F9;
+    color: black;
+    padding: 5px 15px;
+}
+
+.custom-product-table td:last-child, .custom-product-table th:last-child {
+    text-align: right;
+}
+
+.custom-product-table tfoot td {
+    color: black;
+    padding: 5px 15px;
+}
+
+/* Định dạng chân trang */
+.custom-footer-div {
+    background-color: #F1F5F9;
+    margin-top: 100px;
+    padding: 3px 10px;
+}

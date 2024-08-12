@@ -3,13 +3,13 @@
     <div class="col-sm-9 h-500" style="background-color: white;">
         <div class="row" style="height: 100%;">
             <div class="col-md-12 border-bottom gap-5 d-flex align-items-center" style="height: 15%;">
-                <h5 class="card-title mt-0 ms-3 w-50">Địa chỉ của tôi</h5>
+                <h5 class="card-title mt-0 ms-3 w-50 border-0">Địa chỉ của tôi</h5>
                 <button type="button" class="btn btn-primary col-3 ms-auto" data-bs-toggle="modal"
                         data-bs-target="#addressModal" onclick="openModal()">
                     <i class="bi bi-plus-lg"></i> Thêm địa chỉ mới
                 </button>
             </div>
-            <div class="list-group list-group-flush container address-list">
+            <div class="list-group list-group-flush container address-list address">
                 @foreach($addresses as $address)
                     <div class="list-group-item item1 border-0">
                         <div class="d-flex justify-content-between">
@@ -33,13 +33,17 @@
                             , {{ $address->district->name ?? '' }}, {{ $address->province->name ?? '' }}</p>
 
                         <div class="d-flex justify-content-between">
-                            <form action="{{ route('addresses.setDefault', $address->id) }}" method="POST"
-                                  class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-link p-0 text-primary">Thiết lập mặc định</button>
-                            </form>
-                            @if($address->is_default)
-                                <span class="badge bg-primary text-white">Mặc định</span>
+                            @if($address->is_default == 0)
+                                <form action="{{ route('addresses.setDefault', $address->id) }}" method="POST"
+                                      class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link p-0 text-primary">Thiết lập mặc định
+                                    </button>
+                                </form>
+                            @else
+                                @if($address->is_default)
+                                    <span class="badge bg-primary text-white">Mặc định</span>
+                                @endif
                             @endif
                         </div>
                     </div>
