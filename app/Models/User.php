@@ -191,4 +191,33 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Shop::class);
     }
+
+    // My order
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+    public function addOrderdatail(){
+        return $this->hasMany(OrderDetail::class);
+    }
+    // lấy địa chỉ mặc định
+    public function userAddressDefauld(): BelongsTo
+    {
+        return $this->belongsTo(UserAddress::class)->where('is_default',1);
+    }
+    // lấy địa chỉ dưới dạng chuỗi để hiển thị ra shop
+    public function getUserAddressFormattedAttribute()
+    {
+        $address = $this->UserAddress;
+        if (!$address) {
+            return 'Địa chỉ không có sẵn';
+        }
+
+        return sprintf(
+            '%s, %s, %s, %s',
+            $address->address_specific,
+            $address->ward ? $address->ward->name : '',
+            $address->district ? $address->district->name : '',
+            $address->province ? $address->province->name : ''
+        );
+    }
 }
