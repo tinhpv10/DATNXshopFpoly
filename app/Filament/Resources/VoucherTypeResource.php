@@ -20,7 +20,7 @@ class VoucherTypeResource extends Resource
 {
     protected static ?string $model = VoucherType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-folder-minus';
     protected static ?string $navigationGroup = 'Đơn hàng';
     protected static ?string $label = 'Loại phiếu giảm giá';
 

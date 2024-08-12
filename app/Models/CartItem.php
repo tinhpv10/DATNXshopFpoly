@@ -33,6 +33,6 @@ class CartItem extends Model
 
     public function productMedia(): HasOne
     {
-        return $this->hasOne(ProductMedia::class, 'product_id', 'product_id')->where('is_main', 1);
+        return $this->hasOne(AppProductMedia::class, 'product_id', 'product_id')->where('is_main', 1);
     }
 }

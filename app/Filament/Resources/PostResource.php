@@ -6,7 +6,6 @@ use App\Filament\Resources\PostResource\Pages;
 use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\CategoryPost;
 use App\Models\Post;
-use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -26,7 +25,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $label = 'Bài viết';
     protected static ?string $navigationGroup = 'Bài viết';
     public static function form(Form $form): Form

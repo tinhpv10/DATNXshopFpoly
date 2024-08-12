@@ -10,6 +10,7 @@
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>ShopX</title>
     <!-- Favicon -->
     <meta name="apple-mobile-web-app-title" content="Molla">

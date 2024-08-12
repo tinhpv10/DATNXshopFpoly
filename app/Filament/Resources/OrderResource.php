@@ -4,15 +4,22 @@ namespace App\Filament\Resources;
 
 use App\Enums\OrderStatus;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Mail\OrderCancelledMail;
+use App\Mail\OrderDeliveredMail;
+use App\Mail\OrderNewMail;
 use App\Mail\OrderOnHoldMail;
-use App\Models\UserAddress;
-use Filament\Forms\Components\MorphToSelect;
-//use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Mail\OrderProcessingMail;
+use App\Mail\OrderShippedMail;
 use App\Models\Order;
-use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Models\UserAddress;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -20,35 +27,20 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Mail;
-use function Laravel\Prompts\search;
-use App\Mail\OrderNewMail;
-use App\Mail\OrderProcessingMail;
-use App\Mail\OrderShippedMail;
-use App\Mail\OrderDeliveredMail;
-use Filament\Forms\ComponentContainer;
 
+//use App\Filament\Resources\OrderResource\RelationManagers;
 
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
     protected static ?string $navigationGroup = 'Đơn hàng';
 
     protected static ?string $label = 'Đơn hàng';

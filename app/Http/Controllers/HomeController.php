@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppProductMedia;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductMedia;
 
 class HomeController extends Controller
 {
@@ -18,7 +18,7 @@ class HomeController extends Controller
         // Lấy tất cả sản phẩm và định dạng giá
         $products = Product::all();
         foreach ($products as $product) {
-            $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
+            $productMedia = AppProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             // Sử dụng tên cột chính xác ở đây, nếu là 'image' thay vì 'main_image'
             $product->main_image = $productMedia ? $productMedia->media : null;
 
@@ -41,7 +41,7 @@ class HomeController extends Controller
 
         // Định dạng giá cho sản phẩm đề xuất
         foreach ($recommendedProducts as $product) {
-            $productMedia = ProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
+            $productMedia = AppProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             // Sử dụng tên cột chính xác ở đây
             $product->main_image = $productMedia ? $productMedia->media : null;
 

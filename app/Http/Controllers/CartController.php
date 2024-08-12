@@ -6,7 +6,6 @@ use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductStock;
-use App\Models\ProductVariationValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -31,7 +30,7 @@ class CartController extends Controller
         $shippingFee = 30000;
 
         foreach ($cartItems as $cartItem) {
-            $productStock = ProductStock::find($cartItem->product_stock_id);
+            $productStock = AppProductStock::find($cartItem->product_stock_id);
 
             if ($productStock) {
                 $retailPrice = $productStock->retail_price;
@@ -180,6 +179,7 @@ class CartController extends Controller
                 $matchedStockIds[$productAttribute->product_stock_id]++;
             }
         }
+
         return $matchedStockIds;
     }
 
@@ -199,7 +199,7 @@ class CartController extends Controller
 
         foreach ($matchedStockIds as $stockId => $count) {
             if ($count == count($selectedVariations)) {
-                $productStock = ProductStock::find($stockId);
+                $productStock = AppProductStock::find($stockId);
 
                 if ($productStock) {
                     $retailPriceFormatted = number_format($productStock->retail_price, 0, ',', '.');
@@ -218,7 +218,7 @@ class CartController extends Controller
 
     public function updateCartItemMedia(CartItem $cartItem)
     {
-        $productStock = ProductStock::find($cartItem->product_stock_id);
+        $productStock = AppProductStock::find($cartItem->product_stock_id);
 
         if ($productStock) {
             $cartItem->media = $productStock->media;
@@ -262,4 +262,3 @@ class CartController extends Controller
     }
 
 }
-

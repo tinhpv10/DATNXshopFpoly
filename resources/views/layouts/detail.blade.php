@@ -38,12 +38,20 @@
                         <h5>{{ $product->name }}</h5>
                         <div class="rating d-flex">
                             <div class="star text-warning pe-3 me-3 border-end">
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-fill"></i>
-                                <i class="bi bi-star-half"></i>
-                                <span class="ms-2">66</span>
+                                <?php
+                                $fullStars = floor($product->rating);
+                                $halfStar = ($product->rating - $fullStars) >= 0.1 ? 1 : 0;
+                                ?>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $fullStars)
+                                        <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    @elseif ($i == $fullStars + 1 && $halfStar)
+                                        <i class="bi bi-star-half" style="color: gold;"></i>
+                                    @else
+                                        <i class="bi bi-star" style="color: gold;"></i>
+                                    @endif
+                                @endfor
+                                <span class="ms-2">{{ number_format($product->rating, 1) }}</span>
                             </div>
                             <div class="text-body-tertiary pe-3 me-3 border-end">
                                 <i class="bi bi-chat-left-dots"></i> <span class="ms-2">{{ $product->sold_count }} Lượt xem</span>
@@ -55,13 +63,14 @@
                         </div>
                         <div class="trade-price d-flex bg-warning-subtle p-3 mt-3">
                             <div class="border-end pe-5 me-3">
-                                <div class="price fw-bold text-danger" id="retail-price">{{ $formattedRegularPrice }}
+                                <div class="price fw-bold text-danger" id="retail-price">
+                                    {{ $product->formattedDisplayedPrice ? $product->formattedDisplayedPrice : 'Price not available' }}
                                     VNĐ
                                 </div>
                             </div>
-                            <div>
-                                <div class="price fw-bold"><s>{{ $formattedSalePrice }} VNĐ</s></div>
-                            </div>
+                            @if($product->sale_price)
+                                <div class="price fw-bold"><s>{{ $product->formattedRegularPrice }} VNĐ</s></div>
+                            @endif
                         </div>
                         <div class="short-info mt-3">
                             @foreach($productVariations as $productVariation)
@@ -72,7 +81,7 @@
                                         </div>
                                     </div>
                                     <div class="short-color d-flex flex-wrap mt-2">
-                                        @foreach($productVariation->productVariationValue as $variationValue)
+                                        @foreach($productVariation->appProductVariationValue as $variationValue)
                                             <button type="button"
                                                     class="btn btn-outline-secondary me-2 variation-button"
                                                     style="{{ $productVariation->variation_name == 'Color' ? 'background-color: ' . $variationValue->color . ';' : '' }}"
@@ -214,7 +223,7 @@
                                             style="border: none; background: none;">
                                         <i class="fa fa-heart {{ $isFavorite ? 'text-white' : '' }}"></i>
                                         <span
-                                            class="my-2 ms-2">{{ $isFavorite ? 'Thích sảng phầm' : 'Tiết kiệm cho sau này' }} </span>
+                                            class="my-2 ms-2">{{ $isFavorite ? 'Đã yêu thích' : 'Yêu thích' }} </span>
                                     </button>
                                 </li>
                             </ul>
@@ -429,7 +438,13 @@
                                                                     </a>
                                                                 </div>
                                                             @endforeach
-
+                                                        </div>
+                                                        <div class="like-comment">
+                                                            <button class="btn btn-link like-btn"
+                                                                    data-id="{{ $itemComment->id }}">
+                                                                <i class="bi bi-hand-thumbs-up"></i>
+                                                            </button>
+                                                            <span>{{ $itemComment->like_count }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -495,10 +510,6 @@
         </div>
     </div>
 
-    </div>
-
-
-    </div>
     <!-- Sign in / Register Modal -->
     <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -655,17 +666,17 @@
         });
 
         function addToCart(productId, productName, productPrice, productImage, variations) {
-                const xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
             xhr.open('POST', '/add-to-cart', true);
-                xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
             xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        alert('Sản phẩm đã được thêm vào giỏ hàng!');
-                    } else {
-                        alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
-                    }
-                };
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    alert('Sản phẩm đã được thêm vào giỏ hàng!');
+                } else {
+                    alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng!');
+                }
+            };
             xhr.send(JSON.stringify({
                 product_id: productId,
                 product_name: productName,
@@ -673,8 +684,7 @@
                 product_image: productImage,
                 variations: variations
             }));
-            }
-        });
+        }
 
     </script>
 
@@ -815,5 +825,37 @@
                 new StarRating('rating-container', 'rating-value');
             });
         })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.like-btn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var reviewId = this.getAttribute('data-id');
+                    var likeButton = this;
+
+                    fetch(`/reviews/${reviewId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({review_id: reviewId})
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                var likeCountSpan = likeButton.nextElementSibling;
+                                likeCountSpan.textContent = data.like_count + ' Likes';
+                            } else {
+                                console.error(data.message); // Log lỗi nếu có
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+
+                });
+            });
+        });
+
+
     </script>
 @endpush

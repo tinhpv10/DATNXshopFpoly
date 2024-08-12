@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppProductMedia;
 use App\Models\Product;
-use App\Models\ProductMedia;
 use App\Models\Shop;
 use App\Models\ShopFollower;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class ShopController extends Controller
         $productShop = $this->filter($request, $query)->paginate(4);
 
         foreach ($productShop as $productItem) {
-            $productMedia = ProductMedia::where('product_id', $productItem->id)->get();
+            $productMedia = AppProductMedia::where('product_id', $productItem->id)->get();
             $productItem->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
         }
 
@@ -42,7 +42,7 @@ class ShopController extends Controller
         $productShop = $this->filter($request, $query)->paginate(4);
 
         foreach ($productShop as $productItem) {
-            $productMedia = ProductMedia::where('product_id', $productItem->id)->get();
+            $productMedia = AppProductMedia::where('product_id', $productItem->id)->get();
             $productItem->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
         }
 

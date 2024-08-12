@@ -231,5 +231,25 @@ class CommentController extends Controller
         return $imageName;
     }
 
+    public function like(Review $review)
+    {
+        try {
+            // Tăng giá trị cột 'like_count' lên 1 và lưu vào cơ sở dữ liệu
+            $review->increment('like_count');
+            $review->save();
+
+            return response()->json([
+                'success' => true,
+                'like_count' => $review->like_count,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi tăng like count: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+
 
 }

@@ -4,9 +4,9 @@
             <nav style=""
                  aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 py-3">
-                    <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><a href=""
-                                                                              class="text-decoration-none">Library</a>
+                    <li class="breadcrumb-item"><a href="{{ url('/')}}" class="text-decoration-none">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('/post') }}"
+                                                                              class="text-decoration-none">Bài viết</a>
                     </li>
                 </ol>
             </nav>
@@ -102,24 +102,6 @@
 
         </div>
 
-        <div class="section-subscribe d-flex align-items-center flex-wrap flex-column">
-            <div class="subscribe-text mb-3 text-center">
-                <h5 class="mb-0 fs-xs-1">Subscribe on our newsletter</h5>
-                <span>Get daily news on upcoming offers from many suppliers all over the world</span>
-            </div>
-            <div class="subscribe-form">
-                <form action="">
-                    <div class="row">
-                        <div class="col-9">
-                            <input type="text" class="form-control" name="">
-                        </div>
-                        <div class="col-3">
-                            <button class="btn btn-primary">Subscribe</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 @endsection
 @extends('index')
