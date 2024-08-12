@@ -4,8 +4,7 @@ namespace App\Filament\App\Resources;
 
 use App\Filament\App\Resources\ProductVariationResource\Pages;
 use App\Filament\App\Resources\ProductVariationResource\RelationManagers\ProductVariationValueRelationManager;
-use App\Models\ProductVariation;
-use Filament\Forms;
+use App\Models\AppProductVariation;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -15,12 +14,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class ProductVariationResource extends Resource
 {
-    protected static ?string $model = ProductVariation::class;
+    protected static ?string $model = AppProductVariation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-plus';
     protected static ?string $navigationGroup = 'Sản phẩm';

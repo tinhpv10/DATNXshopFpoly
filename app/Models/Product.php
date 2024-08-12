@@ -139,7 +139,7 @@ class Product extends Model
 
     public function productVariation(): HasMany
     {
-        return $this->HasMany(ProductVariation::class);
+        return $this->HasMany(AppProductVariation::class);
     }
 
     public function productStock(): HasMany

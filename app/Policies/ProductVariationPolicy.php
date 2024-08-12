@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\AppProductVariation;
 use App\Models\User;
-use App\Models\ProductVariation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProductVariationPolicy
@@ -21,7 +21,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ProductVariation $productVariation): bool
+    public function view(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('view_product::variation');
     }
@@ -37,7 +37,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ProductVariation $productVariation): bool
+    public function update(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('update_product::variation');
     }
@@ -45,7 +45,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ProductVariation $productVariation): bool
+    public function delete(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('delete_product::variation');
     }
@@ -61,7 +61,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, ProductVariation $productVariation): bool
+    public function forceDelete(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('force_delete_product::variation');
     }
@@ -77,7 +77,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, ProductVariation $productVariation): bool
+    public function restore(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('restore_product::variation');
     }
@@ -93,7 +93,7 @@ class ProductVariationPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, ProductVariation $productVariation): bool
+    public function replicate(User $user, AppProductVariation $productVariation): bool
     {
         return $user->can('replicate_product::variation');
     }

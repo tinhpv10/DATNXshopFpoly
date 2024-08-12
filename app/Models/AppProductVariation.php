@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 
 
-class ProductVariation extends Model
+class AppProductVariation extends Model
 {
     use HasFactory;
 

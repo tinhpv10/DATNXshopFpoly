@@ -10,15 +10,14 @@ class AppProductVariationValue extends Model
 {
     protected $table = 'product_variation_values';
     protected $fillable = [
-        'product_variation_id',
+        'app_product_variation_id',
         'variation_value_name'
     ];
 
 
-
-    public function productVariation(): BelongsTo
+    public function appProductVariation(): BelongsTo
     {
-        return $this->BelongsTo(ProductVariation::class);
+        return $this->BelongsTo(AppProductVariation::class);
     }
 
     public function productAttribute(): HasMany

@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\ProductResource\RelationManagers;
 
 use App\Models\AppProductMedia;
+use App\Models\AppProductVariation;
 use App\Models\AppProductVariationValue;
 use App\Models\ProductAttribute;
 use App\Models\ProductStock;
-use App\Models\ProductVariation;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -32,7 +32,7 @@ class ProductStockRelationManager extends RelationManager
             ->schema([
                 Section::make('')
                     ->schema(function () {
-                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                         $fieldsets = [];
                         foreach ($productVariations as $index => $variation) {
@@ -42,7 +42,7 @@ class ProductStockRelationManager extends RelationManager
                                         ->label('Biến thể')
                                         ->filled()
                                         ->reactive()
-                                        ->options(fn(Get $get) => ProductVariation::query()
+                                        ->options(fn(Get $get) => AppProductVariation::query()
                                             ->where('product_id', $this->ownerRecord->id)
                                             ->pluck('variation_name', 'id'))
                                         ->live(),
@@ -137,7 +137,7 @@ class ProductStockRelationManager extends RelationManager
                             ->schema([
                                 Section::make('')
                                     ->schema(function () {
-                                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                                         $fieldsets = [];
                                         foreach ($productVariations as $index => $variation) {
@@ -147,7 +147,7 @@ class ProductStockRelationManager extends RelationManager
                                                         ->label('Biến thể')
                                                         ->filled()
                                                         ->reactive()
-                                                        ->options(fn(Get $get) => ProductVariation::query()
+                                                        ->options(fn(Get $get) => AppProductVariation::query()
                                                             ->where('product_id', $this->ownerRecord->id)
                                                             ->pluck('variation_name', 'id'))
                                                         ->live(),
@@ -190,7 +190,7 @@ class ProductStockRelationManager extends RelationManager
 
                     ])
                     ->action(function ($data) {
-                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                         $productId = $productVariations->isEmpty() ? null : $productVariations->first()->product_id;
 

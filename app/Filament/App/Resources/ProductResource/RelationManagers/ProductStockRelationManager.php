@@ -4,9 +4,9 @@ namespace App\Filament\App\Resources\ProductResource\RelationManagers;
 
 use App\Models\AppProductMedia;
 use App\Models\AppProductStock;
+use App\Models\AppProductVariation;
 use App\Models\AppProductVariationValue;
 use App\Models\ProductAttribute;
-use App\Models\ProductVariation;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -33,17 +33,17 @@ class ProductStockRelationManager extends RelationManager
             ->schema([
                 Section::make('')
                     ->schema(function () {
-                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                         $fieldsets = [];
                         foreach ($productVariations as $index => $variation) {
                             $fieldsets[] = Fieldset::make("Biến thể {$index}")
                                 ->schema([
-                                    Select::make("product_variation_id[{$index}]")
+                                    Select::make("app_product_variation_id[{$index}]")
                                         ->label('Biến thể')
                                         ->filled()
                                         ->reactive()
-                                        ->options(fn(Get $get) => ProductVariation::query()
+                                        ->options(fn(Get $get) => AppProductVariation::query()
                                             ->where('product_id', $this->ownerRecord->id)
                                             ->pluck('variation_name', 'id'))
                                         ->live(),
@@ -52,7 +52,7 @@ class ProductStockRelationManager extends RelationManager
                                         ->label('Giá trị biến thể')
                                         ->filled()
                                         ->options(fn(Get $get) => AppProductVariationValue::query()
-                                            ->where('product_variation_id', $get("product_variation_id[{$index}]"))
+                                            ->where('app_product_variation_id', $get("app_product_variation_id[{$index}]"))
                                             ->pluck('variation_value_name', 'id'))
                                         ->live(),
                                 ]);
@@ -101,7 +101,7 @@ class ProductStockRelationManager extends RelationManager
 
                         foreach ($listProductAttribute as $attr) {
                             $value = $attr->appProductVariationValue->variation_value_name ?? NULL;
-                            $label = $attr->appProductVariationValue->productVariation->variation_name;
+                            $label = $attr->appProductVariationValue->appProductVariation->variation_name;
 
                             // Concatenate label and value
                             $attributeNames[] = "{$label} : {$value}";
@@ -138,17 +138,17 @@ class ProductStockRelationManager extends RelationManager
                             ->schema([
                                 Section::make('')
                                     ->schema(function () {
-                                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                                         $fieldsets = [];
                                         foreach ($productVariations as $index => $variation) {
                                             $fieldsets[] = Fieldset::make("Biến thể {$index}")
                                                 ->schema([
-                                                    Select::make("product_variation_id[{$index}]")
+                                                    Select::make("app_product_variation_id[{$index}]")
                                                         ->label('Biến thể')
                                                         ->filled()
                                                         ->reactive()
-                                                        ->options(fn(Get $get) => ProductVariation::query()
+                                                        ->options(fn(Get $get) => AppProductVariation::query()
                                                             ->where('product_id', $this->ownerRecord->id)
                                                             ->pluck('variation_name', 'id'))
                                                         ->live(),
@@ -157,7 +157,7 @@ class ProductStockRelationManager extends RelationManager
                                                         ->label('Giá trị biến thể')
                                                         ->filled()
                                                         ->options(fn(Get $get) => AppProductVariationValue::query()
-                                                            ->where('product_variation_id', $get("product_variation_id[{$index}]"))
+                                                            ->where('app_product_variation_id', $get("app_product_variation_id[{$index}]"))
                                                             ->pluck('variation_value_name', 'id'))
                                                         ->live(),
                                                 ]);
@@ -191,7 +191,7 @@ class ProductStockRelationManager extends RelationManager
 
                     ])
                     ->action(function ($data) {
-                        $productVariations = ProductVariation::where('product_id', $this->ownerRecord->id)->get();
+                        $productVariations = AppProductVariation::where('product_id', $this->ownerRecord->id)->get();
 
                         $productId = $productVariations->isEmpty() ? null : $productVariations->first()->product_id;
 
@@ -227,8 +227,8 @@ class ProductStockRelationManager extends RelationManager
                             $productStockId = $productStock->id;
 
                             foreach ($variationData as $key => $value) {
-                                if (strpos($key, 'product_variation_id') === 0) {
-                                    $index = str_replace(['product_variation_id[', ']'], '', $key);
+                                if (strpos($key, 'app_product_variation_id') === 0) {
+                                    $index = str_replace(['app_product_variation_id[', ']'], '', $key);
                                     $productVariationId = $value;
                                     $productVariationValueIdKey = "app_product_variation_value_id[{$index}]";
                                     if (isset($variationData[$productVariationValueIdKey])) {

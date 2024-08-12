@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\AppProductMedia;
 use App\Models\AppProductStock;
+use App\Models\AppProductVariation;
 use App\Models\AppProductVariationValue;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductVariation;
 use App\Models\Review;
 use App\Models\Shop;
 use App\Models\Wishlist;
@@ -102,7 +102,7 @@ class ProductController extends Controller
         // Dữ liệu cần thiết khác
         $Categories = Category::with('children')->whereNull('parent_id')->get();
         $Brands = Brand::all();
-        $productVariations = ProductVariation::all();
+        $productVariations = AppProductVariation::all();
         $productProductVariationValue = AppProductVariationValue::all();
         $maxProductPrice = Product::max('sale_price');
 
@@ -165,7 +165,7 @@ class ProductController extends Controller
         $products->formattedSalePrice = number_format($products->sale_price, 0, ',', '.');
         $products->displayedPrice = $products->sale_price ? $products->sale_price : $products->regular_price;
         $products->formattedDisplayedPrice = number_format($products->displayedPrice, 0, ',', '.');
-        $productVariations = ProductVariation::where('product_id', $products->id)->with('appProductVariationValue')->get();
+        $productVariations = AppProductVariation::where('product_id', $products->id)->with('appProductVariationValue')->get();
         $query = Product::query()->where('pause', 0);
         $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
 

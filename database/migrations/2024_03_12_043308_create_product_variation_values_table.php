@@ -1,9 +1,10 @@
 <?php
 
+use App\Models\AppProductVariation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\ProductVariation;
+
 return new class extends Migration
 {
     /**
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('product_variation_values', function (Blueprint $table) {
             $table->id()->comment('Mã GTBT');
-            $table->foreignIdFor(ProductVariation::class)->comment('Mã biến thể');
+            $table->foreignIdFor(AppProductVariation::class)->comment('Mã biến thể');
             $table->string('variation_value_name')->nullable()->comment('Tên GTBT');
             $table->timestamps();
         });
