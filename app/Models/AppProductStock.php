@@ -31,7 +31,6 @@ class AppProductStock extends Model
     {
         return $this->BelongsTo(Product::class);
     }
-
     public function productMedia(): BelongsTo
     {
         return $this->BelongsTo(AppProductMedia::class);

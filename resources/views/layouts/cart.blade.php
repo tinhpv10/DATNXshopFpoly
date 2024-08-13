@@ -15,11 +15,10 @@
                                             <div class="box-checks">
                                                 <div class="form-check my-4">
                                                     <input class="item-checkbox" type="checkbox"
-                                                           value="{{ $cartItem->id }}"
-                                                           data-cart-id="{{ $cartItem->id }}"
-                                                           data-price="{{ $cartItem->price }}" checked>
-                                                    <label class="form-check-label"
-                                                           for="selectItem-{{ $cartItem->id }}"></label>
+                                                           name="item_{{ $cartItem['product_id'] }}"
+                                                           value="{{ $cartItem['id'] }}"
+                                                           data-cart-id="{{ $cartItem['id'] }}"
+                                                           data-price="{{ $cartItem['price'] }}" checked>
                                                 </div>
                                             </div>
                                             <div class="box-img me-3 ms-2">
@@ -41,7 +40,7 @@
                                         <div class="price text-end p-2" id="itemPrice-{{ $cartItem->id }}"
                                              data-retail-price="{{ $cartItem->productStock->retail_price }}">
                                             {{ number_format($cartItem->price, 0, ',', '.') }} đ
-                                            <!-- Hiển thị giá đã được cập nhật -->
+                                            <!-- Hiển thị giá đã được cập nhật -->/-strong/-heart:>:o:-((:-h
                                         </div>
                                         <div class="quantity">
                                             <div class="input-group">
@@ -88,8 +87,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
 
                         <div class="card p-3">
-                            <div class="Address d-flex justify-content-between">
-                                <span>Địa Chỉ Nhận Hàng</span>
+                            <div class="Address d-flex justify-content-between">/-strong/-heart:>:o:-((:-h<span>Địa Chỉ Nhận Hàng</span>
                                 <div>
                                     <a href="{{ route('profile.address') }}"
                                        class="product-link text-decoration-none text-black m-3">Xem
@@ -132,235 +130,240 @@
                             <div class="d-flex justify-content-between">
                                 <div class="p-2"><h6>Tổng tiền hàng:</h6></div>
                                 <div class="price text-end p-2"
-                                     id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }} đ
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="p-2"><h6>Phí Vận Chuyển:</h6></div>
-                                <div class="price text-end p-2"
-                                     id="shippingFee">{{ $shippingFee ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' }}</div>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6></div>
-                                <div class="price text-end p-2"
-                                     id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} đ
-                                </div>
-                            </div>
-                            <form action="{{ route('vnpay.payment') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="amount" value="20000"> <!-- Giá trị số tiền thanh toán -->
-                                <div class="justify-content-between">
-                                    <button type="submit" class="btn btn-primary w-100">Thanh Toán</button>
-                                </div>
-                            </form>
-
-                            <div class="payment d-flex justify-content-center">
-                                <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-1.png') }}" alt="">
-                                <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-2.png') }}" alt="">
-                                <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-3.png') }}" alt="">
-                                <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-4.png') }}" alt="">
-                                <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-5.png') }}" alt="">
+                                /-strong/-heart:>:o:-((:-hid="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }}
+                                đ
                             </div>
                         </div>
+                        <div class="d-flex justify-content-between">
+                            <div class="p-2"><h6>Phí Vận Chuyển:</h6></div>
+                            <div class="price text-end p-2"
+                                 id="shippingFee">{{ $shippingFee ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' }}</div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6></div>
+                            <div class="price text-end p-2"
+                                 id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} đ
+                            </div>
+                        </div>
+                        <form id="paymentForm" action="{{ route('vnpay.payment') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="amount" value="{{ $totalPayment }}">
+                            <div class="justify-content-between">
+                                <button type="submit" class="btn btn-primary w-100">Thanh Toán</button>
+                            </div>
+                        </form>
+
+                        <div class="payment d-flex justify-content-center">
+                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-1.png') }}" alt="">
+                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-2.png') }}" alt="">
+                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-3.png') }}" alt="">
+                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-4.png') }}" alt="">
+                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-5.png') }}" alt="">
+                        </div>
                     </div>
-
-
                 </div>
+
+
             </div>
+        </div>
 
-            <div class="service">
-                <div class="row justify-content-center my-4">
-                    <div class="col-12 col-md-6 col-lg-3 j">
-                        <div class="d-flex py-3">
-                            <div class="service-icon me-3">
-                                <i class="fa-solid fa-lock"></i>
-                            </div>
-                            <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
-                            </div>
+        <div class="service">
+            <div class="row justify-content-center my-4">
+                <div class="col-12 col-md-6 col-lg-3 j">
+                    <div class="d-flex py-3">
+                        <div class="service-icon me-3">
+                            <i class="fa-solid fa-lock"></i>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="d-flex py-3">
-                            <div class="service-icon me-3">
-                                <i class="fa-solid fa-message"></i>
-                            </div>
-                            <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="d-flex py-3">
-                            <div class="service-icon me-3">
-                                <i class="fa-solid fa-truck"></i>
-                            </div>
-                            <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
-                            </div>
+                        <div class="service-content">
+                            <div class="title">Secure payment</div>
+                            <div class="text">Have you ever finally just</div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="list-product mt-4">
-                <h5 class="mb-4">Saved for later</h5>
-                <div class="row">
-                    <!-- Products will go here -->
+                /-strong/-heart:>:o:-((:-h
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="d-flex py-3">
+                        <div class="service-icon me-3">
+                            <i class="fa-solid fa-message"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="title">Secure payment</div>
+                            <div class="text">Have you ever finally just</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="banner d-flex justify-content-between align-items-center">
-                <div class="text">
-                    <h4 class="text-white">Super discount on more than 100 USD</h4>
-                    <div class="text-white">Have you ever finally just write dummy info</div>
-                </div>
-                <div class="button">
-                    <button class="btn btn-warning">Shop now</button>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="d-flex py-3">
+                        <div class="service-icon me-3">
+                            <i class="fa-solid fa-truck"></i>
+                        </div>
+                        <div class="service-content">
+                            <div class="title">Secure payment</div>
+                            <div class="text">Have you ever finally just</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="list-product mt-4">
+            <h5 class="mb-4">Saved for later</h5>
+            <div class="row">
+                <!-- Products will go here -->
+            </div>
+        </div>
+        <div class="banner d-flex justify-content-between align-items-center">
+            <div class="text">
+                <h4 class="text-white">Super discount on more than 100 USD</h4>
+                <div class="text-white">Have you ever finally just write dummy info</div>
+            </div>
+            <div class="button">
+                <button class="btn btn-warning">Shop now</button>
+            </div>
+        </div>
+    </div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Lấy checkbox "Chọn tất cả"
             var selectAllCheckbox = document.getElementById('selectAll');
 
-            // Khi checkbox "Chọn tất cả" thay đổi
             selectAllCheckbox.addEventListener('change', function () {
-                // Lấy tất cả các checkbox của sản phẩm
                 var itemCheckboxes = document.querySelectorAll('.box-checks .item-checkbox');
-
-                // Cập nhật trạng thái của tất cả các checkbox sản phẩm dựa trên trạng thái của checkbox "Chọn tất cả"
                 itemCheckboxes.forEach(function (checkbox) {
                     checkbox.checked = selectAllCheckbox.checked;
                 });
-
-                // Cập nhật tổng số tiền khi trạng thái của checkbox thay đổi
                 updateTotals();
             });
 
-            // Khi bất kỳ checkbox sản phẩm nào thay đổi trạng thái
             document.querySelectorAll('.box-checks .item-checkbox').forEach(function (checkbox) {
                 checkbox.addEventListener('change', function () {
-                    // Cập nhật tổng số tiền và trạng thái của checkbox "Chọn tất cả"
                     updateTotals();
                 });
             });
 
-            // Cập nhật tổng số tiền và trạng thái của checkbox "Chọn tất cả" khi trang tải
             function updateTotals() {
                 var totalPrice = 0;
                 var shippingFee = 30000; // Giả định phí vận chuyển cố định là 30,000 đ
-
-                // Lấy tất cả các checkbox đã được chọn
                 var selectedCheckboxes = document.querySelectorAll('.box-checks .item-checkbox:checked');
 
-                // Tính tổng số tiền cho các sản phẩm đã chọn
                 selectedCheckboxes.forEach(function (checkbox) {
-                    totalPrice += parseInt(checkbox.getAttribute('data-price'));
+                    /-strong/ - heart
+                :>:
+                    o:-((: - htotalPrice += parseInt(checkbox.getAttribute('data-price'));
                 });
 
                 var totalPayment = totalPrice + shippingFee;
-
-                // Cập nhật giá trong DOM
                 document.getElementById('totalPrice').textContent = `${totalPrice.toLocaleString()} đ`;
                 document.getElementById('shippingFee').textContent = `${shippingFee.toLocaleString()} đ`;
                 document.getElementById('totalPayment').textContent = `${totalPayment.toLocaleString()} đ`;
 
-                // Cập nhật trạng thái của checkbox "Chọn tất cả"
                 var allCheckboxes = document.querySelectorAll('.box-checks .item-checkbox');
                 var allChecked = Array.from(allCheckboxes).every(checkbox => checkbox.checked);
                 selectAllCheckbox.checked = allChecked;
                 selectAllCheckbox.indeterminate = !allChecked && Array.from(allCheckboxes).some(checkbox => checkbox.checked);
             }
 
-            // Gọi hàm cập nhật tổng số tiền và trạng thái của checkbox "Chọn tất cả" khi trang tải
             updateTotals();
-        });
 
-        function updateQuantity(cartItemId, increment) {
-            const quantityInput = document.getElementById(`quantity-${cartItemId}`);
-            const priceElement = document.getElementById(`itemPrice-${cartItemId}`);
-            const checkbox = document.querySelector(`.box-checks .item-checkbox[data-cart-id="${cartItemId}"]`);
+            function updateQuantity(cartItemId, increment) {
+                const quantityInput = document.getElementById(`quantity-${cartItemId}`);
+                const priceElement = document.getElementById(`itemPrice-${cartItemId}`);
+                const checkbox = document.querySelector(`.box-checks .item-checkbox[data-cart-id="${cartItemId}"]`);
 
-            if (!quantityInput || !priceElement || !checkbox) {
-                console.error('Element not found.');
-                return;
-            }
+                if (!quantityInput || !priceElement || !checkbox) {
+                    console.error('Element not found.');
+                    return;
+                }
 
-            let currentQuantity = parseInt(quantityInput.value);
-            let newQuantity = currentQuantity + increment;
+                let currentQuantity = parseInt(quantityInput.value);
+                let newQuantity = currentQuantity + increment;
 
-            if (newQuantity < 1) newQuantity = 1;
+                if (newQuantity < 1) newQuantity = 1;
 
-            quantityInput.value = newQuantity;
+                quantityInput.value = newQuantity;
 
-            const retailPrice = parseFloat(priceElement.getAttribute('data-retail-price'));
-            const itemPrice = retailPrice * newQuantity;
+                const retailPrice = parseFloat(priceElement.getAttribute('data-retail-price'));
+                const itemPrice = retailPrice * newQuantity;
 
-            // Cập nhật giá sản phẩm
-            fetch(`/cart/update-quantity/${cartItemId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({quantity: newQuantity})
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        priceElement.innerText = new Intl.NumberFormat('vi-VN').format(itemPrice) + ' đ';
-                        updateCartTotals(data.totalPrice, data.totalPayment);
-
-                        // Đánh dấu checkbox nếu chưa được chọn
-                        if (!checkbox.checked) {
-                            checkbox.checked = true;
-                            updateTotals(); // Cập nhật tổng số tiền và tổng thanh toán
-                        }
-                    } else {
-                        console.error('Error:', data.message);
-                    }
+                fetch(`/cart/update-quantity/${cartItemId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({quantity: newQuantity})
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            priceElement.innerText = new Intl.NumberFormat('vi-VN').format(itemPrice) + ' đ';
+                            updateCartTotals(data.totalPrice, data.totalPayment);
 
-            function updateCartTotals(totalPrice, totalPayment) {
-                const totalPriceElement = document.getElementById('totalPrice');
-                const totalPaymentElement = document.getElementById('totalPayment');
+                            if (!checkbox.checked) {
+                                checkbox.checked = true;
+                                updateTotals();
+                            }
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        /-strong/ - heart
+                    :>:
+                        o:-((: - h
+                    });
 
-                if (totalPriceElement && totalPaymentElement) {
-                    totalPriceElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' đ';
-                    totalPaymentElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPayment) + ' đ';
+                function updateCartTotals(totalPrice, totalPayment) {
+                    const totalPriceElement = document.getElementById('totalPrice');
+                    const totalPaymentElement = document.getElementById('totalPayment');
+
+                    if (totalPriceElement && totalPaymentElement) {
+                        totalPriceElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' đ';
+                        totalPaymentElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPayment) + ' đ';
+                    }
                 }
             }
-        }
 
-        @if(session('success'))
+            @if(session('success'))
+            Swal.fire({
+                title: 'Thành công!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+            @endif
 
-        Swal.fire({
-            title: 'Thành công!',
-            text: '{{ session('success') }}',
-            icon: 'success',
-            confirmButtonText: 'OK'
+            @if($errors->any())
+            Swal.fire({
+                title: 'Lỗi!',
+                text: '{{ $errors->first() }}',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            @endif
+
+            var form = document.getElementById('paymentForm');
+
+            form.addEventListener('submit', function (e) {
+                // Xóa tất cả input ẩn trước khi thêm mới
+                Array.from(form.querySelectorAll('input[type="hidden"]')).forEach(input => {
+                    if (input.name !== '_token') { // Giữ lại CSRF token
+                        input.remove();
+                    }
+                });
+
+                var selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                selectedCheckboxes.forEach(function (checkbox) {
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = checkbox.getAttribute('name');
+                    hiddenInput.value = checkbox.getAttribute('value');
+                    form.appendChild(hiddenInput);
+                });
+            });
         });
 
-        @endif
-
-        @if($errors->any())
-
-        Swal.fire({
-            title: 'Lỗi!',
-            text: '{{ $errors->first() }}',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-
-        @endif
     </script>
 
 @endsection

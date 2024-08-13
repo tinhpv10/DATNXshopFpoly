@@ -21,6 +21,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfileEditController;
 use App\Http\Controllers\RedirectloggeInAppController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\WishListController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Artisan;
@@ -29,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
 
+    //Sản phẩm
+
     Route::get('/search', [ProductController::class, 'search'])->name('product.search');
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
@@ -36,6 +39,7 @@ Route::prefix('/')->group(function () {
     Route::post('/add-to-cart', [ProductController::class, 'addToCart'])->name('product.addToCart');
     Route::post('/product/{id}', [ProductController::class, 'showPost']);
     Route::post('/get-retail-price', [ProductController::class, 'getRetailPrice']);
+    //Giỏ hàng
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('product.addToCart');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
     Route::post('/update-cart', [CartController::class, 'updateQuantity'])->name('update.cart');
@@ -43,13 +47,17 @@ Route::prefix('/')->group(function () {
     Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::post('/cart/retail-price', [CartController::class, 'getRetailPrice'])->name('cart.getRetailPrice');
     Route::post('/cart/update-selected-items', [CartController::class, 'updateSelectedItems'])->name('cart.update-selected-items');
-    Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::group(['middleware' => ['auth']], function () {
+        Route::post('/payment', [VNPayController::class, 'create'])->name('vnpay.payment');
+        Route::get('/payment-callback', [VNPayController::class, 'paymentCallback'])->name('payment.callback');
+    });
+    //Đánh giá
     Route::post('/uploadComment', [CommentController::class, 'uploadComment'])->name('uploadComment');
     Route::post('/uploadImage', [CommentController::class, 'uploadImage'])->name('uploadImage');
     Route::post('/deleteImage', [CommentController::class, 'deleteImage'])->name('deleteImage');
     Route::post('/product/{id}', [ProductController::class, 'showPost']);
-
-
+    //Yêu thích
+    Route::post('/wishlist/toggle/{productId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
     Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
     Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');

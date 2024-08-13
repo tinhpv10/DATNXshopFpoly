@@ -67,14 +67,13 @@
                         </div>
                         <div class="trade-price d-flex bg-warning-subtle p-3 mt-3">
                             <div class="border-end pe-5 me-3">
-                                <div class="price fw-bold text-danger" id="retail-price">
-                                    {{ $product->formattedDisplayedPrice ? $product->formattedDisplayedPrice : 'Price not available' }}
+                                <div class="price fw-bold text-danger" id="retail-price">{{ $formattedRegularPrice }}
                                     VNĐ
                                 </div>
                             </div>
-                            @if($product->sale_price)
-                                <div class="price fw-bold"><s>{{ $product->formattedRegularPrice }} VNĐ</s></div>
-                            @endif
+                            <div>
+                                <div class="price fw-bold"><s>{{ $formattedSalePrice }} VNĐ</s></div>
+                            </div>
                         </div>
                         <div class="short-info mt-3">
                             @foreach($productVariations as $productVariation)
@@ -167,6 +166,7 @@
 
 
                 </script>
+
 
                 <div class="col-12 col-md-3 col-lg-3">
                     <div class="box-right border rounded-2 p-3">
@@ -670,6 +670,8 @@
                 variations: variations
             }));
         }
+        })
+        ;
 
     </script>
 

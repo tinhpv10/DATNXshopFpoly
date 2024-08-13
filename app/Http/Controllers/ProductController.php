@@ -160,13 +160,10 @@ class ProductController extends Controller
         $products->save();
         $productMedia = AppProductMedia::where('product_id', $products->id)->get();
         $products->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
-        $products->formattedRegularPrice = number_format($products->regular_price, 0, ',', '.');
-        $products->formattedSalePrice = number_format($products->sale_price, 0, ',', '.');
-        $products->displayedPrice = $products->sale_price ? $products->sale_price : $products->regular_price;
-        $products->formattedDisplayedPrice = number_format($products->displayedPrice, 0, ',', '.');
+        $formattedRegularPrice = number_format($products->regular_price, 0, ',', '.');
+        $formattedSalePrice = number_format($products->sale_price, 0, ',', '.');
         $productVariations = AppProductVariation::where('product_id', $products->id)->with('appProductVariationValue')->get();
-        $query = Product::query()->where('pause', 0);
-        $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
+
 
         $favoriteProductIds = Wishlist::where('user_id', auth()->id())->pluck('product_id');
         $favoriteProducts = Product::whereIn('id', $favoriteProductIds)->get();
@@ -190,6 +187,8 @@ class ProductController extends Controller
             'product' => $products,
             'productMedia' => $productMedia,
             'productVariations' => $productVariations,
+            'formattedRegularPrice' => $formattedRegularPrice,
+            'formattedSalePrice' => $formattedSalePrice,
             'favoriteProducts' => $favoriteProducts,
             'selected_variation_id' => $selected_variation_id,
             'shop' => $shop,
@@ -216,7 +215,7 @@ class ProductController extends Controller
 
         // Tìm kiếm tất cả các ProductAttribute phù hợp với biến thể đã chọn
         $productAttributes = ProductAttribute::whereIn('variation_id', $variationIds)
-            ->whereHas('productVariationValue', function ($query) use ($variationValues) {
+            ->whereHas('appProductVariationValue', function ($query) use ($variationValues) {
                 $query->whereIn('variation_value_name', $variationValues);
             })
             ->get();
@@ -225,7 +224,7 @@ class ProductController extends Controller
         $matchedStockIds = [];
 
         foreach ($productAttributes as $productAttribute) {
-            $stockId = $productAttribute->product_stock_id;
+            $stockId = $productAttribute->app_product_stock_id;
 
             if (!isset($matchedStockIds[$stockId])) {
                 $matchedStockIds[$stockId] = 0;
