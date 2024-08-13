@@ -99,30 +99,31 @@
                                class="product-link text-decoration-none text-black">
                                 <div class="box-img">
                                     @if ($product->main_image)
-                                        <img src="{{ asset('storage/' . $product->main_image) }}"
-                                             alt="Product Image">
+                                        <img src="{{ asset('storage/' . $product->main_image) }}" alt="Product Image">
                                     @else
-                                        <img
-                                            src="https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg"
-                                            alt="Default Image">
+                                        <img src="https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg"
+                                             alt="Default Image">
                                     @endif
                                 </div>
                                 <div class="info-product">
-                                    <div class="d-flex align-items-center">
-                                        <div class="product-price text-decoration-line-through me-3">
-                                            {{ $product->formattedRegularPrice }}VND
+                                    <div class="price-sale-container">
+                                        <div class="salePrice">
+                                            {{ $product->formattedSalePrice }} VND
                                         </div>
-                                        <div class="salePrice">{{ $product->formattedSalePrice }}VND</div>
+                                        <div class="product-price">
+                                            {{ $product->formattedRegularPrice }} VND
+                                        </div>
                                     </div>
-                                    <div class="title-name fs-5">{{$product->name}}</div>
-                                    <div class="title-product">{{$product->description}}</div>
+                                    <div class="title-name fs-5">{{ $product->name }}</div>
+                                    <div class="title-product">{{ $product->description }}</div>
                                 </div>
                             </a>
                         </div>
                     @endforeach
                 </div>
-            </div>
 
+
+            </div>
 
         </div>
 

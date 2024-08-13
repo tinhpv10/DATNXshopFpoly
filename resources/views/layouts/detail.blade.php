@@ -36,7 +36,7 @@
                     <div class="box-center">
                         <div class="text-success"><i class="bi bi-check2 me-2"></i>Còn hàng</div>
                         <h5>{{ $product->name }}</h5>
-                        <div class="rating d-flex">
+                        <div class="rating1 d-flex">
                             <div class="star text-warning pe-3 me-3 border-end">
                                 <?php
                                 $fullStars = floor($product->rating);
@@ -54,11 +54,15 @@
                                 <span class="ms-2">{{ number_format($product->rating, 1) }}</span>
                             </div>
                             <div class="text-body-tertiary pe-3 me-3 border-end">
-                                <i class="bi bi-chat-left-dots"></i> <span class="ms-2">{{ $product->sold_count }} Lượt xem</span>
+                                <i class="bi bi-chat-left-dots"></i> <span class="ms-2">{{ $product->view_count }} Lượt xem</span>
                             </div>
                             <div class="text-body-tertiary">
                                 <i class="bi bi-bag-check"></i> <span
-                                    class="ms-2">{{ $product->view_count }} Đã bán</span>
+                                    class="ms-2">@if($product->sold_count > 0)
+                                        {{ $product->sold_count }} lượt bán
+                                    @else
+                                        Chưa có lượt bán
+                                    @endif</span>
                             </div>
                         </div>
                         <div class="trade-price d-flex bg-warning-subtle p-3 mt-3">
@@ -408,7 +412,6 @@
                                                 </div>
                                             </form>
                                         </div>
-
                                         <hr>
                                         {{-- hiển thị bình luận của người dùng --}}
                                         @if(count($listComment) > 0)
@@ -448,7 +451,9 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-                                            {{ $listComment->links() }}
+                                                <div class="pagination-menu">
+                                                    {{ $listComment->links() }}
+                                                </div>
                                         @else
                                             <h5>CHƯA CÓ ĐÁNH GIÁ</h5>
                                         @endif
@@ -458,26 +463,6 @@
                                      aria-labelledby="profile-tab" tabindex="0">
                                     <div class="py-3">
                                         <p>{{ $product->description}}</p>
-                                        <div class="table-responsive w-50 my-4">
-                                            <table class="table table-bordered">
-                                                <tbody>
-                                                @foreach($productVariations as $productVariation)
-                                                    <tr>
-                                                        <td>{{ $productVariation->variation_name }}</td>
-                                                        <td>
-                                                            <span>
-                                                                @if(isset($variationValueNames[$productVariation->id]))
-                                                                    {{ $variationValueNames[$productVariation->id] }}
-                                                                @else
-                                                                    {{--Xử lý trường hợp không tìm thấy giá trị biến thể --}}
-                                                                @endif
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -511,129 +496,129 @@
 
 
     <!-- Sign in / Register Modal -->
-    <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class="icon-close"></i></span>
-                    </button>
+    {{--    <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">--}}
+    {{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
+    {{--            <div class="modal-content">--}}
+    {{--                <div class="modal-body">--}}
+    {{--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+    {{--                        <span aria-hidden="true"><i class="icon-close"></i></span>--}}
+    {{--                    </button>--}}
 
-                    <div class="form-box">
-                        <div class="form-tab">
-                            <ul class="nav nav-pills nav-fill nav-border-anim" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin"
-                                       role="tab" aria-controls="signin" aria-selected="true">Sign In</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab"
-                                       aria-controls="register" aria-selected="false">Register</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="tab-content-5">
-                                <div class="tab-pane fade show active" id="signin" role="tabpanel"
-                                     aria-labelledby="signin-tab">
-                                    <form action="#">
-                                        <div class="form-group">
-                                            <label for="singin-email">Username or email address *</label>
-                                            <input type="text" class="form-control" id="singin-email"
-                                                   name="singin-email" required>
-                                        </div><!-- End .form-group -->
+    {{--                    <div class="form-box">--}}
+    {{--                        <div class="form-tab">--}}
+    {{--                            <ul class="nav nav-pills nav-fill nav-border-anim" role="tablist">--}}
+    {{--                                <li class="nav-item">--}}
+    {{--                                    <a class="nav-link active" id="signin-tab" data-toggle="tab" href="#signin"--}}
+    {{--                                       role="tab" aria-controls="signin" aria-selected="true">Sign In</a>--}}
+    {{--                                </li>--}}
+    {{--                                <li class="nav-item">--}}
+    {{--                                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab"--}}
+    {{--                                       aria-controls="register" aria-selected="false">Register</a>--}}
+    {{--                                </li>--}}
+    {{--                            </ul>--}}
+    {{--                            <div class="tab-content" id="tab-content-5">--}}
+    {{--                                <div class="tab-pane fade show active" id="signin" role="tabpanel"--}}
+    {{--                                     aria-labelledby="signin-tab">--}}
+    {{--                                    <form action="#">--}}
+    {{--                                        <div class="form-group">--}}
+    {{--                                            <label for="singin-email">Username or email address *</label>--}}
+    {{--                                            <input type="text" class="form-control" id="singin-email"--}}
+    {{--                                                   name="singin-email" required>--}}
+    {{--                                        </div><!-- End .form-group -->--}}
 
-                                        <div class="form-group">
-                                            <label for="singin-password">Password *</label>
-                                            <input type="password" class="form-control" id="singin-password"
-                                                   name="singin-password" required>
-                                        </div><!-- End .form-group -->
+    {{--                                        <div class="form-group">--}}
+    {{--                                            <label for="singin-password">Password *</label>--}}
+    {{--                                            <input type="password" class="form-control" id="singin-password"--}}
+    {{--                                                   name="singin-password" required>--}}
+    {{--                                        </div><!-- End .form-group -->--}}
 
-                                        <div class="form-footer">
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>LOG IN</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
+    {{--                                        <div class="form-footer">--}}
+    {{--                                            <button type="submit" class="btn btn-outline-primary-2">--}}
+    {{--                                                <span>LOG IN</span>--}}
+    {{--                                                <i class="icon-long-arrow-right"></i>--}}
+    {{--                                            </button>--}}
 
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input"
-                                                       id="signin-remember">
-                                                <label class="custom-control-label" for="signin-remember">Remember
-                                                    Me</label>
-                                            </div><!-- End .custom-checkbox -->
+    {{--                                            <div class="custom-control custom-checkbox">--}}
+    {{--                                                <input type="checkbox" class="custom-control-input"--}}
+    {{--                                                       id="signin-remember">--}}
+    {{--                                                <label class="custom-control-label" for="signin-remember">Remember--}}
+    {{--                                                    Me</label>--}}
+    {{--                                            </div><!-- End .custom-checkbox -->--}}
 
-                                            <a href="#" class="forgot-link">Forgot Your Password?</a>
-                                        </div><!-- End .form-footer -->
-                                    </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
-                                    <form action="#">
-                                        <div class="form-group">
-                                            <label for="register-email">Your email address *</label>
-                                            <input type="email" class="form-control" id="register-email"
-                                                   name="register-email" required>
-                                        </div><!-- End .form-group -->
+    {{--                                            <a href="#" class="forgot-link">Forgot Your Password?</a>--}}
+    {{--                                        </div><!-- End .form-footer -->--}}
+    {{--                                    </form>--}}
+    {{--                                    <div class="form-choice">--}}
+    {{--                                        <p class="text-center">or sign in with</p>--}}
+    {{--                                        <div class="row">--}}
+    {{--                                            <div class="col-sm-6">--}}
+    {{--                                                <a href="#" class="btn btn-login btn-g">--}}
+    {{--                                                    <i class="icon-google"></i>--}}
+    {{--                                                    Login With Google--}}
+    {{--                                                </a>--}}
+    {{--                                            </div><!-- End .col-6 -->--}}
+    {{--                                            <div class="col-sm-6">--}}
+    {{--                                                <a href="#" class="btn btn-login btn-f">--}}
+    {{--                                                    <i class="icon-facebook-f"></i>--}}
+    {{--                                                    Login With Facebook--}}
+    {{--                                                </a>--}}
+    {{--                                            </div><!-- End .col-6 -->--}}
+    {{--                                        </div><!-- End .row -->--}}
+    {{--                                    </div><!-- End .form-choice -->--}}
+    {{--                                </div><!-- .End .tab-pane -->--}}
+    {{--                                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">--}}
+    {{--                                    <form action="#">--}}
+    {{--                                        <div class="form-group">--}}
+    {{--                                            <label for="register-email">Your email address *</label>--}}
+    {{--                                            <input type="email" class="form-control" id="register-email"--}}
+    {{--                                                   name="register-email" required>--}}
+    {{--                                        </div><!-- End .form-group -->--}}
 
-                                        <div class="form-group">
-                                            <label for="register-password">Password *</label>
-                                            <input type="password" class="form-control" id="register-password"
-                                                   name="register-password" required>
-                                        </div><!-- End .form-group -->
+    {{--                                        <div class="form-group">--}}
+    {{--                                            <label for="register-password">Password *</label>--}}
+    {{--                                            <input type="password" class="form-control" id="register-password"--}}
+    {{--                                                   name="register-password" required>--}}
+    {{--                                        </div><!-- End .form-group -->--}}
 
-                                        <div class="form-footer">
-                                            <button type="submit" class="btn btn-outline-primary-2">
-                                                <span>SIGN UP</span>
-                                                <i class="icon-long-arrow-right"></i>
-                                            </button>
+    {{--                                        <div class="form-footer">--}}
+    {{--                                            <button type="submit" class="btn btn-outline-primary-2">--}}
+    {{--                                                <span>SIGN UP</span>--}}
+    {{--                                                <i class="icon-long-arrow-right"></i>--}}
+    {{--                                            </button>--}}
 
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="register-policy"
-                                                       required>
-                                                <label class="custom-control-label" for="register-policy">I agree to the
-                                                    <a href="#">privacy policy</a> *</label>
-                                            </div><!-- End .custom-checkbox -->
-                                        </div><!-- End .form-footer -->
-                                    </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login  btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
-                                </div><!-- .End .tab-pane -->
-                            </div><!-- End .tab-content -->
-                        </div><!-- End .form-tab -->
-                    </div><!-- End .form-box -->
-                </div><!-- End .modal-body -->
-            </div><!-- End .modal-content -->
-        </div><!-- End .modal-dialog -->
-    </div><!-- End .modal -->
+    {{--                                            <div class="custom-control custom-checkbox">--}}
+    {{--                                                <input type="checkbox" class="custom-control-input" id="register-policy"--}}
+    {{--                                                       required>--}}
+    {{--                                                <label class="custom-control-label" for="register-policy">I agree to the--}}
+    {{--                                                    <a href="#">privacy policy</a> *</label>--}}
+    {{--                                            </div><!-- End .custom-checkbox -->--}}
+    {{--                                        </div><!-- End .form-footer -->--}}
+    {{--                                    </form>--}}
+    {{--                                    <div class="form-choice">--}}
+    {{--                                        <p class="text-center">or sign in with</p>--}}
+    {{--                                        <div class="row">--}}
+    {{--                                            <div class="col-sm-6">--}}
+    {{--                                                <a href="#" class="btn btn-login btn-g">--}}
+    {{--                                                    <i class="icon-google"></i>--}}
+    {{--                                                    Login With Google--}}
+    {{--                                                </a>--}}
+    {{--                                            </div><!-- End .col-6 -->--}}
+    {{--                                            <div class="col-sm-6">--}}
+    {{--                                                <a href="#" class="btn btn-login  btn-f">--}}
+    {{--                                                    <i class="icon-facebook-f"></i>--}}
+    {{--                                                    Login With Facebook--}}
+    {{--                                                </a>--}}
+    {{--                                            </div><!-- End .col-6 -->--}}
+    {{--                                        </div><!-- End .row -->--}}
+    {{--                                    </div><!-- End .form-choice -->--}}
+    {{--                                </div><!-- .End .tab-pane -->--}}
+    {{--                            </div><!-- End .tab-content -->--}}
+    {{--                        </div><!-- End .form-tab -->--}}
+    {{--                    </div><!-- End .form-box -->--}}
+    {{--                </div><!-- End .modal-body -->--}}
+    {{--            </div><!-- End .modal-content -->--}}
+    {{--        </div><!-- End .modal-dialog -->--}}
+    {{--    </div><!-- End .modal -->--}}
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

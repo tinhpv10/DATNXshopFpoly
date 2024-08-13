@@ -235,6 +235,34 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+.pagination-menu {
+    padding-top: 50px;
+    display: flex;
+    justify-content: flex-end;
+
+    .dropdown {
+        padding-right: 10px;
+
+        .dropdown-toggle.n {
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+        }
+
+        .btn {
+            background-color: white;
+            color: #1a1d20;
+        }
+
+        .dropdown-item {
+            text-decoration: none;
+        }
+    }
+
+    .page-link {
+        color: #1a1d20;
+        text-decoration: none;
+    }
+}
 
 .variation-button {
     position: relative;

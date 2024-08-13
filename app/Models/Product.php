@@ -154,7 +154,7 @@ class Product extends Model
     }
     // lấy ảnh chính
     public function mainMedia(){
-        return $this->hasOne(ProductMedia::class)->where( 'is_main',1);
+        return $this->hasOne(AppProductMedia::class)->where('is_main', 1);
     }
     // hàm lấy giá
     public function getPrice(){

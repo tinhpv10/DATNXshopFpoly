@@ -10,8 +10,10 @@ use App\Http\Controllers\Client\Body;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\Home;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DownloadpdfOrderController;
 use App\Http\Controllers\Gmail\OrderController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MyOrderController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileAddressController;
@@ -21,11 +23,8 @@ use App\Http\Controllers\RedirectloggeInAppController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishListController;
 use App\Models\Order;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MyOrderController;
-use App\Http\Controllers\DownloadpdfOrderController;
-use App\Models\Order;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);

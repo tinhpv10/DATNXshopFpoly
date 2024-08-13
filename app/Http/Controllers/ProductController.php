@@ -30,7 +30,6 @@ class ProductController extends Controller
         $ratings = $request->input('ratings', []); // Thêm tham số ratings
         $view = $request->input('view', 'grid'); // Thêm tham số view, mặc định là 'grid'
         $queryText = $request->input('query'); // Thêm tham số query để tìm kiếm
-
         $query = Product::query()->where('pause', 0);
         $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
 

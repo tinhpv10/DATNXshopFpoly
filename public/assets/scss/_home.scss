@@ -277,6 +277,9 @@
             margin-bottom: 1.25rem;
             padding: 1rem;
             background-color: white;
+            overflow: hidden; /* Ensure content does not overflow the card */
+            position: relative; /* Necessary for positioning hover effects */
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
 
             @media screen and (max-width: 1024px) {
                 flex-basis: calc(25% - 15px);
@@ -310,20 +313,57 @@
             }
 
             .info-product {
-                .price {
+                display: flex; /* Ensure layout is handled by flexbox */
+                flex-direction: column; /* Stack content vertically */
+
+                .price-sale-container {
+                    display: flex; /* Align prices on the same row */
+                    align-items: center; /* Vertically center align */
+                    justify-content: space-between; /* Space out items */
+                    margin-bottom: 0.5rem; /* Space below price section */
+                }
+
+                .salePrice {
                     font-weight: bold;
+                    color: #e60012; /* Bright color for sale price */
+                    white-space: nowrap; /* Prevent wrapping */
+                }
+
+                .product-price {
+                    font-weight: bold;
+                    color: #999; /* Light grey for original price */
+                    text-decoration: line-through; /* Strikethrough effect */
+                    opacity: 0.6; /* Slightly transparent */
+                    white-space: nowrap; /* Prevent wrapping */
+                    overflow: hidden; /* Hide overflowed text */
+                    text-overflow: ellipsis; /* Show ellipsis for overflow */
+                    max-width: 100%; /* Ensure it fits within its container */
+                    display: inline-block; /* Ensure proper overflow handling */
+                    margin-left: 5px; /* Add margin-left to create space between sale price and original price */
+                }
+
+                .title-name {
+                    font-size: 1.25rem; /* Adjust font size for product name */
+                    margin-bottom: 0.5rem; /* Space below name */
                 }
 
                 .title-product {
-                    @include textWidthEllipis(16, 1.5, 2);
-                    color: $color-icon;
+                    @include textWidthEllipis(16, 1.5, 2); /* Adjust text handling for description */
+                    color: $color-icon; /* Description color */
                 }
             }
+
+            /* Hover effect */
+            &:hover {
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                transform: translateY(-5px); /* Slightly raise the element on hover */
+            }
+
+            /* Ensure that hover effect does not affect the layout of the card */
+            .product-item:hover .price {
+                text-overflow: clip; /* Avoid clipping text on hover */
+            }
         }
-
-
-
-
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UploadImage;
 use App\Http\Requests\CommentRequest;
+use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,7 +15,6 @@ use Illuminate\Support\Facades\Session;
 
 class CommentController extends Controller
 {
-
     public function uploadImage(Request $request)
     {
         try {
@@ -33,12 +33,11 @@ class CommentController extends Controller
             Session::put('uploaded_files', $uploaded_files);
             Log::info('Uploaded files:', $uploaded_files);
 
-            return response()->json(['success' => true, 'message' => 'File information saved successfullyyyyy.', 'files' => $uploaded_files]);
+            return response()->json(['success' => true, 'message' => 'File information saved successfully.', 'files' => $uploaded_files]);
         } catch (\Exception $e) {
             Log::error('Error uploading image:', ['message' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Error uploading image.'], 500);
         }
-
     }
 
     public function deleteImage(Request $request)
@@ -87,7 +86,7 @@ class CommentController extends Controller
                 $user = User::create([
                     'name' => $request->user_name,
                     'email' => $request->email,
-                    'password' => $request->password,
+                    'password' => bcrypt($request->password), // Mã hóa mật khẩu
                 ]);
                 $user_id = $user->id;
             }
@@ -99,6 +98,9 @@ class CommentController extends Controller
                 'product_id' => $product_id,
                 'processing' => !empty(session('uploaded_files', [])),
             ]);
+
+            // Cập nhật rating cho sản phẩm
+            $this->updateProductRating($product_id);
 
             $listImage = session('uploaded_files', []);
 
@@ -121,7 +123,21 @@ class CommentController extends Controller
 
             return redirect()->route('product.detail', $product_id)->with('error', 'Có lỗi xảy ra khi gửi đánh giá của bạn.');
         }
-
     }
 
+    protected function updateProductRating($product_id)
+    {
+        // Lấy tất cả các đánh giá cho sản phẩm
+        $reviews = Review::where('product_id', $product_id)->get();
+
+        if ($reviews->count() > 0) {
+            // Tính toán rating trung bình
+            $averageRating = $reviews->avg('rating');
+
+            // Cập nhật sản phẩm với rating mới
+            $product = Product::find($product_id);
+            $product->rating = $averageRating; // Giả sử có cột rating trong bảng products
+            $product->save();
+        }
+    }
 }
