@@ -22,7 +22,7 @@
                                 <div class="alert alert-warning" role="alert">
                                     Hiện chưa có sản phẩm yêu thích.
                                 </div>
-                                <a href="{{ route('products') }}"
+                                <a href="{{ route('product.index') }}"
                                    class="btn btn-primary text-white text-decoration-none">Xem sản phẩm</a>
                             </div>
                         </div>

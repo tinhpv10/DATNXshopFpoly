@@ -8,7 +8,7 @@ use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WishListController extends Controller
+class WishlistController extends Controller
 {
     public function index()
     {
@@ -21,8 +21,8 @@ class WishListController extends Controller
             })->paginate(12);
 
             foreach ($products as $productItem) {
-                $productMedia = AppProductMedia::where('product_id', $productItem->id)->get();
-                $productItem->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
+                $productMedia = AppProductMedia::where('product_id', $productItem->id)->first();
+                $productItem->main_image = $productMedia ? $productMedia->media : null;
             }
 
             return view('layouts.wishlist', [
@@ -33,6 +33,7 @@ class WishListController extends Controller
             return response()->json(['status' => 500, 'message' => $e->getMessage()]);
         }
     }
+
 
     public function insertWishlist(Request $request)
     {

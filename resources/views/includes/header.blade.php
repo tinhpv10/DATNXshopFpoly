@@ -6,9 +6,15 @@
                                                                                                         src="{{ asset('image/logo-doanvth-pro 1.png') }}"
                                                                                                         alt="brand"></a>
         </div>
-        <form id="search-form" method="GET" action="{{ route('product.index') }}">
-            <input class="input" type="text" placeholder="Tìm kiếm" id="search-input" name="query">
-            <button class="search-button" type="submit"><i class="bi bi-search"></i></button>
+        <form id="search-form" method="GET" action="{{ route('product.index') }}" enctype="multipart/form-data"
+              class="search-form">
+            <input class="input" type="text" placeholder="Tìm kiếm sản phẩm" id="search-input" name="query"
+                   aria-label="Tìm kiếm sản phẩm">
+
+            <input type="file" name="image" accept="image/*" id="image-input" aria-label="Tìm kiếm bằng hình ảnh"
+                   style="display: none;">
+
+            <button class="search-button" type="submit" aria-label="Tìm kiếm"><i class="bi bi-search"></i></button>
         </form>
 
         <div class="icons mt-3">
@@ -79,6 +85,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/post') }}">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/contact') }}">Liên hệ</a>
                     </li>
                 </ul>
             </div>

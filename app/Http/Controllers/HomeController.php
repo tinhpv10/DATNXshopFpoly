@@ -16,7 +16,7 @@ class HomeController extends Controller
         $brands = Brand::all();
 
         // Lấy tất cả sản phẩm và định dạng giá
-        $products = Product::all();
+        $products = Product::all()->where('pause', 0);;
         foreach ($products as $product) {
             $productMedia = AppProductMedia::where('product_id', $product->id)->where('is_main', 1)->first();
             // Sử dụng tên cột chính xác ở đây, nếu là 'image' thay vì 'main_image'
@@ -31,7 +31,7 @@ class HomeController extends Controller
         $maxSoldCount = Product::max('sold_count');
 
         // Lấy danh sách sản phẩm đề xuất
-        $recommendedProducts = Product::select('id', 'name', 'description', 'regular_price', 'sale_price', 'sold_count', 'rating')
+        $recommendedProducts = Product::select('id', 'name', 'description', 'regular_price', 'sale_price', 'sold_count', 'rating')->where('pause', 0)
             ->selectRaw('((rating * 100) / 5) as rating_percentage')
             ->selectRaw('((sold_count * 100) / ?) as sold_percentage', [$maxSoldCount])
             ->selectRaw('((rating * 100) / 5) + ((sold_count * 100) / ?) as total_percentage', [$maxSoldCount])

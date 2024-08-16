@@ -13,6 +13,7 @@ use App\Models\ProductAttribute;
 use App\Models\Review;
 use App\Models\Shop;
 use App\Models\Wishlist;
+use Google\Cloud\Vision\V1\ImageAnnotatorClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -30,8 +31,16 @@ class ProductController extends Controller
         $ratings = $request->input('ratings', []); // Thêm tham số ratings
         $view = $request->input('view', 'grid'); // Thêm tham số view, mặc định là 'grid'
         $queryText = $request->input('query'); // Thêm tham số query để tìm kiếm
+
         $query = Product::query()->where('pause', 0);
         $query->select('*')->selectRaw('IF(sale_price IS NOT NULL, sale_price, regular_price) AS displayedPrice');
+
+        $imageProducts = $this->handleImageSearch($request->file('image'));
+
+        // Thêm điều kiện từ tìm kiếm bằng hình ảnh
+        if ($imageProducts->isNotEmpty()) {
+            $query->whereIn('id', $imageProducts->pluck('id'));
+        }
 
         // Điều kiện tìm kiếm
         if ($queryText) {
@@ -135,6 +144,46 @@ class ProductController extends Controller
         ]);
     }
 
+    protected function handleImageSearch($image)
+    {
+        if (!$image) {
+            return collect(); // Trả về collection rỗng nếu không có ảnh
+        }
+
+        // Lưu trữ ảnh tạm thời
+        $imagePath = $image->store('uploads', 'public');
+
+        // Gọi hàm nhận diện sản phẩm bằng hình ảnh
+        return $this->identifyProductsByImage($imagePath);
+    }
+
+    protected function identifyProductsByImage($imagePath)
+    {
+        // Tạo client Google Vision
+        $client = new ImageAnnotatorClient();
+        $image = file_get_contents($imagePath);
+        $response = $client->labelDetection(['image' => ['content' => $image]]);
+        $labels = $response->getLabelAnnotations();
+
+        // Tạo mảng chứa ID sản phẩm
+        $productIds = [];
+        foreach ($labels as $label) {
+            $productName = $label->getDescription();
+            $products = Product::where('name', 'like', '%' . $productName . '%')->get();
+
+            // Lặp qua các sản phẩm tìm được và kiểm tra ảnh trong ProductMedia
+            foreach ($products as $product) {
+                $productMedia = AppProductMedia::where('product_id', $product->id)->first();
+                if ($productMedia) {
+                    $productIds[] = $product->id; // Thêm ID sản phẩm vào mảng nếu có ảnh
+                }
+            }
+        }
+
+        return Product::whereIn('id', $productIds)->get();
+    }
+
+
     public function showByCategory($categoryId)
     {
         $category = Category::findOrFail($categoryId);
@@ -153,6 +202,7 @@ class ProductController extends Controller
             'selectedCategory' => $category
         ]);
     }
+
     public function show($id)
     {
         $products = Product::findOrFail($id);

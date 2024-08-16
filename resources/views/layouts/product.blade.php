@@ -194,11 +194,11 @@
                         </div>
                         <div class="filters-applied">
                             @if(request('query'))
-                                <p>
+                                <div class="seach">
                                     <i class="bi bi-search"></i>
                                     Kết quả tìm kiếm cho từ khóa "<span
                                         style="color: red;">{{ request('query') }}</span>"
-                                </p>
+                                </div>
                             @endif
 
                             @if(request('category_id'))

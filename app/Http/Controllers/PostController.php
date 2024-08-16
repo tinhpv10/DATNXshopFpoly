@@ -11,7 +11,7 @@ class PostController extends Controller
     {
         //lấy bài viết mới nhất (created_at column)
         $postNew = Post::with('user')
-            ->latest()->limit(5)->get();
+            ->latest()->limit(6)->get();
 
         //lấy 2 category có số BV nhìu nhất
         $categoryPost = CategoryPost::with(['post.user'])

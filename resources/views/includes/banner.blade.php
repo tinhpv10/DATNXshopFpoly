@@ -10,14 +10,6 @@
                     </ul>
                 </div>
                 <div class="image-banner">
-                    <div class="content">
-                        <div class="text">
-                            <h2>Latest trending Electronic items</h2>
-                        </div>
-                        <div class="button">
-                            <button class="btn bg-white">Learn more</button>
-                        </div>
-                    </div>
                     <div class="box-img">
                         <img src="https://d3design.vn/uploads/%C3%A9dfjh30.jpg" alt="">
                     </div>
@@ -29,13 +21,13 @@
                                 <img src="https://t4.ftcdn.net/jpg/05/11/55/91/240_F_511559113_UTxNAE1EP40z1qZ8hIzGNrB0LwqwjruK.jpg" alt="">
                             </div>
                             <div class="text">
-                                Hi, user let's get started
+                                Chào, bạn có muốn trở thành người bán
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="button">Button</button>
-                            <button class="btn btn-primary" type="button">Button</button>
+                            <button class="btn btn-primary" type="button">Đăng ký</button>
+                            <button class="btn btn-primary" type="button">Tìm hiểu</button>
                         </div>
                         <!-- <button class="btn btn-primary mb-2">Join now</button>
                         <button class="btn bg-white">Login</button> -->

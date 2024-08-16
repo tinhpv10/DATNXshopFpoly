@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -119,7 +120,7 @@ class ProductResource extends Resource
                     ->label('Lượt xem'),
                 Hidden::make('sold_count')
                     ->label('Lượt bán'),
-                MarkdownEditor::make('description')->columnSpan('full')
+                RichEditor::make('description')->columnSpan('full')
                     ->label('Mô tả'),
 
                 TagsInput::make('meta_keyword')

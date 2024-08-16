@@ -132,6 +132,10 @@ Route::get('/user-agreement', function () {
 });
 Route::get('/condition', function () {
     return view('web_content.condition');
+
+});
+Route::get('/contact', function () {
+    return view('includes.contact');
 });
 /// login google
 Route::get('/auth/google', [GoogleController::class, 'googlepage']);

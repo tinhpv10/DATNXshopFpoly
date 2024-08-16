@@ -75,18 +75,24 @@
                     <div class="autoplay-block ">
                         @foreach($categoryBanners as $categoriess)
                             <a href="{{ route('products.category', ['category' => $categoriess->id]) }}" class="product-link text-decoration-none text-black">
-                            <div class="group-item p-2">
-                                <div class="content-item">
-                                    <h6>{{ $categoriess->name }}</h6>
+                                <div class="group-item p-2 d-flex">
+                                    <div class="content-item w-50">
+                                        <h6>{{ $categoriess->name }}</h6>
+                                    </div>
+                                    <div class="image-item w-50 d-flex justify-content-end">
+                                        @if ($categoriess->image)
+                                            <img src="{{ asset('storage/' . $categoriess->image) }}"
+                                                 alt="{{ $categoriess->name }}" class="img-fluid w-100">
+                                        @else
+                                            <img src="https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg"
+                                                 alt="Default Image" class="img-fluid w-100">
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="d-flex image-item justify-content-end">
-                                    <img src="{{ asset('storage/' . $categoriess->image) }}"
-                                         alt="{{ $categoriess->name }}" class="img-fluid w-50">
-                                </div>
-                            </div>
                             </a>
                         @endforeach
                     </div>
+
                 </div>
             </div>
             <!-- Section recommended -->

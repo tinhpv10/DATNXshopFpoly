@@ -462,7 +462,7 @@
                                 <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel"
                                      aria-labelledby="profile-tab" tabindex="0">
                                     <div class="py-3">
-                                        <p>{{ $product->description}}</p>
+                                        <p>{!!$product->description!!}</p>
                                     </div>
                                 </div>
                             </div>

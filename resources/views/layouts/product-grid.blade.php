@@ -18,33 +18,16 @@
                         </div>
 
                         <div class="product-info">
-                            <div class="product-price-item">
-                                <div class="price-item">
+                            <div class="product-price-item d-flex align-items-center justify-content-between">
+                                <div class="price-item d-flex align-items-center">
                                     <div class="product-price">
                                         {{ $product->formattedDisplayedPrice ? $product->formattedDisplayedPrice : 'Price not available' }}
-                                        @if($product->sale_price)
-                                            <div class="product-price-discounted">
-                                                {{ $product->formattedRegularPrice ? $product->formattedRegularPrice : '' }}
-                                            </div>
-                                        @endif
                                     </div>
-
-                                    <div class="rating1">
-                                            <?php
-                                            $fullStars = floor($product->rating);
-                                            $halfStar = ($product->rating - $fullStars) >= 0.1 ? 1 : 0;
-                                            ?>
-
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            @if ($i <= $fullStars)
-                                                <i class="bi bi-star-fill" style="color: gold;"></i>
-                                            @elseif ($i == $fullStars + 1 && $halfStar)
-                                                <i class="bi bi-star-half" style="color: gold;"></i>
-                                            @else
-                                                <i class="bi bi-star" style="color: gold;"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
+                                    @if($product->sale_price)
+                                        <div class="product-price-discounted ms-2">
+                                            {{ $product->formattedRegularPrice ? $product->formattedRegularPrice : '' }}
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="product-favorite d-flex align-items-center">
                                     @if(Auth::check())
@@ -59,10 +42,29 @@
                                     @endif
                                 </div>
                             </div>
-                            <p class="product-title">{{ $product->name }}</p>
-                            <p class="product-description">{{ $product->description }}</p>
+
+                            <div class="rating11">
+                                    <?php
+                                    $fullStars = floor($product->rating);
+                                    $halfStar = ($product->rating - $fullStars) >= 0.1 ? 1 : 0;
+                                    ?>
+
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $fullStars)
+                                        <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    @elseif ($i == $fullStars + 1 && $halfStar)
+                                        <i class="bi bi-star-half" style="color: gold;"></i>
+                                    @else
+                                        <i class="bi bi-star" style="color: gold;"></i>
+                                    @endif
+                                @endfor
+                            </div>
+
+                            <div class="product-title">{{ $product->name }}</div>
+                            <div class="product-description">{{ $product->description }}</div>
                         </div>
-                        @if($product->sale_price != 0)
+
+                    @if($product->sale_price != 0)
                             <div class="sale-off fw-bolder">
                                 -{{ round(100 - ($product->sale_price * 100 / $product->regular_price)) }}%
                             </div>
