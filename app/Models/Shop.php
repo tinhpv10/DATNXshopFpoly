@@ -42,6 +42,11 @@ class Shop extends Model
     {
         return $this->hasOne(ShopInfo::class);
     }
+
+    public function categoryShop()
+    {
+        return $this->belongsToMany(Category::class, 'category_shops', 'shop_id', 'category_id');
+    }
     public static function boot()
     {
         parent::boot(); // Call parent's boot method first

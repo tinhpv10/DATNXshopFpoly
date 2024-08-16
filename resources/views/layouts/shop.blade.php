@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="shop-follow">
-                    <button class="btn btn-primary" id="follow-shop-btn" data-shop-id="{{ $informationShop->id }}"
+                    <button class="btn btn-primary" data-shop-id="{{ $informationShop->id }}"
                             onclick="toggleFollow(this)">{{ Auth::user()->followerShop->contains($informationShop->id) ? 'Đang theo dõi' : 'Theo dõi' }}
                     </button>
                 </div>
@@ -146,7 +146,7 @@
                 },
                 success: function (data) {
                     if (data.status === 200) {
-                        if (button.textContent === 'Theo dõi') {
+                        if (button.textContent.trim() === 'Theo dõi') {
                             button.textContent = 'Đang theo dõi';
                         } else {
                             button.textContent = 'Theo dõi';
