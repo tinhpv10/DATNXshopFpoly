@@ -163,12 +163,12 @@ class ProductResource extends Resource
                     ->label('Giá'),
                 TextColumn::make('sale_price')
                     ->label('Giá giảm'),
-                TextColumn::make('rating')
-                    ->label('Đánh giá'),
-                TextColumn::make('view_count')
-                    ->label('Lượt xem'),
-                TextColumn::make('sold_count')
-                    ->label('Lượt bán'),
+//                TextColumn::make('rating')
+//                    ->label('Đánh giá'),
+//                TextColumn::make('view_count')
+//                    ->label('Lượt xem'),
+//                TextColumn::make('sold_count')
+//                    ->label('Lượt bán'),
             ])
             ->filters([
             ])
