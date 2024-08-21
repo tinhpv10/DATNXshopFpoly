@@ -132,8 +132,8 @@ class VoucherResource extends Resource
                 TextColumn::make('VoucherType.name')
                     ->label('Loại phiếu giảm giá'),
 
-                TextColumn::make('Shop.name')
-                    ->label('Cửa hàng'),
+//                TextColumn::make('Shop.name')
+//                    ->label('Cửa hàng'),
             ])
             ->filters([
                 SelectFilter::make('shop_id')

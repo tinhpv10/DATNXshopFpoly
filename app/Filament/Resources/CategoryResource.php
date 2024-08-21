@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
-use App\Models\Shop;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
@@ -17,7 +16,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -125,10 +123,10 @@ class CategoryResource extends Resource
 //            ->query(Category::query()->whereNull('parent_id')->with('children'))
             ->defaultGroup('name')
             ->columns([
-                ImageColumn::make('image')
-                    ->width(100)
-                    ->height(100)
-                    ->label('Ảnh đại diện'),
+//                ImageColumn::make('image')
+//                    ->width(100)
+//                    ->height(100)
+//                    ->label('Ảnh đại diện'),
                 TextColumn::make('indented_name')
                     ->label('Danh mục')
                     ->searchable()
