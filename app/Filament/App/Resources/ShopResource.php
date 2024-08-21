@@ -117,27 +117,27 @@ class ShopResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Tên cửa hàng')
-                    ->searchable(),
+                   ,
 
                 ImageColumn::make('avatar')
                     ->label('Avatar ')
-                    ->searchable(),
+                    ,
 
                 TextColumn::make('email')
                     ->label('Email')
-                    ->searchable(),
+                    ,
 
                 TextColumn::make('phone')
                     ->label('Số điện thoại')
-                    ->searchable(),
+                   ,
 
                 TextColumn::make('rating')
                     ->label('Đánh giá')
-                    ->searchable(),
+                    ,
 
                 TextColumn::make('follower')
                     ->label('Số người theo dõi')
-                    ->searchable(),
+                    ,
 
                 IconColumn::make('status')
                     ->label('Trạng thái')
