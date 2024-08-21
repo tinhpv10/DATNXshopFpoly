@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
@@ -14,7 +13,6 @@ use Illuminate\Support\Str;
 
 class VNPayController extends Controller
 {
-
     public function __construct(ApService $apSer)
     {
         $this->middleware('auth');
@@ -23,9 +21,6 @@ class VNPayController extends Controller
 
     public function create(Request $request)
     {
-        $this->middleware('auth');
-
-
         session(['url_prev' => url()->previous()]);
 
         $vnp_TmnCode = "93QX4E2D";
@@ -37,9 +32,10 @@ class VNPayController extends Controller
         $vnp_OrderInfo = "Thanh toán hóa đơn phí dịch vụ";
         $vnp_OrderType = 'billpayment';
 
+        // Lấy tổng tiền và phí vận chuyển từ session
         $totalPayment = session('total_payment', 0);
         $shippingFee = session('shipping_fee', 0);
-        $vnp_Amount = ($totalPayment + $shippingFee) * 100;
+        $vnp_Amount = ($totalPayment + $shippingFee) * 100; // Cộng phí vận chuyển
 
         $vnp_Locale = 'vn';
         $vnp_IpAddr = $request->ip(); // Lấy địa chỉ IP của yêu cầu
@@ -84,47 +80,47 @@ class VNPayController extends Controller
             $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
             $vnp_Url .= '&vnp_SecureHashType=SHA512&vnp_SecureHash=' . $vnpSecureHash;
         }
-
+        $cartItems = Session::get('selected_items', []);
         // Tạo đơn hàng mới
         $order = new Order();
         $order->user_id = Auth::id();
-        $order->status = OrderStatus::Pending;
+        $order->status = OrderStatus::Processing->value;
         $order->total_price = $totalPayment;
-        $order->shipping_unit = 'default_value';
+        $order->shipping_unit = $shippingFee;
+        $order->is_paid = 1;
+        $order->shop_id = $cartItems[0]['shop_id'] ?? null; // Sử dụng shop_id từ giỏ hàng
         $order->payment_method_id = 1;
         $order->code = strtoupper(Str::random(10));
         $defaultAddress = UserAddress::where('user_id', Auth::id())->where('is_default', 1)->first();
         if (!$defaultAddress) {
-            return redirect()->back()->with('success', 'Không tìm thấy địa chỉ mặc định.');
+            return redirect()->back()->with('error', 'Không tìm thấy địa chỉ mặc định.');
         }
         $order->user_address_id = $defaultAddress->id;
-        $cartItems = Session::get('cart_data', []);
-        if (!empty($cartItems)) {
-            $shopIds = collect($cartItems)->pluck('shop_id')->unique();
-            $order->shop_id = $shopIds->first();
-        }
         $order->save();
 
-        session(['cost_id' => $order->id]);
+        // Lưu thông tin giỏ hàng từ session
+        $cartItems = Session::get('selected_items', []);
 
         foreach ($cartItems as $cartItem) {
             $orderDetail = new OrderDetail();
             $orderDetail->order_id = $order->id;
             $orderDetail->product_id = $cartItem['product_id'];
-            $orderDetail->product_stock_id = $cartItem['product_stock_id'];
+            $orderDetail->app_product_stock_id = $cartItem['app_product_stock_id'];
             $orderDetail->product_image = $cartItem['media'];
             $orderDetail->product_price = $cartItem['price'];
             $orderDetail->product_quantity = $cartItem['quantity'];
-            $orderDetail->shop_id = $cartItem['shop_id'];
+            $orderDetail->shop_id = $cartItem['shop_id'] ?? null;
             $orderDetail->save();
         }
 
-        // Xóa session cart sau khi đã lưu chi tiết đơn hàng
-        Session::forget('cart');
-        Session::forget('cart_data');
+        // Xóa session sau khi đã lưu chi tiết đơn hàng
+        Session::forget('selected_items');
+        Session::forget('total_payment');
+        Session::forget('shipping_fee');
 
         return redirect($vnp_Url);
     }
+
 
     public function paymentCallback(Request $request)
     {
@@ -140,15 +136,15 @@ class VNPayController extends Controller
             if ($order) {
                 $order->on_hold = '1';
                 $order->save();
-                return redirect($url)->with('success', 'chưa thanh toán phí dịch vụ');
+                return redirect($url)->with('error', 'Chưa thanh toán phí dịch vụ');
             }
         }
 
         session()->forget('url_prev');
         session()->forget('cost_id');
 
-        return redirect($url)->with('success', 'Lỗi trong quá trình thanh toán phí dịch vụ');
+        return redirect($url)->with('error', 'Lỗi trong quá trình thanh toán phí dịch vụ');
     }
-
 }
+
 

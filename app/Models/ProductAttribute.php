@@ -21,12 +21,17 @@ class ProductAttribute extends Model
 
     public function productStock(): BelongsTo
     {
-        return $this->BelongsTo(AppProductStock::class);
+        return $this->belongsTo(AppProductStock::class, 'app_product_stock_id');
+    }
+
+    public function appProductVariation(): BelongsTo
+    {
+        return $this->belongsTo(AppProductVariation::class, 'variation_id');
     }
 
     public function appProductVariationValue(): BelongsTo
     {
-        return $this->BelongsTo(AppProductVariationValue::class);
+        return $this->belongsTo(AppProductVariationValue::class, 'app_product_variation_value_id');
     }
 
 }

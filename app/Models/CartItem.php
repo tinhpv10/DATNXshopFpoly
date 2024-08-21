@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class CartItem extends Model
@@ -17,6 +18,7 @@ class CartItem extends Model
         'app_product_id',
         'app_product_stock_id',
         'shop_id',
+        'product_id',
         'media',
         'cart_id',
     ];
@@ -25,10 +27,17 @@ class CartItem extends Model
     {
         return $this->belongsTo(Cart::class);
     }
-
+    public function Shop(): BelongsTo
+    {
+        return $this->BelongsTo(Shop::class);
+    }
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function productstock()
+    {
+        return $this->belongsTo(AppProductStock::class, 'app_product_stock_id');
     }
 
     public function productMedia(): HasOne

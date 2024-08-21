@@ -1,4 +1,60 @@
-.payment-logo {
-    width: 60px;
-    height: 40px;
+//.payment-logo {
+//    width: 60px;
+//    height: 40px;
+//}
+
+.section-checkout{
+
+    .checkout-address{
+        background-color: white;
+        padding: 1rem 1.5rem;
+        border-top: 3px solid $primary;
+        margin-bottom: 20px;
+    }
+
+    .checkout-product{
+        background-color: white;
+        margin-bottom: 20px;
+
+        .product-header{
+            padding-top: 1rem ;
+            padding-bottom: 1rem;
+            padding-right: 3rem;
+        }
+
+        .product-shop{
+            padding-right: 3rem;
+
+            .shop-name{
+                font-size: 20px;
+                margin-bottom: .5rem;
+            }
+
+            .product-shop-item{
+                margin-bottom: .75rem;
+
+                .box-img{
+                    min-width: 70px;
+                    height: 70px;
+                    margin-right: .5rem;
+                    img{
+                        @include coverImage();
+                    }
+                }
+                .box-name{
+                    @include textWidthEllipis(16, 1.5 ,2);
+                }
+            }
+        }
+
+
+
+    }
+
+    .checkout-voucher, .checkout-total{
+        margin-bottom: 20px;
+    }
+
+
+
 }

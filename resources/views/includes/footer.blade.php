@@ -100,19 +100,6 @@
 <script src="{{ asset('assets/js/slick.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Plugins JS File -->
-<script src="{{ asset('Home/assets/js/jquery.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/jquery.hoverIntent.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/jquery.waypoints.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/superfish.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/owl.carousel.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/bootstrap-input-spinner.js') }}"></script>
-<script src="{{ asset('Home/assets/js/jquery.plugin.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/jquery.magnific-popup.min.js') }}"></script>
-<script src="{{ asset('Home/assets/js/jquery.countdown.min.js') }}"></script>
-<!-- Main JS File -->
-<script src="{{ asset('Home/assets/js/main.js') }}"></script>
-<script src="{{ asset('Home/assets/js/demos/demo-3.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
 
 {{--update--}}
