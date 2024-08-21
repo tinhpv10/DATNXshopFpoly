@@ -12,35 +12,78 @@ class MyOrderController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $orders = auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->get();
+
+        // Lấy đơn hàng với thông tin chi tiết
+        $orders = $user->orders()->with([
+            'OrderDetail.Product.mainMedia',
+            'OrderDetail.appProductStock.productAttribute.appProductVariation',
+            'OrderDetail.appProductStock.productAttribute.appProductVariationValue'
+        ])->get();
+
+        // Các trạng thái đơn hàng
         $CancelledReasons = CancelledStatus::cases();
-        // Đếm số đơn trong những trạng thái
+
+        // Đếm số đơn trong các trạng thái
         $orderCounts = [
             'all' => $orders->count(),
-            'Processing' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đang xử lý')->count(),
-            'Shipped' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã vận chuyển')->count(),
-            'waitingDelivery' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Chờ giao hàng')->count(),
-            'Delivered' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã giao hàng')->count(),
-            'canceled' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã hủy')->count(),
-            'refunded' => auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Hoàn tiền')->count(),
+            'Processing' => $user->orders()->where('status', 'Đang xử lý')->count(),
+            'Shipped' => $user->orders()->where('status', 'Đã vận chuyển')->count(),
+            'waitingDelivery' => $user->orders()->where('status', 'Chờ giao hàng')->count(),
+            'Delivered' => $user->orders()->where('status', 'Đã giao hàng')->count(),
+            'canceled' => $user->orders()->where('status', 'Đã hủy')->count(),
+            'refunded' => $user->orders()->where('status', 'Hoàn tiền')->count(),
         ];
 
-        // -- Phân loại đơn hàng
-        // + Chờ thanh toán
-        $orderProcessing =  auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đang xử lý')->get();
-        // + Vận chuyển
-        $Shipped =  auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã vận chuyển')->get();
-        // + Chờ giao hàng
-        $waitingDelivery = auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Chờ giao hàng')->get();
-        // + Hoàn thành
-        $Delivered =  auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã giao hàng')->get();
-        // Đã huỷ
-        $canceled = auth()->user()->orders()->with(['OrderDetail.Product.mainMedia','OrderDetail.Product.productVariation'])->where('status', 'Đã hủy bỏ')->get();
-//        dd($canceled);
-        // Hoàn tiền
+        // Phân loại đơn hàng theo trạng thái
+        $orderProcessing = $this->getOrderWithVariations('Đang xử lý');
+        $Shipped = $this->getOrderWithVariations('Đã vận chuyển');
+        $waitingDelivery = $this->getOrderWithVariations('Thời gian giao hàng');
+        $Delivered = $this->getOrderWithVariations('Đã giao hàng');
+        $canceled = $this->getOrderWithVariations('Đã hủy bỏ');
 
-        return view('layouts.my_order', compact('user', 'orders', 'CancelledReasons','orderProcessing','orderCounts','Shipped','Delivered','waitingDelivery','canceled'));
+        return view('layouts.my_order', compact('user', 'orders', 'CancelledReasons', 'orderProcessing', 'orderCounts', 'Shipped', 'Delivered', 'waitingDelivery', 'canceled'));
     }
+
+
+    /**
+     * Lấy danh sách đơn hàng với các biến thể
+     */
+    private function getOrderWithVariations($status)
+    {
+        $orders = auth()->user()->orders()->with([
+            'OrderDetail.Product.mainMedia',
+            'OrderDetail.appProductStock.productAttribute.appProductVariation',
+            'OrderDetail.appProductStock.productAttribute.appProductVariationValue'
+        ])
+            ->where('status', $status)
+            ->get();
+
+        // Duyệt qua các đơn hàng và chi tiết đơn hàng
+        foreach ($orders as $order) {
+            foreach ($order->OrderDetail as $orderDetail) {
+                $productStock = $orderDetail->appProductStock;
+
+                if ($productStock) {
+                    $variations = $productStock->productAttribute
+                        ->map(function ($attribute) {
+                            return [
+                                'variation_name' => $attribute->appProductVariation->variation_name ?? 'Không có tên biến thể',
+                                'variation_value' => $attribute->appProductVariationValue->variation_value_name ?? 'Không có giá trị biến thể',
+                            ];
+                        });
+
+                    $orderDetail->variations = $variations;
+                }
+            }
+        }
+
+        return $orders;
+    }
+
+
+
+
+
 
     public function updateCancell(Request $request, $id)
     {
