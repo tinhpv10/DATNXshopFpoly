@@ -39,9 +39,9 @@ class CategoryShopResource extends Resource
                     ->formatStateUsing(function ($state, $record) {
                         return $record->category_full_name;
                     }),
-                TextColumn::make('shop.name')
-                    ->label('Tên Shop')
-                    ->searchable(),
+//                TextColumn::make('shop.name')
+//                    ->label('Tên Shop')
+//                    ->searchable(),
             ])
             ->filters([
                 //
@@ -50,9 +50,9 @@ class CategoryShopResource extends Resource
 //                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
             ]);
     }
 

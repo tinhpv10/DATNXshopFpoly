@@ -34,11 +34,13 @@ class ProductVariationResource extends Resource
                     ->required()
                     ->searchable()
                     ->label('Sản phẩm')
-                    ->relationship('Product','name',function ($query){
-                        // lấy ra những sản phẩm của chính shop đó
+                    ->relationship('Product', 'name', function ($query) {
+                        // Lấy ra những sản phẩm của chính shop đó và có pause = 0
                         $shopId = Auth::user()->shop_id;
-                        return $query->where('shop_id',$shopId);
+                        return $query->where('shop_id', $shopId)
+                            ->where('pause', 0);
                     }),
+
                 TextInput::make('variation_name')
                     ->required()
                     ->label('Tên biến thể'),
