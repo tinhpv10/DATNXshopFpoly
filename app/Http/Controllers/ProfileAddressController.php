@@ -26,7 +26,7 @@ class ProfileAddressController extends Controller
             // Lấy thông tin chi tiết của tỉnh, quận/huyện, xã/phường từ cơ sở dữ liệu
             $province = Province::find($address);
             $districts = District::where('province_id', $address->province_id)->get();
-            $wards = Ward::where('district_id', $address->district_id)->get();
+            $wards =  Ward::where('district_id', $address->district_id)->get();
         }
 
         return view('layouts.profile_address', compact('user', 'province', 'addresses', 'address', 'districts', 'wards'));
