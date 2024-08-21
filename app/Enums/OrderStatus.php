@@ -19,7 +19,7 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
     const OnHold = 'Đơn tạm giữ';
     case Successprocessed = 'Đã xử lý';
     case NotProcessed = 'Chưa xử lý';
-    case Pending = 'Pending';// các đơn mà shop chưa xử lý
+
 
     public function getLabel(): string
     {
@@ -46,7 +46,7 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
             self::Shipped, self::Delivered, self::Successprocessed => 'success',
             self::Cancelled => 'danger',
             self::OnHold => 'gray',
-            self::Pending => 'Pending',
+
 //            self::Success => 'success', // Thêm color cho giá trị mới
         };
     }
@@ -62,7 +62,7 @@ enum OrderStatus: string implements HasLabel, HasIcon, HasColor
             self::OnHold => 'heroicon-m-finger-print',
             self::Successprocessed => 'heroicon-m-check',
             self::NotProcessed => 'heroicon-m-clock',
-            self::Pending => '',
+
 
         };
     }
