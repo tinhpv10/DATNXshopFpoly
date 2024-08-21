@@ -26,6 +26,7 @@ use App\Http\Controllers\WishListController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CheckoutController;
 
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
@@ -42,9 +43,15 @@ Route::prefix('/')->group(function () {
     //Giỏ hàng
     Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('product.addToCart');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-    Route::post('/update-cart', [CartController::class, 'updateQuantity'])->name('update.cart');
+//    Route::post('/update-cart', [CartController::class, 'updateQuantity'])->name('update.cart');
+//    Route::post('/update-cart-item', [CartController::class, 'updateCartItemQuantity'])->name('cart.updateQuantity');
+    Route::post('/update-cart-item', [CartController::class, 'updateCartItemQuantity']);
+
+
+
+    Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity']);
     Route::delete('/cart/remove/{cartItemId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
+//    Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity'])->name('cart.updateQuantity');
     Route::post('/cart/retail-price', [CartController::class, 'getRetailPrice'])->name('cart.getRetailPrice');
     Route::post('/cart/update-selected-items', [CartController::class, 'updateSelectedItems'])->name('cart.update-selected-items');
     Route::group(['middleware' => ['auth']], function () {
@@ -120,6 +127,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/shop/{id}', [ShopController::class, 'index'])->name('shop');
     Route::get('/shop/{shopId}/category/{categoryId}', [ShopController::class, 'getProductsByCategory'])->name('shop.category');
     Route::post('/shop-follow', [ShopController::class, 'followShop']);
+    // checkout
+    Route::post('/cart/save-selected-items', [CartController::class, 'saveSelectedItems']);
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.show');
+    Route::post('/checkout-order', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::post('/checkout/calculate-total', [CheckoutController::class, 'calculateTotalAjax'])->name('checkout.calculateTotalAjax');
+    Route::post('/checkout/complete', [CheckoutController::class, 'completeCheckout'])->name('checkout.complete');
+
 
 });
 // chuyển hướng đăng ký của shop admin
