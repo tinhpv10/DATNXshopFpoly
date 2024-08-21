@@ -1,7 +1,7 @@
 <div id="productGrid" class="product-grid">
     <div class="row">
         @foreach ($products as $product)
-            <div class="col-md-4 pb-4 product-item"
+            <div class="col-lg-4 col-md-6 col-sm-6 pb-4 product-item"
                  data-category="{{ $product->category_id }}"
                  data-brand="{{ $product->brand_id }}"
                  data-price="{{ $product->price }}">

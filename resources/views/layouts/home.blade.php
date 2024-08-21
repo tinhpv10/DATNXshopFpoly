@@ -74,7 +74,8 @@
                     </div>
                     <div class="autoplay-block ">
                         @foreach($categoryBanners as $categoriess)
-                            <a href="{{ route('products.category', ['category' => $categoriess->id]) }}" class="product-link text-decoration-none text-black">
+                            <a href="/product?category_id={{$categoriess->id}}"
+                               class="product-link text-decoration-none text-black">
                                 <div class="group-item p-2 d-flex">
                                     <div class="content-item w-50">
                                         <h6>{{ $categoriess->name }}</h6>

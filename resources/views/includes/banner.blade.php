@@ -26,7 +26,9 @@
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="button">Đăng ký</button>
+                            <a href="/app/register">
+                                <button class="btn btn-primary w-100" type="button">Đăng ký</button>
+                            </a>
                             <button class="btn btn-primary" type="button">Tìm hiểu</button>
                         </div>
                         <!-- <button class="btn btn-primary mb-2">Join now</button>
