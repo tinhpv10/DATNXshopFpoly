@@ -18,7 +18,7 @@ class OrderDetail extends Model
         'product_price',
         'product_id',
         'product_quantity',
-        'product_stock_id',
+        'app_product_stock_id',
     ];
     public function order()
     {
@@ -32,5 +32,14 @@ class OrderDetail extends Model
     public function Product(): BelongsTo
     {
         return $this->BelongsTo(Product::class);
+    }
+    public function appProductStock()
+    {
+        return $this->belongsTo(AppProductStock::class, 'app_product_stock_id');
+    }
+
+    public function productVariations()
+    {
+        return $this->appProductStock ? $this->appProductStock->productAttribute->appProductVariation : collect();
     }
 }

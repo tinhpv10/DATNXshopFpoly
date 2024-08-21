@@ -24,15 +24,16 @@ class AppProductStock extends Model
 
     public function productAttribute(): HasMany
     {
-        return $this->HasMany(ProductAttribute::class);
+        return $this->hasMany(ProductAttribute::class, 'app_product_stock_id');
     }
 
-    public function Product(): BelongsTo
+    public function product(): BelongsTo
     {
-        return $this->BelongsTo(Product::class);
+        return $this->belongsTo(Product::class);
     }
+
     public function productMedia(): BelongsTo
     {
-        return $this->BelongsTo(AppProductMedia::class);
+        return $this->belongsTo(AppProductMedia::class);
     }
 }

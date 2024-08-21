@@ -4,226 +4,326 @@
     <div class="main ">
         <div class="section-cart pt-4">
             <div class="container">
-                <h4 class="mb-4">Giỏ hàng</h4>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-8 ">
-                        @foreach($cartItems as $cartItem)
-                            <div class="cart-item py-3 border my-3">
-                                <div class="row align-items-center">
-                                    <div class="col-12 col-md-8 col-lg-9">
-                                        <div class="d-flex">
-                                            <div class="box-checks">
-                                                <div class="form-check my-4">
-                                                    <input class="item-checkbox" type="checkbox"
-                                                           name="item_{{ $cartItem['product_id'] }}"
-                                                           value="{{ $cartItem['id'] }}"
-                                                           data-cart-id="{{ $cartItem['id'] }}"
-                                                           data-price="{{ $cartItem['price'] }}" checked>
-                                                </div>
-                                            </div>
-                                            <div class="box-img me-3 ms-2">
-                                                <img src="{{ asset('storage/' . $cartItem->media) }}" alt=""
-                                                     class="rounded-1">
-                                            </div>
-                                            <div class="box-content">
-                                                <div class="title">{{ $cartItem->product->name }}</div>
-                                                @foreach($cartItem->variations as $variation)
-                                                    <div class="text mb-2">
-                                                        {{ $variation->variation_name }}
-                                                        : {{ $variation->variation_value }}
+                @if(\Illuminate\Support\Facades\Auth::check())
+                    @if($groupedItems->isNotEmpty())
+                        <h4 class="mb-4">Giỏ hàng</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-6 col-lg-8 ">
+                                @foreach($groupedItems as $shopId => $cartItems)
+                                    @php
+                                        $shop = \App\Models\Shop::find($shopId); // Lấy thông tin shop
+                                    @endphp
+                                    <div class="shop-group">
+
+                                        <h4>{{ $shop->name ?? ''}}</h4>
+                                        @foreach($cartItems as $cartItem)
+                                            <div class="cart-item py-3 border my-3">
+                                                <div class="row align-items-center">
+                                                    <div class="col-12 col-md-8 col-lg-9">
+                                                        <div class="d-flex">
+                                                            <div class="box-checks">
+                                                                <div class="form-check my-4">
+                                                                    <input class="item-checkbox" type="checkbox"
+                                                                           name="item_{{ $cartItem['product_id'] }}"
+                                                                           value="{{ $cartItem['id'] }}"
+                                                                           data-cart-id="{{ $cartItem['id'] }}"
+                                                                           data-price="{{ $cartItem['price'] }}"
+                                                                           checked>
+                                                                </div>
+                                                            </div>
+                                                            <div class="box-img me-3 ms-2">
+                                                                <img src="{{ asset('storage/' . $cartItem->media) }}"
+                                                                     alt=""
+                                                                     class="rounded-1">
+                                                            </div>
+                                                            <div class="box-content">
+                                                                <div class="title">{{ $cartItem->product->name }}</div>
+                                                                <!-- Hiển thị biến thể -->
+                                                                @if(!empty($cartItem->variations))
+                                                                    @foreach($cartItem->variations as $variation)
+                                                                        <div class="text mb-2">
+                                                                            {{ $variation['variation_name'] }}
+                                                                            : {{ $variation['variation_value'] }}
+                                                                        </div>
+                                                                    @endforeach
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-3 col-lg-2">
-                                        <div class="price text-end p-2" id="itemPrice-{{ $cartItem->id }}"
-                                             data-retail-price="{{ $cartItem->productStock->retail_price }}">
-                                            {{ number_format($cartItem->price, 0, ',', '.') }} đ
-                                            <!-- Hiển thị giá đã được cập nhật -->/-strong/-heart:>:o:-((:-h
-                                        </div>
-                                        <div class="quantity">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <button class="btn btn-outline-secondary rounded-start"
-                                                            onclick="updateQuantity({{ $cartItem->id }}, -1)"
-                                                            type="button">-
-                                                    </button>
+                                                    <div class="col-6 col-md-3 col-lg-2">
+                                                        <div class="price text-end p-2"
+                                                             id="itemPrice-{{ $cartItem->id }}"
+                                                             data-retail-price="{{ $cartItem->productStock->retail_price ?? ''}}">
+                                                            {{ number_format($cartItem->price, 0, ',', '.') }} đ
+                                                        </div>
+
+                                                        <meta name="csrf-token" content="{{ csrf_token() }}">
+
+                                                        <div class="quantity">
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <button
+                                                                        class="btn btn-outline-secondary rounded-start"
+                                                                        type="button"
+                                                                        onclick="updateQuantity(-1, {{ $cartItem->id }})">
+                                                                        -
+                                                                    </button>
+                                                                </div>
+                                                                <input type="number" class="form-control text-center"
+                                                                       id="quantity-{{ $cartItem->id }}"
+                                                                       value="{{ $cartItem->quantity }}" min="1">
+                                                                <div class="input-group-append">
+                                                                    <button
+                                                                        class="btn btn-outline-secondary rounded-end"
+                                                                        type="button"
+                                                                        onclick="updateQuantity(1, {{ $cartItem->id }})">
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <input type="hidden" id="cart-item-id"
+                                                               value="{{ $cartItem->id }}"> <!-- ID sản phẩm -->
+
+                                                        <script>
+
+                                                        </script>
+                                                    </div>
+                                                    <div class="col-6 col-md-1 col-lg-1 d-flex justify-content-center">
+                                                        <div class="delete">
+                                                            <form
+                                                                action="{{ route('cart.remove', ['cartItemId' => $cartItem->id]) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link"><i
+                                                                        class="bi bi-x-lg fs-4"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <input type="number" class="form-control text-center"
-                                                       id="quantity-{{ $cartItem->id }}"
-                                                       value="{{ $cartItem->quantity }}" min="1" readonly>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-outline-secondary rounded-end"
-                                                            onclick="updateQuantity({{ $cartItem->id }}, 1)"
-                                                            type="button">+
-                                                    </button>
-                                                </div>
                                             </div>
-                                        </div>
+                                        @endforeach
                                     </div>
-                                    <div class="col-6 col-md-1 col-lg-1 d-flex justify-content-center">
-                                        <div class="delete">
-                                            <form action="{{ route('cart.remove', ['cartItemId' => $cartItem->id]) }}"
-                                                  method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-link"><i
-                                                        class="bi bi-x-lg fs-4"></i></button>
-                                            </form>
-                                        </div>
+                                @endforeach
+
+                                <div class="checkall">
+                                    <div class="form-check my-4">
+                                        <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                                        <label class="form-check-label" for="selectAll">Chọn Tất Cả</label>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                        <div class="checkall">
-                            <div class="form-check my-4">
-                                <input class="form-check-input" type="checkbox" value="" id="selectAll">
-                                <label class="form-check-label" for="selectAll">Chọn Tất Cả</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-12 col-md-6 col-lg-4">
+                            <div class="col-12 col-md-6 col-lg-4">
 
-                        <div class="card p-3">
-                            <div class="Address d-flex justify-content-between">/-strong/-heart:>:o:-((:-h<span>Địa Chỉ Nhận Hàng</span>
-                                <div>
-                                    <a href="{{ route('profile.address') }}"
-                                       class="product-link text-decoration-none text-black m-3">Xem
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="Voucher d-flex justify-content-between">
-                                <span>ShopX Voucher</span>
-                                <div>
-                                    <button type="button" class="btn Voucher " data-bs-toggle="modal"
-                                            data-bs-target="#staticVoucher">
-                                        Chọn hoặc nhập mã
-                                    </button>
-                                    <div class="modal fade" id="staticVoucher" data-bs-backdrop="static"
-                                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                         aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn ShopX
-                                                        Voucher</h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    ...
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Trở lại
-                                                    </button>
-                                                    <button type="button" class="btn btn-primary">Đồng ý</button>
+                                <div class="card p-3">
+                                    <div class="Address d-flex justify-content-between"><span>Địa Chỉ Nhận Hàng</span>
+                                        <div>
+                                            <a href="{{ route('profile.address') }}"
+                                               class="product-link text-decoration-none text-black m-3">Xem
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="Voucher d-flex justify-content-between">
+                                        <span>ShopX Voucher</span>
+                                        <div>
+                                            <button type="button" class="btn Voucher " data-bs-toggle="modal"
+                                                    data-bs-target="#staticVoucher">
+                                                Chọn hoặc nhập mã
+                                            </button>
+                                            <div class="modal fade" id="staticVoucher" data-bs-backdrop="static"
+                                                 data-bs-keyboard="false" tabindex="-1"
+                                                 aria-labelledby="staticBackdropLabel"
+                                                 aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Chọn
+                                                                ShopX
+                                                                Voucher</h1>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            ...
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Trở lại
+                                                            </button>
+                                                            <button type="button" class="btn btn-primary">Đồng ý
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="p-2"><h6>Tổng tiền hàng:</h6></div>
+                                        <div class="price text-end p-2"
+                                             id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }}
+                                            đ
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="p-2"><h6>Phí Vận Chuyển:</h6></div>
+                                        <div class="price text-end p-2"
+                                             id="shippingFee">{{ $shippingFee ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' }}</div>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6>
+                                        </div>
+                                        <div class="price text-end p-2"
+                                             id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} đ
+                                        </div>
+                                    </div>
+                                    {{--                            <form id="paymentForm" action="{{ route('vnpay.payment') }}" method="POST">--}}
+                                    {{--                                @csrf--}}
+                                    <input type="hidden" name="amount" value="{{ $totalPayment }}">
+                                    <input type="hidden" name="selected_items" id="selectedItems">
+                                    <form action="{{ route('checkout.show') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="selected_items" id="selectedItems">
+                                        <button type="submit" class="btn btn-primary w-100" id="checkout-button">Thanh Toán</button>
+                                    </form>
+
+                                    {{--                            </form>--}}
+
+                                    <div class="payment d-flex justify-content-center">
+                                        <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-1.png') }}" alt="">
+                                        <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-2.png') }}" alt="">
+                                        <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-3.png') }}" alt="">
+                                        <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-4.png') }}" alt="">
+                                        <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-5.png') }}" alt="">
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
-                            <div class="d-flex justify-content-between">
-                                <div class="p-2"><h6>Tổng tiền hàng:</h6></div>
-                                <div class="price text-end p-2"
-                                /-strong/-heart:>:o:-((:-hid="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }}
-                                đ
+
+
+                        </div>
+                    @else
+                        <div class="row w-100 ">
+                            <div class="bg-white box-myorder_img">
+                                <img class="background-image" src="{{ asset('images/icon_my_order.png')  }}">
+                                <span class="mb-2">Giỏ hàng bạn còn trống</span>
+                                <a href="{{ url('/product') }}" type="button" class="btn btn-primary pt-2 text-decoration-none text-while">Mua hàng</a>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <div class="p-2"><h6>Phí Vận Chuyển:</h6></div>
-                            <div class="price text-end p-2"
-                                 id="shippingFee">{{ $shippingFee ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' }}</div>
+                    @endif
+                @else
+                    <div class="row w-100 ">
+                        <div class="bg-white box-myorder_img">
+                            <img class="background-image" src="{{ asset('images/icon_my_order.png')  }}">
+                            <span class="mb-2">Giỏ hàng bạn còn trống</span>
+                            <a href="{{ url('/product') }}" type="button" class="btn btn-primary pt-2 text-decoration-none text-while">Mua hàng</a>
                         </div>
-                        <hr>
-                        <div class="d-flex justify-content-between">
-                            <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6></div>
-                            <div class="price text-end p-2"
-                                 id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} đ
+                    </div>
+                @endif
+            </div>
+
+            <div class="service">
+                <div class="row justify-content-center my-4">
+                    <div class="col-12 col-md-6 col-lg-3 j">
+                        <div class="d-flex py-3">
+                            <div class="service-icon me-3">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <div class="service-content">
+                                <div class="title">Secure payment</div>
+                                <div class="text">Have you ever finally just</div>
                             </div>
                         </div>
-                        <form id="paymentForm" action="{{ route('vnpay.payment') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="amount" value="{{ $totalPayment }}">
-                            <div class="justify-content-between">
-                                <button type="submit" class="btn btn-primary w-100">Thanh Toán</button>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="d-flex py-3">
+                            <div class="service-icon me-3">
+                                <i class="fa-solid fa-message"></i>
                             </div>
-                        </form>
-
-                        <div class="payment d-flex justify-content-center">
-                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-1.png') }}" alt="">
-                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-2.png') }}" alt="">
-                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-3.png') }}" alt="">
-                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-4.png') }}" alt="">
-                            <img class="mt-3 mx-2" src="{{ asset('image/payment/payment-5.png') }}" alt="">
+                            <div class="service-content">
+                                <div class="title">Secure payment</div>
+                                <div class="text">Have you ever finally just</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-
-            </div>
-        </div>
-
-        <div class="service">
-            <div class="row justify-content-center my-4">
-                <div class="col-12 col-md-6 col-lg-3 j">
-                    <div class="d-flex py-3">
-                        <div class="service-icon me-3">
-                            <i class="fa-solid fa-lock"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="title">Secure payment</div>
-                            <div class="text">Have you ever finally just</div>
-                        </div>
-                    </div>
-                </div>
-                /-strong/-heart:>:o:-((:-h
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="d-flex py-3">
-                        <div class="service-icon me-3">
-                            <i class="fa-solid fa-message"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="title">Secure payment</div>
-                            <div class="text">Have you ever finally just</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="d-flex py-3">
-                        <div class="service-icon me-3">
-                            <i class="fa-solid fa-truck"></i>
-                        </div>
-                        <div class="service-content">
-                            <div class="title">Secure payment</div>
-                            <div class="text">Have you ever finally just</div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="d-flex py-3">
+                            <div class="service-icon me-3">
+                                <i class="fa-solid fa-truck"></i>
+                            </div>
+                            <div class="service-content">
+                                <div class="title">Secure payment</div>
+                                <div class="text">Have you ever finally just</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="list-product mt-4">
-            <h5 class="mb-4">Saved for later</h5>
-            <div class="row">
-                <!-- Products will go here -->
+            <div class="list-product mt-4">
+                <h5 class="mb-4">Saved for later</h5>
+                <div class="row">
+                    <!-- Products will go here -->
+                </div>
+            </div>
+            <div class="banner d-flex justify-content-between align-items-center">
+                <div class="text">
+                    <h4 class="text-white">Super discount on more than 100 USD</h4>
+                    <div class="text-white">Have you ever finally just write dummy info</div>
+                </div>
+                <div class="button">
+                    <button class="btn btn-warning">Shop now</button>
+                </div>
             </div>
         </div>
-        <div class="banner d-flex justify-content-between align-items-center">
-            <div class="text">
-                <h4 class="text-white">Super discount on more than 100 USD</h4>
-                <div class="text-white">Have you ever finally just write dummy info</div>
-            </div>
-            <div class="button">
-                <button class="btn btn-warning">Shop now</button>
-            </div>
-        </div>
-    </div>
     </div>
     <script>
+        // bắt sự kiện onclick tắng giảm số lượng sản phẩm
+        function updateQuantity(change, cartItemId) {
+            const input = $('#quantity-' + cartItemId);
+            let currentQuantity = parseInt(input.val(), 10);
+            let newQuantity = currentQuantity + change;
+
+            if (newQuantity < 1) {
+                newQuantity = 1;
+            }
+
+            input.val(newQuantity);
+            updateCartItem(cartItemId, newQuantity);
+        }
+
+        function updateCartItem(cartItemId, quantity) {
+            $.ajax({
+                url: '/update-cart-item',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({
+                    cartItemId: cartItemId,
+                    quantity: quantity
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        $('#itemPrice-' + cartItemId).text(response.newPrice); // Cập nhật giá tiền sản phẩm
+                        $('#totalPrice').text(response.totalPrice); // Cập nhật tổng số tiền nếu cần
+                    } else {
+                        console.error('Lỗi cập nhật:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi AJAX:', error);
+                    console.log('Chi tiết lỗi:', xhr.responseText); // Xem chi tiết lỗi
+                }
+            });
+        }
+
+        // end
         document.addEventListener('DOMContentLoaded', function () {
             var selectAllCheckbox = document.getElementById('selectAll');
 
@@ -247,9 +347,7 @@
                 var selectedCheckboxes = document.querySelectorAll('.box-checks .item-checkbox:checked');
 
                 selectedCheckboxes.forEach(function (checkbox) {
-                    /-strong/ - heart
-                :>:
-                    o:-((: - htotalPrice += parseInt(checkbox.getAttribute('data-price'));
+                    totalPrice += parseInt(checkbox.getAttribute('data-price'));
                 });
 
                 var totalPayment = totalPrice + shippingFee;
@@ -263,9 +361,11 @@
                 selectAllCheckbox.indeterminate = !allChecked && Array.from(allCheckboxes).some(checkbox => checkbox.checked);
             }
 
-            updateTotals();
 
-            function updateQuantity(cartItemId, increment) {
+            // các sự kiện thay đổi số lượng tính tiền
+
+
+            function updateQuantityOnChange(cartItemId) {
                 const quantityInput = document.getElementById(`quantity-${cartItemId}`);
                 const priceElement = document.getElementById(`itemPrice-${cartItemId}`);
                 const checkbox = document.querySelector(`.box-checks .item-checkbox[data-cart-id="${cartItemId}"]`);
@@ -275,13 +375,16 @@
                     return;
                 }
 
-                let currentQuantity = parseInt(quantityInput.value);
-                let newQuantity = currentQuantity + increment;
+                let newQuantity = parseInt(quantityInput.value, 10);
+                if (isNaN(newQuantity) || newQuantity < 1) {
+                    newQuantity = 1;
+                    quantityInput.value = newQuantity;
+                }
 
-                if (newQuantity < 1) newQuantity = 1;
+                updateCartItem(cartItemId, newQuantity, priceElement, checkbox);
+            }
 
-                quantityInput.value = newQuantity;
-
+            function updateCartItem(cartItemId, newQuantity, priceElement, checkbox) {
                 const retailPrice = parseFloat(priceElement.getAttribute('data-retail-price'));
                 const itemPrice = retailPrice * newQuantity;
 
@@ -309,9 +412,6 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        /-strong/ - heart
-                    :>:
-                        o:-((: - h
                     });
 
                 function updateCartTotals(totalPrice, totalPayment) {
@@ -323,6 +423,29 @@
                         totalPaymentElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPayment) + ' đ';
                     }
                 }
+            }
+
+            function deleteCartItem(cartItemId) {
+                fetch(`/cart/remove-item/${cartItemId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Xóa phần tử khỏi giao diện người dùng
+                            document.querySelector(`#cart-item-${cartItemId}`).remove();
+                            updateCartTotals(data.totalPrice, data.totalPayment);
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
 
             @if(session('success'))
@@ -343,26 +466,96 @@
             });
             @endif
 
-            var form = document.getElementById('paymentForm');
+            document.addEventListener('DOMContentLoaded', function () {
+                // Xử lý sự kiện submit của form thanh toán
+                document.getElementById('paymentForm').addEventListener('submit', function (e) {
+                    // Ngăn form gửi dữ liệu ngay lập tức
+                    e.preventDefault();
 
-            form.addEventListener('submit', function (e) {
-                // Xóa tất cả input ẩn trước khi thêm mới
-                Array.from(form.querySelectorAll('input[type="hidden"]')).forEach(input => {
-                    if (input.name !== '_token') { // Giữ lại CSRF token
-                        input.remove();
+                    // Tìm tất cả các checkbox được chọn
+                    const selectedItems = [];
+                    document.querySelectorAll('.box-checks .item-checkbox:checked').forEach(checkbox => {
+                        selectedItems.push({
+                            id: checkbox.getAttribute('data-cart-id'),
+                            quantity: document.getElementById('quantity-' + checkbox.getAttribute('data-cart-id')).value
+                        });
+                    });
+
+                    // Nếu không có sản phẩm nào được chọn, thông báo lỗi và không gửi form
+                    if (selectedItems.length === 0) {
+                        alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán.');
+                        return;
                     }
-                });
 
-                var selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
-                selectedCheckboxes.forEach(function (checkbox) {
-                    var hiddenInput = document.createElement('input');
-                    hiddenInput.type = 'hidden';
-                    hiddenInput.name = checkbox.getAttribute('name');
-                    hiddenInput.value = checkbox.getAttribute('value');
-                    form.appendChild(hiddenInput);
+                    // Chuyển đổi danh sách các sản phẩm được chọn thành JSON
+                    document.getElementById('selectedItems').value = JSON.stringify(selectedItems);
+
+                    // Gửi form
+                    this.submit();
                 });
             });
+
+
+            // thanh toán
+            //     var form = document.getElementById('paymentForm');
+            //
+            //     form.addEventListener('submit', function (e) {
+            //         // Xóa tất cả input ẩn trước khi thêm mới
+            //         Array.from(form.querySelectorAll('input[type="hidden"]')).forEach(input => {
+            //             if (input.name !== '_token') { // Giữ lại CSRF token
+            //                 input.remove();
+            //             }
+            //         });
+            //
+            //         var selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+            //         selectedCheckboxes.forEach(function (checkbox) {
+            //             var hiddenInput = document.createElement('input');
+            //             hiddenInput.type = 'hidden';
+            //             hiddenInput.name = checkbox.getAttribute('name');
+            //             hiddenInput.value = checkbox.getAttribute('value');
+            //             form.appendChild(hiddenInput);
+            //         });
+            //     });
+
+            document.getElementById('checkout-button').addEventListener('click', function (e) {
+                e.preventDefault(); // Ngăn chặn hành động mặc định của nút
+
+                let selectedItems = [];
+
+                // Lấy dữ liệu sản phẩm từ các checkbox đã chọn
+                document.querySelectorAll('.item-checkbox:checked').forEach(function (checkbox) {
+                    let itemId = checkbox.value;
+                    selectedItems.push(itemId);
+                });
+
+                // Gửi danh sách sản phẩm đã chọn qua AJAX
+                fetch('/cart/save-selected-items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        selectedItems: selectedItems
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // console.log('heheehe');
+                            window.location.href = '/checkout'; // Chuyển hướng tới trang thanh toán
+                        } else {
+                            console.error('Error:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+
         });
+
 
     </script>
 
