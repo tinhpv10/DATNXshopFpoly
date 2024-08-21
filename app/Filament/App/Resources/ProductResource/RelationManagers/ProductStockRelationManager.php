@@ -117,11 +117,20 @@ class ProductStockRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('import_price')
                     ->label('Giá nhập vào')
+                    ->badge()
+                    ->separator(',')
+                    ->money('VND')
                     ->searchable(),
                 TextColumn::make('retail_price')
+                    ->badge()
+                    ->separator(',')
+                    ->money('VND')
                     ->label('Giá bán lẻ')
                     ->searchable(),
                 TextColumn::make('wholesale_price')
+                    ->badge()
+                    ->separator(',')
+                    ->money('VND')
                     ->label('Giá bán sỉ')
                     ->searchable(),
                 TextColumn::make('qty_inventory')
