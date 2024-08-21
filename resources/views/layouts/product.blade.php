@@ -194,13 +194,32 @@
                         </div>
                         <div class="filters-applied">
                             @if(request('query'))
-                                <div class="seach">
+                                <div class="search">
                                     <i class="bi bi-search"></i>
                                     Kết quả tìm kiếm cho từ khóa "<span
                                         style="color: red;">{{ request('query') }}</span>"
                                 </div>
+                                <div class="shop">
+                                    @if($shops->isNotEmpty())
+                                        <div class="section-information bg-white">
+                                            @foreach($shops as $shop)
+                                                <div class="shop-avatar rounded-circle">
+                                                    <img src="{{ asset('storage/' . $shop->avatar) }}"
+                                                         alt="{{ $shop->name }}" class="shop-avatar">
+                                                </div>
+                                                <div class="shop-info me-5">
+                                                    <div class="shop-details">
+                                                        <h3 class="shop-name">{{ $shop->name }}</h3>
+                                                        <a style="text-decoration: none"
+                                                           href="{{ route('shop', $shop->id) }}"
+                                                           class="btn btn-primary">Xem cửa hàng</a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             @endif
-
                             @if(request('category_id'))
                                 @php
                                     $category = \App\Models\Category::find(request('category_id'));

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppProductMedia;
-use App\Models\Category;
-use App\Models\CategoryShop;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\ShopFollower;
@@ -17,7 +15,7 @@ class ShopController extends Controller
     {
         $informationShop = Shop::withCount('products')->findOrFail($id);
         $categoryShop = $informationShop->categoryShop()->get();
-        $query = Product::where('shop_id', $id);
+        $query = Product::where('shop_id', $id)->where('pause', 0);;
         $productShop = $this->filter($request, $query)->paginate(9);
 
         foreach ($productShop as $productItem) {

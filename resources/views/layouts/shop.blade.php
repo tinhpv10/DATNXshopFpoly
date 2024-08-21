@@ -22,7 +22,7 @@
                     <div class="shop-more text-body-tertiary">
                         <div class="me-3 d-inline">
                             <i class="bi bi-people-fill"></i>
-                            Người theo dõi: {{ $informationShop->follower }}
+                            Người theo dõi: {{ $informationShop->follower}}
                         </div>
                         |
                         <div class="mx-3 d-inline">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="shop-follow">
+                <div class="shop-follow ">
                     <button class="btn btn-primary" data-shop-id="{{ $informationShop->id }}"
                             onclick="toggleFollow(this)">{{ Auth::user()->followerShop->contains($informationShop->id) ? 'Đang theo dõi' : 'Theo dõi' }}
                     </button>

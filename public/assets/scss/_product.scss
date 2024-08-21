@@ -374,6 +374,15 @@
     gap: 5px;
     align-items: center;
 
+    .search {
+        margin-bottom: 20px; /* Khoảng cách giữa phần search và shop */
+    }
+
+    .shop {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Căn chỉnh các shop item sang bên trái */
+    }
     .remove-filter {
         color: #007bff;
         background-color: transparent;

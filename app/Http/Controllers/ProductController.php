@@ -44,7 +44,12 @@ class ProductController extends Controller
 
         // Điều kiện tìm kiếm
         if ($queryText) {
-            $query->where('name', 'like', '%' . $queryText . '%');
+            $query->where(function ($q) use ($queryText) {
+                $q->where('name', 'like', '%' . $queryText . '%')
+                    ->orWhereHas('shop', function ($q) use ($queryText) {
+                        $q->where('name', 'like', '%' . $queryText . '%');
+                    });
+            });
         }
 
         // Điều kiện lọc danh mục
@@ -74,12 +79,10 @@ class ProductController extends Controller
 
         // Điều kiện lọc xếp hạng
         if (!empty($ratings)) {
-            // Lấy phần nguyên của xếp hạng
             $integerRatings = array_map(function ($rating) {
                 return floor((float)$rating); // Lấy phần nguyên
             }, $ratings);
 
-            // Lọc sản phẩm có xếp hạng lớn hơn hoặc bằng các xếp hạng đã chọn
             $query->where(function ($q) use ($integerRatings) {
                 foreach ($integerRatings as $rating) {
                     $q->orWhere('rating', '>=', $rating);
@@ -107,6 +110,10 @@ class ProductController extends Controller
         // Phân trang
         $products = $query->paginate($itemsPerPage)->appends($request->except('page'));
 
+        // Tìm kiếm shop
+        $shops = Shop::where('name', 'like', '%' . $queryText . '%')->get(['id', 'name', 'avatar']);
+
+
         // Dữ liệu cần thiết khác
         $Categories = Category::with('children')->whereNull('parent_id')->get();
         $Brands = Brand::all();
@@ -128,6 +135,7 @@ class ProductController extends Controller
         // Trả về view
         return view('layouts.product', [
             'products' => $products,
+            'shops' => $shops, // Truyền danh sách shop vào view
             'Brands' => $Brands,
             'Categories' => $Categories,
             'productVariations' => $productVariations,
@@ -143,6 +151,7 @@ class ProductController extends Controller
             'searchQuery' => $queryText, // Truyền giá trị query vào view
         ]);
     }
+
 
     protected function handleImageSearch($image)
     {
