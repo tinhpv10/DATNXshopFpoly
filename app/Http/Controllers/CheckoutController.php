@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\PaymentMethod;
+use App\Models\Shop;
 use Illuminate\Http\Request;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
-
+use App\Enums\OrderStatus;
+use Illuminate\Support\Str;
+use App\Models\Order;
+use App\Models\OrderDetail;
 class CheckoutController extends Controller
 {
     public function index(Request $request)
@@ -36,12 +42,13 @@ class CheckoutController extends Controller
         foreach ($cartData as $itemId) {
             $cartItem = CartItem::find($itemId);
             if ($cartItem) {
+                // Kiểm tra nếu sản phẩm có biến thể (productStock)
                 $productStock = $cartItem->productstock;
 
                 if ($productStock) {
                     $product = $productStock->product;
 
-                    // Lấy thông tin biến thể sản phẩm
+                    // Lấy thông tin biến thể sản phẩm (nếu có)
                     $variations = $productStock->productAttribute()
                         ->with(['appProductVariation', 'appProductVariationValue'])
                         ->get()
@@ -51,33 +58,49 @@ class CheckoutController extends Controller
                                 'variation_value' => $attribute->appProductVariationValue->variation_value_name ?? 'Không có giá trị biến thể',
                             ];
                         });
-
-                    $products[] = [
-                        'product' => $product,
-                        'productStock' => $productStock,
-                        'media' => $cartItem->media,
-                        'quantity' => $cartItem->quantity,
-                        'price' => $productStock->retail_price,
-                        'variations' => $variations,
-                    ];
+                } else {
+                    // Nếu không có biến thể, lấy trực tiếp thông tin sản phẩm
+                    $product = $cartItem->product;
+                    $variations = collect(); // Không có biến thể
                 }
+
+                // Thêm thông tin sản phẩm vào danh sách
+                $products[] = [
+                    'product' => $product,
+                    'productStock' => $productStock,
+                    'media' => $cartItem->media,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $productStock ? $productStock->retail_price : $product->getPrice(), // Giá từ biến thể hoặc sản phẩm gốc
+                    'variations' => $variations,
+                ];
+
             }
         }
 
+
+
         // Tính toán tổng tiền hàng và phí vận chuyển
         $totalPayment = $this->calculateTotal($products);
+
         $shippingFee = 30000; // Phí vận chuyển cố định
+        $paymentmethod = PaymentMethod::all();
+
+
+
+
 
         return view('layouts.checkout', [
+            'paymentmethod' => $paymentmethod,
             'address' => $address,
             'products' => $products,
-            'totalPayment' => number_format($totalPayment, 0, ',', '.'),
-            'shippingFee' => number_format($shippingFee, 0, ',', '.'),
+            'totalPayment' => $totalPayment,
+            'shippingFee' => $shippingFee,
         ]);
     }
 
     public function processCheckout(Request $request)
     {
+
         // Lấy dữ liệu giỏ hàng từ session
         $cartData = Session::get('selectedItems', []);
 
@@ -106,13 +129,13 @@ class CheckoutController extends Controller
         // Lưu vào session
         Session::put('selected_items', $cartItems);
         Session::put('total_payment', $this->calculateTotal($cartItems)); // Thêm tổng tiền vào session
+//        dd(Session::put('total_payment', $this->calculateTotal($cartItems)));
         Session::put('shipping_fee', 30000); // Thêm phí vận chuyển vào session
 
         // Xử lý thanh toán và chuyển hướng đến VNPay
-        return redirect()->route('vnpay.payment');
+        // Trả về URL VNPay qua JSON response
+        return response()->json(['redirect_url' => route('vnpay.payment')]);
     }
-
-
 
 
     public function calculateTotal($products)
@@ -163,6 +186,80 @@ class CheckoutController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function codCheckout(Request $request)
+    {
+        // Lấy thông tin từ session
+        $totalPayment = session('total_payment', 0);
+        $shippingFee = session('shipping_fee', 0);
+
+        // Lấy ID của các CartItem từ session
+        $cartItemIds = Session::get('selectedItems', []);
+
+        // Kiểm tra nếu không có ID hoặc không phải là mảng
+        if (!is_array($cartItemIds) || empty($cartItemIds)) {
+            return redirect()->back()->with('error', 'Dữ liệu giỏ hàng không hợp lệ.');
+        }
+
+        // Lấy chi tiết các CartItem từ cơ sở dữ liệu
+        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
+
+        // Tạo đơn hàng mới
+        $order = new Order();
+        $order->user_id = Auth::id();
+        $order->status = OrderStatus::Processing->value; // Đang xử lý
+        $order->total_price = $totalPayment;
+        $order->shipping_unit = $shippingFee;
+        $order->is_paid = 0; // Chưa thanh toán
+        $order->shop_id = $cartItems->first()->shop_id ?? null; // Lấy shop_id từ item đầu tiên
+        $order->payment_method_id = 2; // Giả sử 2 là ID cho phương thức COD
+        $order->code = strtoupper(Str::random(10));
+
+        $defaultAddress = UserAddress::where('user_id', Auth::id())->where('is_default', 1)->first();
+        if (!$defaultAddress) {
+            return redirect()->back()->with('error', 'Không tìm thấy địa chỉ mặc định.');
+        }
+        $order->user_address_id = $defaultAddress->id;
+        $order->save();
+
+        // Lưu chi tiết đơn hàng
+        foreach ($cartItems as $cartItem) {
+            $orderDetail = new OrderDetail();
+            $orderDetail->order_id = $order->id;
+            $orderDetail->product_id = $cartItem->product_id;
+            $orderDetail->app_product_stock_id = $cartItem->app_product_stock_id;
+            $orderDetail->product_image = $cartItem->media;
+            $orderDetail->product_price = $cartItem->price;
+            $orderDetail->product_quantity = $cartItem->quantity;
+            $orderDetail->shop_id = $cartItem->shop_id;
+            $orderDetail->save();
+        }
+
+        // Xóa các mục đã chọn trong giỏ hàng
+        $userId = Auth::id();
+        $cart = Cart::where('user_id', $userId)->first();
+        if ($cart) {
+            CartItem::where('cart_id', $cart->id)
+                ->whereIn('id', $cartItemIds)
+                ->delete();
+
+            // Nếu giỏ hàng không còn sản phẩm, xóa giỏ hàng
+            if (CartItem::where('cart_id', $cart->id)->count() == 0) {
+                $cart->delete();
+            }
+        }
+
+        // Xóa session sau khi đã lưu chi tiết đơn hàng
+        Session::forget('selectedItems');
+        Session::forget('total_payment');
+        Session::forget('shipping_fee');
+
+        // Trả về trang thông báo thành công
+        return redirect()->route('checkout.success')->with('success', 'Đơn hàng của bạn đã được ghi nhận. Vui lòng thanh toán khi nhận hàng.');
+    }
 
 
+
+    public function showSucess(){
+        return view('layouts.check-sucess');
+    }
 }

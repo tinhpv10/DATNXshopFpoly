@@ -173,9 +173,7 @@
                                                 <p class="m-0">Số lượng: {{ $detail->product_quantity ?? '0' }}</p>
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
-                                                @if(!isset($detail->Product->sale_price))
-                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
-                                                @endif
+                                                <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
                                             </div>
                                         </div>
                                     </div>
