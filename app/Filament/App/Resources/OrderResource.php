@@ -225,11 +225,11 @@ class OrderResource extends Resource
                                         ->required(fn($get) => $get('status') === OrderStatus::Cancelled->value),
                                 ])->columns('1'),
 
-                            Select::make('payment_method_id')
-                                ->required()
-                                ->disabled()
-                                ->relationship(name: 'PaymentMethod', titleAttribute: 'method_name')
-                                ->label('Phương thức thanh toán'),
+//                            Select::make('payment_method_id')
+//                                ->required()
+//                                ->disabled()
+//                                ->relationship(name: 'PaymentMethod', titleAttribute: 'method_name')
+//                                ->label('Phương thức thanh toán'),
 
                             TextInput::make('total_price')
                                 ->numeric()
@@ -272,12 +272,12 @@ class OrderResource extends Resource
                         TextEntry::make('code')
                             ->badge()
                             ->label('Mã đơn hàng'),
-                        TextEntry::make('shipping_unit')
-                            ->label('Đơn vị vận chuyển'),
+                        TextEntry::make('PaymentMethod.method_name')
+                            ->label('Phương thức thanh toán'),
                         TextEntry::make('User.name')
                             ->label('Người dùng'),
-                        TextEntry::make('Voucher.name')
-                            ->label('Mã giảm giá'),
+//                        TextEntry::make('Voucher.name')
+//                            ->label('Mã giảm giá'),
                         IconEntry::make('is_paid')
                             ->boolean()
                             ->trueIcon('heroicon-o-check-badge')
@@ -338,12 +338,12 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('code')
                     ->label('Mã đơn hàng'),
-                TextColumn::make('shipping_unit')
-                    ->label('Đơn vị vận chuyển'),
+                TextColumn::make('PaymentMethod.method_name')
+                    ->label('phương thức thanh toán'),
                 TextColumn::make('User.name')
                     ->label('Người dùng'),
-                TextColumn::make('Voucher.name')
-                    ->label('Giảm giá'),
+//                TextColumn::make('Voucher.name')
+//                    ->label('Giảm giá'),
                 TextColumn::make('status')
                     ->searchable()
                     ->badge()
@@ -427,7 +427,7 @@ class OrderResource extends Resource
                     ])
                     ->action(function (array $data, $record): void {
                         $record->status = OrderStatus::Successprocessed;
-                        $record->check_order_shop = 1;
+
                         $record->save();
 
                         Notification::make()
@@ -461,7 +461,7 @@ class OrderResource extends Resource
                         })
                     ->hidden(fn($record) => !in_array($record->status->value, ['Chờ lấy hàng', 'Đang xử lý'])),
 
-                Tables\Actions\Action::make('In phiếu giao')
+                Tables\Actions\Action::make('Giao hàng, in phiếu')
                     ->url(fn(Order $record) => route('order.pdf', $record))
                     ->openUrlInNewTab()
                     ->hidden(fn($record) => $record->status->value !== 'Đã xử lý'),

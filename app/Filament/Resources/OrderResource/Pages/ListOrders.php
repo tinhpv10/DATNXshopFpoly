@@ -32,7 +32,7 @@ class ListOrders extends ListRecords
         $Delivered = Order::deliveredStatus();
         $NotProcessed = Order::NotProcessed();
         return [
-//            'Tất cả' => Tab::make('Tất cả'),
+            'Tất cả' => Tab::make('Tất cả'),
             'Chờ duyệt (' . $processing . ')' => Tab::make()->query(fn($query) => $query->where('status', 'Đang xử lý')),
             'Chưa xử lý (' . $NotProcessed . ')' => Tab::make()->query(fn($query) => $query->where('status', 'Chưa xử lý')),
             'Vận chuyển (' . $shipped . ')' => Tab::make()->query(fn($query) => $query->where('status', 'Đã vận chuyển')),

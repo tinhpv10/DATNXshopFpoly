@@ -288,6 +288,7 @@ class OrderResource extends Resource
                         $record->status = OrderStatus::Waitingdelivery->value;
                         $randomMVD = 'MVD' . $record->code . random_int(100000, 999999);
                         $record->lading_code = $randomMVD;
+                        $record->check_order_shop = 1;
                         $record->custom_time = Carbon::now();
                         $record->save();
 //                        $shopOwner = $record->shop->user;
