@@ -5,7 +5,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 py-3">
                     <li class="breadcrumb-item"><a href="#" class="text-decoration-none">Trang chủ</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><a href="" class="text-decoration-none">Chi tiết</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="" class="text-decoration-none">Chi
+                            tiết</a></li>
                 </ol>
             </nav>
         </div>
@@ -17,11 +18,14 @@
                     <div>
                         @if(!$address)
                             Vui lòng cập nhật địa chỉ
-                            <a href="{{ route('profile.address') }}" class="text-primary text-decoration-none ms-5">Cập nhật</a>
+                            <a href="{{ route('profile.address') }}" class="text-primary text-decoration-none ms-5">Cập
+                                nhật</a>
                         @else
                             <strong class="me-3">{{ $address->name }} {{ $address->phone }}</strong>
-                            {{ $address->address_specific }}, {{ $address->ward->name }}, {{ $address->district->name }}, {{ $address->province->name }}
-                            <a href="{{ route('profile.address') }}" class="text-primary text-decoration-none ms-5">Thay đổi</a>
+                            {{ $address->address_specific }}, {{ $address->ward->name }}, {{ $address->district->name }}
+                            , {{ $address->province->name }}
+                            <a href="{{ route('profile.address') }}" class="text-primary text-decoration-none ms-5">Thay
+                                đổi</a>
                         @endif
                     </div>
                 </div>
@@ -54,15 +58,20 @@
                                             @if(isset($item['variations']))
                                                 <br>
                                                 @foreach($item['variations'] as $variation)
-                                                    <strong>{{ $variation['variation_name'] ?? '' }}:</strong> {{ $variation['variation_value'] ?? ''}}
+                                                    <strong>{{ $variation['variation_name'] ?? '' }}
+                                                        :</strong> {{ $variation['variation_value'] ?? ''}}
                                                 @endforeach
                                             @endif
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-2 text-end">{{ number_format($item['price'], 0, ',', '.') }} VND</div>
                                 <div class="col-2 text-end">{{ $item['quantity'] }}</div>
-                                <div class="col-2 text-end">{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }} VND</div>
+                                <div
+                                    class="col-2 text-end">{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }}
+                                    VND
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,7 +85,8 @@
                                     <label for="note" class="col-form-label">Lời nhắn:</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input type="text" id="note" class="form-control mb-0" placeholder="Lưu ý cho người bán">
+                                    <input type="text" id="note" class="form-control mb-0"
+                                           placeholder="Lưu ý cho người bán">
                                 </div>
                             </div>
                         </div>
@@ -92,7 +102,10 @@
                         <div class="col-6 offset-6">
                             <div class="d-flex justify-content-end align-items-center">
                                 Tổng số tiền ({{ count($products) }} sản phẩm):
-                                <div id="totalPayment" class="text-danger fw-medium fs-5 ms-2">{{ number_format($totalPayment, 0, ',', '.') }} VND</div>
+                                <div id="totalPayment"
+                                     class="text-danger fw-medium fs-5 ms-2">{{ number_format((float)$totalPayment, 0, ',', '.') }}
+                                    VND
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -109,15 +122,19 @@
                     <div>Phương thức thanh toán</div>
                     <div class="pe-5">
                         <select class="form-select" id="paymentMethod">
-                            <option value="">Thanh toán khi nhận hàng</option>
-                            <option value="">Thanh toán VNPAY</option>
+                            @foreach($paymentmethod as $pay)
+                                <option value="{{ $pay->method_name }}">{{ $pay->method_name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-end bg-warning bg-opacity-10 py-3">
-                    <div class="pe-5">Tổng tiền hàng: <span id="totalAmount" class="ms-5">{{ number_format($totalPayment, 0, ',', '.') }} VND</span></div>
-                    <div class="py-2 pe-5">Tổng phí vận chuyển: <span id="totalShippingFee" class="ms-5">{{ number_format($shippingFee, 0, ',', '.') }} VND</span></div>
-                    <div class="pe-5">Tổng thanh toán: <span id="totalWithShipping" class="ms-5">{{ number_format($totalPayment + $shippingFee, 0, ',', '.') }} VND</span></div>
+                    <div class="pe-5">Tổng tiền hàng: <span id="totalAmount" class="ms-5">{{ number_format((float)$totalPayment, 0, ',', '.') }} VND</span>
+                    </div>
+                    <div class="py-2 pe-5">Tổng phí vận chuyển: <span id="totalShippingFee" class="ms-5">{{ number_format((float)$shippingFee, 0, ',', '.') }} VND</span>
+                    </div>
+                    <div class="pe-5">Tổng thanh toán: <span id="totalWithShipping" class="ms-5">{{ number_format( (float)$totalPayment + $shippingFee, 0, ',', '.') }} VND</span>
+                    </div>
                     <form id="paymentForm" action="{{ route('vnpay.payment') }}" method="POST">
                         @csrf
                         <input type="hidden" name="amount" id="amount">
@@ -129,10 +146,10 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function updateTotal() {
                 var selectedItems = [];
                 @foreach ($products as $product)
@@ -146,7 +163,7 @@
                         _token: '{{ csrf_token() }}',
                         selectedItems: selectedItems
                     },
-                    success: function(response) {
+                    success: function (response) {
                         if (response.error) {
                             alert(response.error);
                         } else {
@@ -158,7 +175,7 @@
                             $('#selectedItems').val(JSON.stringify(selectedItems));
                         }
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Có lỗi xảy ra:", error);
                     }
                 });
@@ -166,42 +183,66 @@
 
             updateTotal();
 
-            $('#paymentMethod').change(function() {
+            $('#paymentMethod').change(function () {
                 updateTotal();
             });
         });
 
-        $(document).ready(function() {
-            // Hàm gửi yêu cầu Ajax
+        $(document).ready(function () {
             function processCheckout() {
                 $.ajax({
                     url: '{{ route('checkout.process') }}',
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        // Bạn có thể gửi thêm dữ liệu nếu cần
+                        payment_method: $('input[name="payment_method"]:checked').val(), // Lấy giá trị của phương thức thanh toán
                     },
-                    success: function(response) {
-                        // Xử lý kết quả trả về, ví dụ:
-                        if (response.redirect) {
-                            window.location.href = response.redirect;
+                    success: function (response) {
+                        if (response.redirect_url) {
+                            // Chuyển hướng bằng cách tạo một form ẩn và gửi bằng POST
+                            let form = $('<form>', {
+                                action: response.redirect_url,
+                                method: 'POST'
+                            });
+
+                            form.append('@csrf'); // Thêm token CSRF vào form
+                            $('body').append(form);
+                            form.submit(); // Gửi form
                         } else {
-                            // Hiển thị thông báo lỗi hoặc thành công
-                            alert('Có lỗi xảy ra hoặc thành công!');
+                            alert('Có lỗi xảy ra hoặc không tìm thấy URL để chuyển hướng.');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        // Xử lý lỗi nếu có
+                    error: function (xhr, status, error) {
                         console.error('Có lỗi xảy ra:', error);
                     }
                 });
             }
 
             // Gọi hàm khi cần
-            processCheckout();
+            $('#checkoutButton').on('click', function () {
+                processCheckout();
+            });
         });
+
+
+
+        // chọn phương thức thanh toán
+        $(document).ready(function () {
+            $('#paymentMethod').change(function () {
+                var selectedMethod = $(this).val();
+
+                // Cập nhật phương thức thanh toán ẩn trong form
+                $('#amount').val(selectedMethod);
+
+                if (selectedMethod === 'Thanh toán VNPAY') {
+                    $('#paymentForm').attr('action', '{{ route('vnpay.payment') }}');
+                } else if (selectedMethod === 'Thanh toán khi nhận hàng') {
+                    $('#paymentForm').attr('action', '{{ route('checkout.codPayment') }}');
+                }
+            });
+        });
+
     </script>
 
-
-
 @endsection
+

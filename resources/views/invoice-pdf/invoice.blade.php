@@ -104,13 +104,13 @@
     <div class="header pb-2 border-bottom">
         <div class="row">
             <div class="col-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Shopee_logo.svg/1200px-Shopee_logo.svg.png" alt="Shopee Logo" class="img-fluid">
+                <img src="{{ asset('image/logo-doanvth-pro 1.png') }}" alt="Shopee Logo" class="img-fluid">
             </div>
             <div class="col-8 text-end">
                 <img src="https://via.placeholder.com/200x50" alt="Barcode" class="img-fluid mt-2">
                 <div class="order-info">
-                    <p>Mã vận đơn: {{ $record->code ?? ''}}</p>
-                    <p>Mã đơn hàng: {{ $record->lading_code ?? ''}}</p>
+                    <p>Ma van Don: {{ $record->code ?? ''}}</p>
+                    <p>Ma Don Hang: {{ $record->lading_code ?? ''}}</p>
                 </div>
             </div>
         </div>
@@ -120,13 +120,13 @@
     <div id="main-content" class="mt-3">
         <div class="row">
             <div class="col-6 shop-info bg-secondary">
-                <strong>Từ:</strong>
+                <strong>Tu:</strong>
                 <div>{{ $record->shop->name ?? '' }}</div>
                 <div>{{ $record->shop->user->UserAddressFormatted ?? ''}}</div>
                 <div>Phone: {{ $record->shop->name ?? '' }}</div>
             </div>
             <div class="col-6 buyer-info bg-primary">
-                <strong>Đến:</strong>
+                <strong>Đen:</strong>
                 <div>{{ $record->user->name ?? '' }}</div>
                 <div>{{ $record->user->UserAddressFormatted ?? ''}}</div>
                 <div>Phone: {{ $record->user->phone ?? '' }}</div>
