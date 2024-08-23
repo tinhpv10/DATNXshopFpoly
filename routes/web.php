@@ -27,7 +27,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CheckoutController;
-
+use App\Http\Controllers\GHNController;
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
 
@@ -73,7 +73,6 @@ Route::get('/order/success/{order_id}', function ($order_id) {
     $order = Order::find($order_id);
     return view('layouts.success', ['order' => $order]);
 })->name('order.success');
-
 Route::get('/order/failure', function () {
     return view('layouts.failure');
 })->name('order.failure');
@@ -133,6 +132,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout-order', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::post('/checkout/calculate-total', [CheckoutController::class, 'calculateTotalAjax'])->name('checkout.calculateTotalAjax');
     Route::post('/checkout/complete', [CheckoutController::class, 'completeCheckout'])->name('checkout.complete');
+    Route::post('/checkout-codpayment', [CheckoutController::class, 'codCheckout'])->name('checkout.codPayment');
+    Route::get('/checkout-success', [CheckoutController::class, 'showSucess'])->name('checkout.success');
+    Route::get('/cart/quantity', [CartController::class, 'getCartQuantity'])->name('cart.quantity');
 
 
 });
