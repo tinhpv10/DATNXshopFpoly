@@ -86,3 +86,25 @@
     </nav>
 </header>
 {{--update--}}
+{{--đêm số sản phẩm trong giỏ hàng--}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function updateCartQuantity() {
+        $.ajax({
+            url: "{{ route('cart.quantity') }}",
+            method: 'GET',
+            success: function(response) {
+                // Cập nhật số lượng sản phẩm trong giỏ hàng
+                $('.number').text(response.quantity);
+            },
+            error: function(xhr, status, error) {
+                console.error('Có lỗi xảy ra:', error);
+            }
+        });
+    }
+
+    // Gọi hàm để cập nhật số lượng sản phẩm khi trang được tải
+    $(document).ready(function() {
+        updateCartQuantity();
+    });
+</script>
