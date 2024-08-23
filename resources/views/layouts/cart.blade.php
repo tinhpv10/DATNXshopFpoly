@@ -23,6 +23,7 @@
                                                         <div class="d-flex">
                                                             <div class="box-checks">
                                                                 <div class="form-check my-4">
+
                                                                     <input class="item-checkbox" type="checkbox"
                                                                            name="item_{{ $cartItem['product_id'] }}"
                                                                            value="{{ $cartItem['id'] }}"
@@ -51,10 +52,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-6 col-md-3 col-lg-2">
-                                                        <div class="price text-end p-2"
-                                                             id="itemPrice-{{ $cartItem->id }}"
-                                                             data-retail-price="{{ $cartItem->productStock->retail_price ?? ''}}">
-                                                            {{ number_format($cartItem->price, 0, ',', '.') }} đ
+
+                                                        <div class="row">
+                                                            <div class="col-md-12 d-flex justify-content-end p-2">
+                                                                <div class="price flex-grow-1 text-end"
+                                                                     id="itemPrice-{{ $cartItem->id }}"
+                                                                     data-retail-price="{{ $cartItem->productStock->retail_price ?? $cartItem->product->getPrice() }}">
+                                                                    {{ number_format($cartItem->productStock->retail_price ?? $cartItem->product->getPrice(), 0, ',', '.') }}
+                                                                    VND
+                                                                </div>
+                                                            </div>
                                                         </div>
 
                                                         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -170,11 +177,6 @@
                                             đ
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="p-2"><h6>Phí Vận Chuyển:</h6></div>
-                                        <div class="price text-end p-2"
-                                             id="shippingFee">{{ $shippingFee ? number_format($shippingFee, 0, ',', '.') . ' đ' : 'Miễn phí' }}</div>
-                                    </div>
                                     <hr>
                                     <div class="d-flex justify-content-between">
                                         <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6>
@@ -284,44 +286,41 @@
     <script>
         // bắt sự kiện onclick tắng giảm số lượng sản phẩm
         function updateQuantity(change, cartItemId) {
-            const input = $('#quantity-' + cartItemId);
-            let currentQuantity = parseInt(input.val(), 10);
+            const input = document.getElementById('quantity-' + cartItemId);
+            let currentQuantity = parseInt(input.value, 10);
             let newQuantity = currentQuantity + change;
 
-            if (newQuantity < 1) {
-                newQuantity = 1;
-            }
+            if (newQuantity < 1) newQuantity = 1;
 
-            input.val(newQuantity);
+            input.value = newQuantity;
             updateCartItem(cartItemId, newQuantity);
         }
 
         function updateCartItem(cartItemId, quantity) {
             $.ajax({
                 url: '/update-cart-item',
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify({
+                type: 'POST',
+                data: {
                     cartItemId: cartItemId,
-                    quantity: quantity
-                }),
+                    quantity: quantity,
+                    _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
                 success: function (response) {
                     if (response.success) {
-                        $('#itemPrice-' + cartItemId).text(response.newPrice); // Cập nhật giá tiền sản phẩm
-                        $('#totalPrice').text(response.totalPrice); // Cập nhật tổng số tiền nếu cần
+                        $('#itemPrice-' + cartItemId).text(response.newPrice);
+                        $('#totalPrice').text(response.newPrice.toLocaleString() + ' đ');
+                        $('#totalPayment').text(response.totalPrice.toLocaleString() + ' đ');
                     } else {
-                        console.error('Lỗi cập nhật:', response.message);
+                        alert(response.message);
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi AJAX:', error);
-                    console.log('Chi tiết lỗi:', xhr.responseText); // Xem chi tiết lỗi
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', textStatus, errorThrown);
+                    alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
                 }
             });
         }
+
 
         // end
         document.addEventListener('DOMContentLoaded', function () {
@@ -342,18 +341,17 @@
             });
 
             function updateTotals() {
-                var totalPrice = 0;
-                var shippingFee = 30000; // Giả định phí vận chuyển cố định là 30,000 đ
+                var newPrice = 0;
+                // Giả định phí vận chuyển cố định là 30,000 đ
                 var selectedCheckboxes = document.querySelectorAll('.box-checks .item-checkbox:checked');
 
                 selectedCheckboxes.forEach(function (checkbox) {
-                    totalPrice += parseInt(checkbox.getAttribute('data-price'));
+                    newPrice += parseInt(checkbox.getAttribute('data-price'));
                 });
 
-                var totalPayment = totalPrice + shippingFee;
-                document.getElementById('totalPrice').textContent = `${totalPrice.toLocaleString()} đ`;
-                document.getElementById('shippingFee').textContent = `${shippingFee.toLocaleString()} đ`;
-                document.getElementById('totalPayment').textContent = `${totalPayment.toLocaleString()} đ`;
+                var totalPrice = newPrice;
+                document.getElementById('totalPrice').textContent = `${newPrice.toLocaleString()} đ`;
+                document.getElementById('totalPayment').textContent = `${totalPrice.toLocaleString()} đ`;
 
                 var allCheckboxes = document.querySelectorAll('.box-checks .item-checkbox');
                 var allChecked = Array.from(allCheckboxes).every(checkbox => checkbox.checked);
@@ -400,7 +398,7 @@
                     .then(data => {
                         if (data.success) {
                             priceElement.innerText = new Intl.NumberFormat('vi-VN').format(itemPrice) + ' đ';
-                            updateCartTotals(data.totalPrice, data.totalPayment);
+                            updateCartTotals(data.newPrice, data.totalPrice);
 
                             if (!checkbox.checked) {
                                 checkbox.checked = true;
@@ -414,13 +412,13 @@
                         console.error('Error:', error);
                     });
 
-                function updateCartTotals(totalPrice, totalPayment) {
+                function updateCartTotals(newPrice, totalPrice) {
                     const totalPriceElement = document.getElementById('totalPrice');
                     const totalPaymentElement = document.getElementById('totalPayment');
 
                     if (totalPriceElement && totalPaymentElement) {
-                        totalPriceElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' đ';
-                        totalPaymentElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPayment) + ' đ';
+                        totalPriceElement.innerText = new Intl.NumberFormat('vi-VN').format(newPrice) + ' đ';
+                        totalPaymentElement.innerText = new Intl.NumberFormat('vi-VN').format(totalPrice) + ' đ';
                     }
                 }
             }
@@ -438,7 +436,7 @@
                         if (data.success) {
                             // Xóa phần tử khỏi giao diện người dùng
                             document.querySelector(`#cart-item-${cartItemId}`).remove();
-                            updateCartTotals(data.totalPrice, data.totalPayment);
+                            updateCartTotals(data.newPrice, data.totalPrice);
                         } else {
                             console.error('Error:', data.message);
                         }

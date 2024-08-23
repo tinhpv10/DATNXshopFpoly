@@ -32,7 +32,6 @@ class CartController extends Controller
         }
 
         $totalPrice = 0;
-        $shippingFee = 30000;
 
         // Kiểm tra nếu có sản phẩm trong giỏ hàng
         if ($cartItems->isNotEmpty()) {
@@ -47,15 +46,17 @@ class CartController extends Controller
                     $productStock = $cartItem->productstock;
 
                     if ($productStock) {
+                        // Nếu có biến thể, lấy giá từ biến thể
                         $retailPrice = $productStock->retail_price;
                         $cartItem->price = $retailPrice * $cartItem->quantity;
                         $cartItem->productStock = $productStock;
-                        $totalPrice += $cartItem->price;
 
+                        // Lấy thông tin sản phẩm và shop
                         $product = Product::find($cartItem->product_id);
                         $cartItem->product = $product;
                         $cartItem->shop = $product->shop;
 
+                        // Lấy thông tin biến thể
                         $variations = $productStock->productAttribute()
                             ->with(['appProductVariation', 'appProductVariationValue'])
                             ->get()
@@ -68,12 +69,22 @@ class CartController extends Controller
 
                         $cartItem->variations = $variations;
                     } else {
-                        $cartItem->price = 0;
+                        // Nếu không có biến thể, lấy giá từ phương thức getPrice() của sản phẩm
+                        $product = Product::find($cartItem->product_id);
+                        $cartItem->price = $product->getPrice() * $cartItem->quantity;
+                        $cartItem->product = $product;
+                        $cartItem->shop = $product->shop;
+
+                        // Không có biến thể nên gán biến thể là rỗng
+                        $cartItem->variations = collect();
                     }
+
+                    // Cộng dồn tổng giá
+                    $totalPrice += $cartItem->price;
                 }
             }
 
-            $totalPayment = $totalPrice + $shippingFee;
+            $totalPayment = $totalPrice;
 
             // Cập nhật session với dữ liệu giỏ hàng
             Session::put('cart_data', $cartItems->map(function ($item) {
@@ -90,15 +101,14 @@ class CartController extends Controller
 
             // Đặt tổng tiền và phí vận chuyển vào session
             Session::put('total_payment', $totalPayment);
-            Session::put('shipping_fee', $shippingFee);
 
             $orderCode = 'ORD-' . uniqid();
 
-            return view('layouts.cart', compact('groupedItems', 'totalPrice', 'shippingFee', 'totalPayment', 'orderCode'));
+            return view('layouts.cart', compact('groupedItems', 'totalPrice', 'totalPayment', 'orderCode'));
         }
 
         // Nếu không có sản phẩm trong giỏ hàng
-        return view('layouts.cart', ['groupedItems' => collect(), 'totalPrice' => 0, 'shippingFee' => $shippingFee, 'totalPayment' => 0]);
+        return view('layouts.cart', ['groupedItems' => collect(), 'totalPrice' => 0, 'totalPayment' => 0]);
     }
 
 
@@ -119,7 +129,7 @@ class CartController extends Controller
 
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'variations' => 'required|array',
+            'variations' => 'nullable|array',
             'product_image' => 'required|string',
             'quantity' => 'sometimes|integer|min:1',
         ]);
@@ -127,17 +137,17 @@ class CartController extends Controller
         Log::info('Dữ liệu thêm vào giỏ hàng:', $validated);
 
         $productId = $validated['product_id'];
-        $variations = $validated['variations'];
+        $variations = $validated['variations'] ?? [];
         $productImage = $validated['product_image'];
         $quantity = $validated['quantity'] ?? 1;
 
         // Kiểm tra xem sản phẩm có biến thể mà người dùng chưa chọn
-        if (empty($variations)) {
-
-            return redirect()->route('cart.view')->with('error', 'Bạn cần chọn ít nhất một biến thể để thêm sản phẩm vào giỏ hàng.');
-        }
-
+//        if (empty($variations)) {
+//
+//            return redirect()->route('cart.view')->with('error', 'Bạn cần chọn ít nhất một biến thể để thêm sản phẩm vào giỏ hàng.');
+//        }
         if (Auth::check()) {
+
             $userId = Auth::user()->id;
             $cart = Cart::firstOrCreate(
                 ['user_id' => $userId],
@@ -155,19 +165,17 @@ class CartController extends Controller
 
     private function addToUserCart($cartId, $productId, $variations, $productImage, $quantity)
     {
-
-        // Lấy giá trị biến thể
-        $variationValueIds = $this->getVariationValueIds($variations);
         $product = Product::findOrFail($productId);
         $shopId = $product->shop_id;
 
-        // Nếu không có biến thể, bỏ qua bước tìm kiếm dựa trên biến thể
-        if (empty($variationValueIds)) {
-            $productStock = AppProductStock::where('product_id', $productId)->first();
+        // Kiểm tra nếu không có biến thể hoặc biến thể trống
+        if (empty($variations)) {
 
-            if ($productStock) {
+            // Trường hợp không có biến thể
+            // Thay vì tìm trong AppProductStock, chúng ta kiểm tra trực tiếp kho sản phẩm
+            if ($variations == []) { // Giả sử `stock` là cột lưu trữ số lượng tồn kho
                 $cartItem = CartItem::where('product_id', $productId)
-                    ->where('app_product_stock_id', $productStock->id)
+                    ->whereNull('app_product_stock_id') // Chỉ áp dụng khi không có biến thể
                     ->where('cart_id', $cartId)
                     ->first();
 
@@ -176,23 +184,28 @@ class CartController extends Controller
                     $cartItem->quantity += $quantity;
                     $cartItem->save();
                 } else {
+                    // Lấy giá từ sản phẩm (trường hợp không có biến thể)
+                    $productPrice = $product->getPrice(); // Hoặc $product->price
+
                     // Thêm mới sản phẩm vào giỏ
                     CartItem::create([
                         'cart_id' => $cartId,
                         'product_id' => $productId,
-                        'price' => $productStock->retail_price,
+                        'price' => $productPrice,
                         'quantity' => $quantity,
-                        'app_product_stock_id' => $productStock->id,
+                        'app_product_stock_id' => null, // Không có biến thể nên để null
                         'media' => $productImage,
                         'shop_id' => $shopId,
-                        'variations' => json_encode($variations),
                     ]);
                 }
 
                 return true; // Đánh dấu đã thêm sản phẩm thành công
             }
         } else {
+            // Trường hợp có biến thể
+            $variationValueIds = $this->getVariationValueIds($variations);
             $matchedStockIds = $this->getMatchedStockIds($variationValueIds);
+
             foreach ($matchedStockIds as $stockId => $count) {
                 if ($count == count($variations)) {
                     $productStock = AppProductStock::find($stockId);
@@ -232,9 +245,7 @@ class CartController extends Controller
 
 
     private function getVariationValueIds($variations)
-
     {
-
         $variationValueIds = [];
 
         foreach ($variations as $variation) {
@@ -252,7 +263,6 @@ class CartController extends Controller
 
     private function getMatchedStockIds($variationValueIds)
     {
-
         $matchedStockIds = [];
         foreach ($variationValueIds as $variationValueId) {
             $productAttributes = ProductAttribute::where('app_product_variation_value_id', $variationValueId)->get();
@@ -318,29 +328,46 @@ class CartController extends Controller
         if ($cartItem) {
             // Cập nhật số lượng
             $cartItem->quantity = $quantity;
+
+            // Tính toán giá tiền mới
+            if ($cartItem->productStock) {
+                // Sản phẩm có biến thể
+                $productPrice = $cartItem->productStock->retail_price;
+            } else {
+                // Sản phẩm không có biến thể
+                $productPrice = $cartItem->product->getPrice();
+            }
+
+            $newPrice = $quantity * $productPrice;
+
+            // Cập nhật giá mới vào thuộc tính price
+            $cartItem->price = $newPrice;
+
+            // Lưu cart item với giá mới
             $cartItem->save();
 
-            // Tính lại giá tiền dựa trên số lượng
-            $newPrice = $cartItem->quantity * $cartItem->productStock->retail_price;
-
-            // Lấy tất cả các mục trong giỏ hàng thông qua cart_id
+            // Tính toán tổng giá trị giỏ hàng
             $cart = $cartItem->cart;
-            $totalPrice = $cart->items->sum(function($item) {
-                return $item->quantity * $item->productStock->retail_price;
+            $totalPrice = $cart->items->sum(function ($item) {
+                if ($item->productStock) {
+                    return $item->quantity * $item->productStock->retail_price;
+                } else {
+                    return $item->quantity * $item->product->getPrice();
+                }
             });
+
 
             // Trả về JSON response
             return response()->json([
                 'success' => true,
-                'newPrice' => number_format($newPrice, 0, ',', '.') . ' đ',
-                'totalPrice' => number_format($totalPrice, 0, ',', '.') . ' đ'
+                'cartItemId' => $cartItemId,
+                'newPrice' => number_format($newPrice, 0, ',', '.'),
+                'totalPrice' => number_format($totalPrice, 0, ',', '.')
             ]);
         }
 
         return response()->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm.']);
     }
-
-
 
 
     public function removeFromCart($cartItemId)
@@ -364,6 +391,20 @@ class CartController extends Controller
         }
 
         return redirect()->route('cart.view')->with('success', 'Sản phẩm đã được xóa khỏi giỏ hàng.');
+    }
+
+    // Đếm số sản phẩm trong giỏ hàng
+    public function getCartQuantity()
+    {
+        $userId = Auth::id();
+        $cart = Cart::where('user_id', $userId)->first();
+
+        $quantity = 0;
+        if ($cart) {
+            $quantity = CartItem::where('cart_id', $cart->id)->sum('quantity');
+        }
+
+        return response()->json(['quantity' => $quantity]);
     }
 
 
