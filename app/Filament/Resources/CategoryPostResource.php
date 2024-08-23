@@ -26,6 +26,10 @@ class CategoryPostResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->label('Tên danh mục')
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Tên đã tồn tại.',
+                    ])
                     ->required(),
             ]);
     }
@@ -62,8 +66,8 @@ class CategoryPostResource extends Resource
     {
         return [
             'index' => Pages\ListCategoryPosts::route('/'),
-            'create' => Pages\CreateCategoryPost::route('/create'),
-            'edit' => Pages\EditCategoryPost::route('/{record}/edit'),
+//            'create' => Pages\CreateCategoryPost::route('/create'),
+//            'edit' => Pages\EditCategoryPost::route('/{record}/edit'),
         ];
     }
 }
