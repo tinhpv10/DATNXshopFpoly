@@ -13,6 +13,7 @@ use App\Http\Controllers\Client\Home;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DownloadpdfOrderController;
+use App\Http\Controllers\GHNController;
 use App\Http\Controllers\Gmail\OrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MyOrderController;
@@ -38,6 +39,7 @@ Route::prefix('/')->group(function () {
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+    Route::post('/add-to-cart', [ProductController::class, 'addToCart'])->name('product.addToCart');
     Route::post('/product/{id}', [ProductController::class, 'showPost']);
     Route::post('/get-retail-price', [ProductController::class, 'getRetailPrice']);
     //Giỏ hàng
@@ -135,6 +137,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout-order', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
     Route::post('/checkout/calculate-total', [CheckoutController::class, 'calculateTotalAjax'])->name('checkout.calculateTotalAjax');
     Route::post('/checkout/complete', [CheckoutController::class, 'completeCheckout'])->name('checkout.complete');
+    Route::post('/checkout-codpayment', [CheckoutController::class, 'codCheckout'])->name('checkout.codPayment');
+    Route::get('/checkout-success', [CheckoutController::class, 'showSucess'])->name('checkout.success');
+    Route::get('/cart/quantity', [CartController::class, 'getCartQuantity'])->name('cart.quantity');
 
 
 });
