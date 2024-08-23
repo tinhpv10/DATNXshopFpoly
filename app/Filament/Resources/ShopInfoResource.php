@@ -146,8 +146,6 @@ class ShopInfoResource extends Resource
     {
         return [
             'index' => Pages\ListShopInfos::route('/'),
-            'create' => Pages\CreateShopInfo::route('/create'),
-            'edit' => Pages\EditShopInfo::route('/{record}/edit'),
         ];
     }
 }

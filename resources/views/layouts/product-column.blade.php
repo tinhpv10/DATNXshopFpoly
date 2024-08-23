@@ -23,7 +23,7 @@
                             </div>
                         @endif
                         <div class="product-title-item">
-                            <p class="product-title">{{ $product->name }}</p>
+                            <div class="product-title">{{ $product->name }}</div>
                         </div>
                         <div class="price-item">
                             <div class="product-price">
@@ -65,8 +65,8 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="product-description">{{ $product->description }} </p>
-                        <div class="view-detail">
+                            <div class="product-description">{{ $product->description }} </div>
+                            <div class="view-detail">
                             <a href="{{ route('product.detail', ['id' => $product->id]) }}">Xem chi tiết</a>
                         </div>
                         <div class="product-favorite">

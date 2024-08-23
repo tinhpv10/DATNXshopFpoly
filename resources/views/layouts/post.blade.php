@@ -1,8 +1,8 @@
 @section('main')
     <div class="main">
+        <div class="container pb-5">
         <div class="container">
-            <nav style=""
-                 aria-label="breadcrumb">
+            <nav style="" aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0 py-3">
                     <li class="breadcrumb-item"><a href="{{ url('/')}}" class="text-decoration-none">Trang chủ</a></li>
                     <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('/post') }}"
@@ -101,7 +101,7 @@
 
 
         </div>
-
+        </div>
     </div>
 @endsection
 @extends('index')

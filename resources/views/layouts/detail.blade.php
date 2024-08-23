@@ -1,6 +1,7 @@
 @extends('index')
 @section('main')
     <div class="main">
+        <div class="container pb-5">
         <div class="container">
             <nav style=""
                  aria-label="breadcrumb">
@@ -469,7 +470,7 @@
                                 <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel"
                                      aria-labelledby="profile-tab" tabindex="0">
                                     <div class="py-3">
-                                        <p>{!!$product->description!!}</p>
+                                        <p>{{ $product->description}}</p>
                                     </div>
                                 </div>
                             </div>
@@ -498,6 +499,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 

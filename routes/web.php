@@ -6,10 +6,12 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryPostController;
 use App\Http\Controllers\ChangePasswordController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Client\Body;
 use App\Http\Controllers\Client\GoogleController;
 use App\Http\Controllers\Client\Home;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DownloadpdfOrderController;
 use App\Http\Controllers\Gmail\OrderController;
 use App\Http\Controllers\HomeController;
@@ -26,7 +28,6 @@ use App\Http\Controllers\WishListController;
 use App\Models\Order;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CheckoutController;
 
 Route::prefix('/')->group(function () {
     Route::get('/', [HomeController::class, 'home']);
@@ -37,7 +38,6 @@ Route::prefix('/')->group(function () {
     Route::get('/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('/products/category/{category}', [ProductController::class, 'showByCategory'])->name('products.category');
     Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
-    Route::post('/add-to-cart', [ProductController::class, 'addToCart'])->name('product.addToCart');
     Route::post('/product/{id}', [ProductController::class, 'showPost']);
     Route::post('/get-retail-price', [ProductController::class, 'getRetailPrice']);
     //Giỏ hàng
@@ -47,6 +47,8 @@ Route::prefix('/')->group(function () {
 //    Route::post('/update-cart-item', [CartController::class, 'updateCartItemQuantity'])->name('cart.updateQuantity');
     Route::post('/update-cart-item', [CartController::class, 'updateCartItemQuantity']);
 
+
+    Route::post('/contact', [ContactController::class, 'sendContactForm'])->name('contact.send');
 
 
     Route::post('/cart/update-quantity/{cartItemId}', [CartController::class, 'updateQuantity']);

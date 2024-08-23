@@ -116,6 +116,7 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
+
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
             'variations' => 'required|array',
@@ -154,6 +155,7 @@ class CartController extends Controller
 
     private function addToUserCart($cartId, $productId, $variations, $productImage, $quantity)
     {
+
         // Lấy giá trị biến thể
         $variationValueIds = $this->getVariationValueIds($variations);
         $product = Product::findOrFail($productId);
@@ -230,7 +232,9 @@ class CartController extends Controller
 
 
     private function getVariationValueIds($variations)
+
     {
+
         $variationValueIds = [];
 
         foreach ($variations as $variation) {
@@ -248,6 +252,7 @@ class CartController extends Controller
 
     private function getMatchedStockIds($variationValueIds)
     {
+
         $matchedStockIds = [];
         foreach ($variationValueIds as $variationValueId) {
             $productAttributes = ProductAttribute::where('app_product_variation_value_id', $variationValueId)->get();
