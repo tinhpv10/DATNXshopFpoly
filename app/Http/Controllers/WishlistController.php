@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AppProductMedia;
 use App\Models\Product;
+use App\Models\ProductMedia;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WishlistController extends Controller
+class WishListController extends Controller
 {
     public function index()
     {
@@ -21,8 +21,8 @@ class WishlistController extends Controller
             })->paginate(12);
 
             foreach ($products as $productItem) {
-                $productMedia = AppProductMedia::where('product_id', $productItem->id)->first();
-                $productItem->main_image = $productMedia ? $productMedia->media : null;
+                $productMedia = ProductMedia::where('product_id', $productItem->id)->get();
+                $productItem->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
             }
 
             return view('layouts.wishlist', [
@@ -33,7 +33,6 @@ class WishlistController extends Controller
             return response()->json(['status' => 500, 'message' => $e->getMessage()]);
         }
     }
-
 
     public function insertWishlist(Request $request)
     {
@@ -73,26 +72,6 @@ class WishlistController extends Controller
             return response()->json(['status' => 200, 'count' => $count]);
         } catch (\Exception $e) {
             return response()->json(['status' => 500, 'count' => 0]);
-        }
-    }
-
-    public function toggle($productId)
-    {
-        $userId = Auth::id();
-        $product = Product::findOrFail($productId);
-
-        $wishlistItem = Wishlist::where('user_id', $userId)->where('product_id', $productId)->first();
-
-        if ($wishlistItem) {
-            $wishlistItem->delete();
-            return redirect()->back()->with('success', 'Product removed from wishlist');
-        } else {
-            Wishlist::create([
-                'name' => $product->name,
-                'user_id' => $userId,
-                'product_id' => $productId,
-            ]);
-            return redirect()->back()->with('success', 'Product added to wishlist');
         }
     }
 
