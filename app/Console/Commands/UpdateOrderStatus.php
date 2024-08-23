@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Order;
 use Carbon\Carbon;
 
+
 class UpdateOrderStatus extends Command
 {
     /**
@@ -33,7 +34,7 @@ class UpdateOrderStatus extends Command
         $twoDaysAgo = Carbon::now()->subDays(2);
         // Cập nhật trạng thái cho các đơn hàng cũ
         Order::where('status', 'Chờ lấy hàng')
-            ->whereDate('created_at', '<=', $twoDaysAgo)
+            ->whereDate('created_at', '<', $twoDaysAgo)
             ->chunkById(100, function ($orders) {
                 foreach ($orders as $order) {
                     $order->status = 'Chưa xử lý';

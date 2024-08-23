@@ -175,6 +175,7 @@ class Order extends Model
         if ($this->custom_time) {
             $customTime = Carbon::parse($this->custom_time)->startOfDay();
             $now = Carbon::now()->startOfDay();
+
             return $now->diffInDays($customTime) . ' Ngày';
         }
 
