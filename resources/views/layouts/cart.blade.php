@@ -15,7 +15,11 @@
                                     @endphp
                                     <div class="shop-group">
 
-                                        <h4>{{ $shop->name ?? ''}}</h4>
+                                        <div class="shop-info d-flex align-items-center mb-3">
+                                            <span class="fw-bold">{{ $shop->name ?? 'Không có tên cửa hàng' }}</span>
+                                            <a class="btn btn-outline-secondary btn-sm ms-2 text-black text-decoration-none"
+                                               href="{{ url('shop', ['id' => $shop->id]) }}">Xem Shop</a>
+                                        </div>
                                         @foreach($cartItems as $cartItem)
                                             <div class="cart-item py-3 border my-3">
                                                 <div class="row align-items-center">
@@ -55,13 +59,16 @@
 
                                                         <div class="row">
                                                             <div class="col-md-12 d-flex justify-content-end p-2">
-                                                                <div class="price flex-grow-1 text-end"
+                                                                <div class="price flex-grow-1 text-end d-flex align-items-center"
                                                                      id="itemPrice-{{ $cartItem->id }}"
-                                                                     data-retail-price="{{ $cartItem->productStock->retail_price ?? $cartItem->product->getPrice() }}">
-                                                                    {{ number_format($cartItem->productStock->retail_price ?? $cartItem->product->getPrice(), 0, ',', '.') }} VND
+                                                                     data-retail-price="{{ $cartItem->productStock->retail_price ?? $cartItem->product->getPrice() }}"
+                                                                     style="white-space: nowrap;">
+                                                                    {{ number_format($cartItem->productStock->retail_price ?? $cartItem->product->getPrice(), 0, ',', '.') }} VNĐ
                                                                 </div>
                                                             </div>
                                                         </div>
+
+
 
                                                         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -173,15 +180,15 @@
                                         <div class="p-2"><h6>Tổng tiền hàng:</h6></div>
                                         <div class="price text-end p-2"
                                              id="totalPrice">{{ number_format($totalPrice, 0, ',', '.') }}
-                                            đ
+                                            VNĐ
                                         </div>
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between">
-                                        <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }} Sản phẩm):</h6>
+                                        <div class="p-2"><h6>Tổng thanh toán ({{ count($cartItems) }}):</h6>
                                         </div>
                                         <div class="price text-end p-2"
-                                             id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} đ
+                                             id="totalPayment">{{ number_format($totalPayment, 0, ',', '.') }} VNĐ
                                         </div>
                                     </div>
                                     {{--                            <form id="paymentForm" action="{{ route('vnpay.payment') }}" method="POST">--}}
@@ -236,8 +243,8 @@
                                 <i class="fa-solid fa-lock"></i>
                             </div>
                             <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
+                                <div class="title">An toàn</div>
+                                <div class="text">Giúp bạn yên tâm hơn</div>
                             </div>
                         </div>
                     </div>
@@ -247,8 +254,8 @@
                                 <i class="fa-solid fa-message"></i>
                             </div>
                             <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
+                                <div class="title">Liên hệ</div>
+                                <div class="text">Hỗ trợ bạn mọi lúc</div>
                             </div>
                         </div>
                     </div>
@@ -258,26 +265,47 @@
                                 <i class="fa-solid fa-truck"></i>
                             </div>
                             <div class="service-content">
-                                <div class="title">Secure payment</div>
-                                <div class="text">Have you ever finally just</div>
+                                <div class="title">Giao hàng nhanh</div>
+                                <div class="text">Tiện lợi nhanh chóng</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="list-product mt-4">
-                <h5 class="mb-4">Saved for later</h5>
-                <div class="row">
-                    <!-- Products will go here -->
-                </div>
-            </div>
-            <div class="banner d-flex justify-content-between align-items-center">
-                <div class="text">
-                    <h4 class="text-white">Super discount on more than 100 USD</h4>
-                    <div class="text-white">Have you ever finally just write dummy info</div>
-                </div>
-                <div class="button">
-                    <button class="btn btn-warning">Shop now</button>
+
+
+            <div class="section-recommend container">
+                <h4 class="mb-3">Các sản phẩm đã thích</h4>
+                <div class="list-product d-flex flex-wrap">
+                    @if(!empty($recommendedProducts))
+                        @foreach($recommendedProducts as $product)
+                            <div class="product-item border rounded-2" style="margin: 5px;">
+                                <a href="{{ route('product.detail', ['id' => $product->id]) }}" class="product-link text-decoration-none text-black">
+                                    <div class="box-img">
+                                        @if ($product->main_image)
+                                            <img src="{{ asset('storage/' . $product->main_image) }}" alt="Product Image">
+                                        @else
+                                            <img src="https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg" alt="Default Image">
+                                        @endif
+                                    </div>
+                                    <div class="info-product">
+                                        <div class="price-sale-container">
+                                            <div class="salePrice">
+                                                {{ $product->formattedSalePrice ?? $product->regular_price }} VNĐ
+                                            </div>
+                                            @if ($product->formattedSalePrice)
+                                                <div class="product-price text-muted text-decoration-line-through">
+                                                    {{ $product->formattedRegularPrice }} VNĐ
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="title-name fs-5">{{ $product->name }}</div>
+                                        <div class="title-product">{{ $product->description }}</div>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
@@ -307,8 +335,8 @@
                 success: function(response) {
                     if (response.success) {
                         $('#itemPrice-' + cartItemId).text(response.newPrice);
-                        $('#totalPrice').text(response.newPrice.toLocaleString() + ' đ');
-                        $('#totalPayment').text(response.totalPrice.toLocaleString() + ' đ');
+                        $('#totalPrice').text(response.newPrice.toLocaleString() + ' VNĐ');
+                        $('#totalPayment').text(response.totalPrice.toLocaleString() + ' VNĐ');
                     } else {
                         alert(response.message);
                     }

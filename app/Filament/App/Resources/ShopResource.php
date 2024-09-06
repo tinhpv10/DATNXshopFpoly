@@ -25,6 +25,13 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\Ward;
+use Illuminate\Support\Collection;
+use Filament\Forms\Get;
+use Filament\Forms\Components\Fieldset;
+
 
 class ShopResource extends Resource
 {
@@ -51,31 +58,48 @@ class ShopResource extends Resource
                     ->validationMessages([
                         'maxLength' => 'Tên shop chỉ giới hạn trong 200 ký tự'
                     ]),
-//                TextInput::make('email')
-//                    ->label('Email')
-//                    ->required(),
                 TextInput::make('phone')
                     ->label('Số điện thoại')
                     ->required(),
+
+                Fieldset::make('Địa chỉ')
+                    ->schema([
+                        Select::make('province_id')
+                            ->label('Thành phố/Tỉnh')
+                            ->filled()
+                            ->reactive()
+                            ->searchable()
+                            ->options(Province::query()
+                                ->pluck('name', 'id'))
+                            ->live(),
+                        Select::make('district_id')
+                            ->reactive()
+                            ->label('Quận/Huyện')
+                            ->filled()
+                            ->searchable()
+                            ->options(fn(Get $get): Collection => District::query()
+                                ->where('province_id', $get('province_id'))
+                                ->pluck('name', 'id'))
+                            ->live(),
+                        Select::make('ward_id')
+                            ->reactive()
+                            ->filled()
+                            ->label('Phường/Xã')
+                            ->searchable()
+                            ->options(fn(Get $get): Collection => Ward::query()
+                                ->where('district_id', $get('district_id'))
+                                ->pluck('name', 'id'))
+                            ->nullable()
+                            ->live(),
+                    ])->columns(3),
                 TextInput::make('address')
-                    ->label('Địa chỉ')
-                    ->required(),
-//                TextInput::make('follower')
-//                    ->label('Người theo dỏi   ')
-//                    ->required()
-//                    ->numeric()
-//                    ->rules('min:0'),
-//                TextInput::make('rating')
-//                    ->label('Đánh giá')
-//                    ->required(),
+                    ->label('Địa chỉ cụ thể')
+                    ->required()
+                    ->columnSpan(2),
                 RichEditor::make('description')
                     ->label('Mô tả')
                     ->required()
                     ->columnSpan(2),
-//                Toggle::make('status')
-//                    ->label('Trạng thái')
-//                    ->inline(false),
-
 
             ]);
     }

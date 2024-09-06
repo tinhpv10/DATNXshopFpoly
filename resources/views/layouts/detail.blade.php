@@ -117,14 +117,16 @@
                         // Remove 'selected' class and hide check icon from all buttons of the same variation
                         document.querySelectorAll(`[id^='variation-${variationId}-']`).forEach(button => {
                             button.classList.remove('selected');
+                            button.classList.add('btn-outline-secondary');
+                            button.classList.remove('btn-secondary');
                             button.querySelector('.check-icon').style.display = 'none';
                         });
 
                         // Add 'selected' class and show check icon to the clicked button
                         const selectedButton = document.getElementById(`variation-${variationId}-${variationValueName}`);
-                        selectedButton.classList.add('selected');
+                        selectedButton.classList.add('btn-secondary');
+                        selectedButton.classList.remove('btn-outline-secondary');
                         selectedButton.querySelector('.check-icon').style.display = 'inline';
-
                         selectedVariations[variationId] = variationValueName;
 
                         // Update hidden fields in the form
@@ -426,7 +428,7 @@
                                                 <div class="d-flex show-comment mb-3">
                                                     <div class="avatar-comment me-2">
                                                         <img class="rounded-circle"
-                                                             src="{{ $itemComment->user->avatar ?? 'https://t4.ftcdn.net/jpg/00/64/67/27/240_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg' }}"
+                                                             src="{{ asset('storage/'. $itemComment->user->avatar)  ?? 'https://t4.ftcdn.net/jpg/00/64/67/27/240_F_64672736_U5kpdGs9keUll8CRQ3p3YaEv2M6qkVY5.jpg' }}"
                                                              alt="">
                                                     </div>
                                                     <div class="info-comment">
@@ -477,7 +479,7 @@
                     </div>
                     <div class="col-12 col-md-4 col-lg-4 mb-3">
                         <div class="bg-white rounded-2 border p-3">
-                            <div class="fw-bold mb-3">Bạn có thể thích</div>
+                            <div class="fw-bold mb-3">Sản phẩm đã yêu thích </div>
                             @foreach ($favoriteProducts as $favoriteProduct)
                                 <div class="border d-flex align-items-center p-2 my-2">
                                     <div class="avatar-img">

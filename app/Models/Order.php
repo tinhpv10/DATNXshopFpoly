@@ -143,7 +143,7 @@ class Order extends Model
         return self::where('status', 'Chưa xử lý')->count();
     }
     public static function processedShop(){
-        return self::where('check_order_shop', 1)->count();
+        return self::where('check_order_shop', 1)->where('status','!=' ,'Chưa xử lý')->where('status','!=' ,'Đã vận chuyển')->count();
     }
 
     public static function getOrderStatusOptions(): array

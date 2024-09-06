@@ -29,6 +29,12 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        <li>
+                            <a class="dropdown-item" style="text-decoration: none" href="{{ url('profile/myorder') }}">Xem đơn hàng</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" style="text-decoration: none"
                                href="{{ route('logout') }}">Thoát</a></li>
                     </ul>
@@ -57,7 +63,7 @@
                     <img width="20px" height="19px"
                          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAVCAYAAABCIB6VAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAGqSURBVHgBrZVPTsJAFMbfG/645QbiDfAG9QSyFWJCN5qyggQwrICFIREXuhASN8UobsET0CPUG9Qb4FJo+5wBGwsdoFB+STuZmZdvvk7ee8VO730MRArMwYdqMVeGA8C4aPp/SqV2T0/DAUDxEmJxOtK5sIIEE0KcwJ4gklHR8ip6C53eqwLExhAdq1rMnzBvVtUuDX6eAREhhJYY2dIqOi2IhlXT8v2AcFTXntuA8Jy9XaPhuZUKL1yDBTtiI6r+OZMF+T8pDIjQr2sX1lZhcCG8KM/7GbCAkTjIHTQ8J47rfsEmYWCjVbdS4U73rcSHNH8sUUGwJxLH7Jzfsqh18+5pUICQOGxq1DXVWitM5HwiMoUAsvwqshDWoZs0+XC6VjgxtZv2USLFnR/DLqD7sTWmqeup2+dBBkIg4kR84JzVhTbvcgmXDXkui2Az/jM9K5dVaRu97w6G4srmQjEsVK5zL95eII/jFGv8iQoys2RSes+izXqiAnKo6d+X9Ar32z9d1/QpZi+v80LZKGxDTOSxtfiTwONNMTcCCbUr1QRyvYozufulnP8FPr+YxTzBgRcAAAAASUVORK5CYII="
                          alt="icon">
-                    <p style="text-decoration: none;">Giỏ hàng<span class="number">0</span></p>
+                    <p style="text-decoration: none;">Giỏ hàng<span class="number badge rounded-pill text-bg-primary">0</span></p>
                 </a>
             </div>
         </div>

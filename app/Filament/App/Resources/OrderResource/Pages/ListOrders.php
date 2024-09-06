@@ -55,11 +55,11 @@ class ListOrders extends ListRecords
         $waitingdelivery = Order::waitingdelivery();
         $processedShop = Order::processedShop();
         return [
-            'Tất cả' => Tab::make('Tất cả'),
+            'Tất cả' => Tab::make('Tất cả')->query(fn($query) => $query->where('status','!=' ,'Chưa xử lý')),
             // đang xử lý (chờ super admin xử lý)
             'Chờ xác nhận ('.$processing.')' => Tab::make()->query(fn($query) => $query->where('status', 'Đang xử lý')),
             'Chờ lấy hàng ('.$waitingdelivery.')' => Tab::make()->query(fn($query) => $query->where('status', 'Chờ lấy hàng')),
-            'Đã xử lý ('.$processedShop.')' =>  Tab::make()->query(fn($query) => $query->where('check_order_shop', 1)),
+            'Đã xử lý ('.$processedShop.')' =>  Tab::make()->query(fn($query) => $query->where('check_order_shop', 1)->where('status','!=' ,'Chưa xử lý')->where('status','!=' ,'Đã vận chuyển')),
             'Vận chuyển ('.$shipped.')' => Tab::make()->query(fn($query) => $query->where('status', 'Đã vận chuyển')),
             'Đã giao ('.$Delivered.')' => Tab::make()->query(fn($query) => $query->where('status', 'Đã giao hàng')),
             'Đơn huỷ' => Tab::make()->query(fn($query) => $query->where('status', 'Đã hủy bỏ'))

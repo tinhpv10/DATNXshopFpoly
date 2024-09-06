@@ -22,7 +22,7 @@ class Registration extends Register
                 Wizard::make([
                     Wizard\Step::make('Tài khoản')
                         ->schema([
-                            $this->getNameFormComponent(),
+                            $this->getNameFormComponent()->label('Tên cửa hàng'),
                             $this->getEmailFormComponent(),
                         ]),
                     Wizard\Step::make('Thông tin')

@@ -20,6 +20,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Support\RawJs;
+
 
 class ProductStockRelationManager extends RelationManager
 {
@@ -70,15 +72,28 @@ class ProductStockRelationManager extends RelationManager
                     ->live(),
                 TextInput::make('sku')
                     ->required()
+                    ->numeric()
                     ->label('Mã SKU'),
                 TextInput::make('import_price')
                     ->required()
+                    ->numeric()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
+                    ->suffix('vnđ')
                     ->label('Giá nhập vào'),
                 TextInput::make('retail_price')
                     ->required()
+                    ->numeric()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
+                    ->suffix('vnđ')
                     ->label('Giá bán lẻ'),
                 TextInput::make('wholesale_price')
                     ->required()
+                    ->numeric()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
+                    ->suffix('vnđ')
                     ->label('Giá bán sỉ'),
                 TextInput::make('qty_inventory')
                     ->required()

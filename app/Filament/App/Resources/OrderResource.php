@@ -367,7 +367,7 @@ class OrderResource extends Resource
                     ->falseIcon('heroicon-o-clock')
                     ->label('Đã thanh toán'),
 
-            ])
+            ])->defaultSort('created_at','desc')
             ->filters([
                 SelectFilter::make('shipping_address_id')
                     ->label('Địa chỉ người dùng')

@@ -68,6 +68,8 @@ Route::prefix('/')->group(function () {
     Route::get('/wishlist', [WishListController::class, 'index'])->name('wishlist');
     Route::post('/wishlist/insert', [WishListController::class, 'insertWishlist'])->name('wishlist.insert');
     Route::get('/wishlist/count', [WishListController::class, 'countWishlist'])->name('wishlist.count');
+
+
 });
 Route::get('/order/success/{order_id}', function ($order_id) {
     $order = Order::find($order_id);
@@ -136,7 +138,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout-success', [CheckoutController::class, 'showSucess'])->name('checkout.success');
     Route::get('/cart/quantity', [CartController::class, 'getCartQuantity'])->name('cart.quantity');
 
-
 });
 // chuyển hướng đăng ký của shop admin
 Route::get('/wait', [RedirectloggeInAppController::class, 'index'])->name('wait');
@@ -159,5 +160,6 @@ Route::get('/update-order-status', function () {
     Artisan::call('orders:update-status');
     return 'Order statuses updated!';
 });
+Route::get('/calculate-shipping', [\App\Http\Controllers\GHNController::class, 'calculateShipping']);
 require __DIR__ . '/auth.php';
 

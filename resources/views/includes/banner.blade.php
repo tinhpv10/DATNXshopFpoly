@@ -10,14 +10,7 @@
                     </ul>
                 </div>
                 <div class="image-banner">
-                    <div class="content">
-                        <div class="text">
-                            <h2>Latest trending Electronic items</h2>
-                        </div>
-                        <div class="button">
-                            <button class="btn bg-white">Learn more</button>
-                        </div>
-                    </div>
+
                     <div class="box-img">
                         <img src="https://d3design.vn/uploads/%C3%A9dfjh30.jpg" alt="">
                     </div>
@@ -28,14 +21,14 @@
                             <div class="avatar">
                                 <img src="https://t4.ftcdn.net/jpg/05/11/55/91/240_F_511559113_UTxNAE1EP40z1qZ8hIzGNrB0LwqwjruK.jpg" alt="">
                             </div>
-                            <div class="text">
-                                Hi, user let's get started
+                            <div class="text align-items-center">
+                               Tạo cửa hàng
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="button">Button</button>
-                            <button class="btn btn-primary" type="button">Button</button>
+                            <a class="btn btn-primary" href="{{ url('/app') }}" type="button">Đăng ký</a>
+                            <button class="btn btn-primary" type="button">Tìm hiểu cửa hàng</button>
                         </div>
                         <!-- <button class="btn btn-primary mb-2">Join now</button>
                         <button class="btn bg-white">Login</button> -->

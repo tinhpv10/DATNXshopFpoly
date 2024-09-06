@@ -21,7 +21,7 @@ class ListProducts extends ListRecords
 
     public function getTabs(): array
     {
-        $pendingApprovalCount = Product::countPendingApproval();
+        $pendingApprovalCount = Product::countPendingApproval1();
 
         return [
             'Chờ duyệt (' . $pendingApprovalCount . ')' => Tab::make()->query(fn($query) => $query->where('pause', 1)),

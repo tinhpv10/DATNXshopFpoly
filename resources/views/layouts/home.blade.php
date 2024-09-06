@@ -69,12 +69,12 @@
                         <img src="{{ asset('image/image92.png') }}" alt="hình ảnh">
                         <div class="title">
                             <h2>Danh mục</h2>
-                            <button class="btn bg-white  ">Source now</button>
+
                         </div>
                     </div>
                     <div class="autoplay-block ">
                         @foreach($categoryBanners as $categoriess)
-                            <a href="{{ route('products.category', ['category' => $categoriess->id]) }}" class="product-link text-decoration-none text-black">
+                            <a href="/product?category_id={{$categoriess->id}}" class="product-link text-decoration-none text-black">
                             <div class="group-item p-2">
                                 <div class="content-item">
                                     <h6>{{ $categoriess->name }}</h6>
@@ -108,10 +108,10 @@
                                 <div class="info-product">
                                     <div class="price-sale-container">
                                         <div class="salePrice">
-                                            {{ $product->formattedSalePrice }} VND
+                                            {{ $product->formattedSalePrice }} VNĐ
                                         </div>
                                         <div class="product-price">
-                                            {{ $product->formattedRegularPrice }} VND
+                                            {{ $product->formattedRegularPrice }} VNĐ
                                         </div>
                                     </div>
                                     <div class="title-name fs-5">{{ $product->name }}</div>

@@ -6,7 +6,12 @@
                 <div class="col-sm-3 border-0">
                     <ul class="list-group user-profile">
                         <li class="list-group-item item1 border-0 d-flex align-items-start">
-                            <img class="avatar-first col-4" src="{{ asset('storage/'.$user->avatar) }}" alt="">
+                            @if($user->avatar == '')
+                                <img class="avatar-first col-4" src="{{ asset('storage/avatars/PXQ9arQvm1y8wfwSFhl8znusNxX43SRCX1dGli76.jpg') }}" alt="">
+                            @else
+                                <img class="avatar-first col-4" src="{{ asset('storage/'.$user->avatar) }}" alt="">
+                            @endif
+
                             <div class="col-8">
                                 <p class="name-user ms-2">{{ $user->name }}</p>
                                 <a href="{{ url('profile/edit') }}" role="button"
@@ -17,7 +22,7 @@
                         <div class="collapse show" id="collapseExample">
                             <div class="card card-body border-0" style="background-color: #f5f5f5;">
                                 <ul class="list-group mt-0 pt-0">
-                                    <li class="list-group-item item1 border-0"><a href="">Ngân Hàng</a></li>
+{{--                                    <li class="list-group-item item1 border-0"><a href="">Ngân Hàng</a></li>--}}
                                     <li class="list-group-item item1 border-0">
                                         <i class="bi bi-buildings"></i> <a href="{{ route('profile.address') }}">Địa
                                             Chỉ</a>

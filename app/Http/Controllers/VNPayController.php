@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Models\AppProductStock;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
@@ -28,20 +29,86 @@ class VNPayController extends Controller
         $vnp_TmnCode = "93QX4E2D";
         $vnp_HashSecret = "ZPKCTSJQALKCIQZQQQQBQHWMLKTWUQGY";
         $vnp_Url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-
         $vnp_Returnurl = route('payment.callback');
         $vnp_TxnRef = uniqid(); // Tạo mã đơn hàng ngẫu nhiên
         $vnp_OrderInfo = "Thanh toán hóa đơn phí dịch vụ";
         $vnp_OrderType = 'billpayment';
 
         // Lấy tổng tiền và phí vận chuyển từ session
-        $totalPayment = session('total_payment', 0);
-        $shippingFee = session('shipping_fee', 0);
+        $totalPayment = session('grandTotal', 0);
+//        dd($totalPayment);
+        $shippingFee = session('shopShippingFees', 0);
         $vnp_Amount = ($totalPayment + $shippingFee) * 100; // Cộng phí vận chuyển
 
         $vnp_Locale = 'vn';
         $vnp_IpAddr = $request->ip(); // Lấy địa chỉ IP của yêu cầu
 
+        // Lấy các mục trong giỏ hàng
+        $cartItemIds = Session::get('selectedItems', []);
+        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
+
+        // Nhóm sản phẩm theo shop
+        $shops = $cartItems->groupBy('shop_id');
+
+        // Lưu các đơn hàng
+        foreach ($shops as $shopId => $items) {
+            $order = new Order();
+            $order->user_id = Auth::id();
+            $order->status = OrderStatus::Processing->value;
+            $order->total_price = $items->sum('price'); // Tổng tiền cho shop
+            $order->shipping_unit = $shippingFee; // Bạn có thể tùy chỉnh phí vận chuyển cho từng shop nếu cần
+            $order->is_paid = 1;
+            $order->shop_id = $shopId; // Shop ID của đơn hàng
+            $order->payment_method_id = 1;
+            $order->code = strtoupper(Str::random(10));
+            $defaultAddress = UserAddress::where('user_id', Auth::id())->where('is_default', 1)->first();
+            if (!$defaultAddress) {
+                return redirect()->back()->with('error', 'Không tìm thấy địa chỉ mặc định.');
+            }
+            $order->user_address_id = $defaultAddress->id;
+            $order->save();
+
+            // Lưu chi tiết đơn hàng
+            foreach ($items as $cartItem) {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order->id;
+                $orderDetail->product_id = $cartItem->product_id;
+                $orderDetail->app_product_stock_id = $cartItem->app_product_stock_id;
+                $orderDetail->product_image = $cartItem->media;
+                $orderDetail->product_price = $cartItem->price;
+                $orderDetail->product_quantity = $cartItem->quantity;
+                $orderDetail->shop_id = $cartItem->shop_id;
+                $orderDetail->save();
+
+                // Trừ sản phẩm trong kho hàng
+                $productStock = AppProductStock::find($cartItem->app_product_stock_id);
+                if ($productStock) {
+                    $productStock->qty_inventory -= $cartItem->quantity;
+                    $productStock->save();
+                }
+            }
+        }
+
+        // Xóa các mục đã chọn trong giỏ hàng
+        $userId = Auth::id();
+        $cart = Cart::where('user_id', $userId)->first();
+        if ($cart) {
+            CartItem::where('cart_id', $cart->id)
+                ->whereIn('id', $cartItemIds)
+                ->delete();
+
+            // Nếu giỏ hàng không còn sản phẩm, xóa giỏ hàng
+            if (CartItem::where('cart_id', $cart->id)->count() == 0) {
+                $cart->delete();
+            }
+        }
+
+        // Xóa session sau khi đã lưu chi tiết đơn hàng
+        Session::forget('selectedItems');
+        Session::forget('total_payment');
+        Session::forget('shipping_fee');
+
+        // Tạo URL cho VNPay
         $inputData = array(
             "vnp_Version" => "2.0.0",
             "vnp_TmnCode" => $vnp_TmnCode,
@@ -83,60 +150,9 @@ class VNPayController extends Controller
             $vnp_Url .= '&vnp_SecureHashType=SHA512&vnp_SecureHash=' . $vnpSecureHash;
         }
 
-        $cartItemIds = Session::get('selectedItems', []);
-        // Lấy chi tiết các CartItem từ cơ sở dữ liệu
-        $cartItems = CartItem::whereIn('id', $cartItemIds)->get();
-        // Tạo đơn hàng mới
-        $order = new Order();
-        $order->user_id = Auth::id();
-        $order->status = OrderStatus::Processing->value;
-        $order->total_price = $totalPayment;
-        $order->shipping_unit = $shippingFee;
-        $order->is_paid = 1;
-        $order->shop_id = $cartItems->first()->shop_id ?? null; // Sử dụng shop_id từ giỏ hàng
-        $order->payment_method_id = 1;
-        $order->code = strtoupper(Str::random(10));
-        $defaultAddress = UserAddress::where('user_id', Auth::id())->where('is_default', 1)->first();
-        if (!$defaultAddress) {
-            return redirect()->back()->with('error', 'Không tìm thấy địa chỉ mặc định.');
-        }
-        $order->user_address_id = $defaultAddress->id;
-        $order->save();
-
-        // Lưu chi tiết đơn hàng
-        foreach ($cartItems as $cartItem) {
-            $orderDetail = new OrderDetail();
-            $orderDetail->order_id = $order->id;
-            $orderDetail->product_id = $cartItem->product_id;
-            $orderDetail->app_product_stock_id = $cartItem->app_product_stock_id;
-            $orderDetail->product_image = $cartItem->media;
-            $orderDetail->product_price = $cartItem->price;
-            $orderDetail->product_quantity = $cartItem->quantity;
-            $orderDetail->shop_id = $cartItem->shop_id;
-            $orderDetail->save();
-        }
-
-        // Xóa các mục đã chọn trong giỏ hàng
-        $userId = Auth::id();
-        $cart = Cart::where('user_id', $userId)->first();
-        if ($cart) {
-            CartItem::where('cart_id', $cart->id)
-                ->whereIn('id', $cartItemIds)
-                ->delete();
-
-            // Nếu giỏ hàng không còn sản phẩm, xóa giỏ hàng
-            if (CartItem::where('cart_id', $cart->id)->count() == 0) {
-                $cart->delete();
-            }
-        }
-
-        // Xóa session sau khi đã lưu chi tiết đơn hàng
-        Session::forget('selectedItems');
-        Session::forget('total_payment');
-        Session::forget('shipping_fee');
-
         return redirect($vnp_Url);
     }
+
 
 
 

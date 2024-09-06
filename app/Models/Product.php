@@ -150,8 +150,18 @@ class Product extends Model
     // Hàm đêm số lượng chờ duyệt
     public static function countPendingApproval()
     {
-        return self::where('pause', 1)->count();
+        $shopId = Auth::user()->shop_id; // Lấy shop_id của người đăng nhập
+
+        return self::where('pause', 1)
+            ->where('shop_id', $shopId)
+            ->count();
     }
+    public static function countPendingApproval1()
+    {
+        return self::where('pause', 1)->count();
+
+    }
+
     // lấy ảnh chính
     public function mainMedia(){
         return $this->hasOne(AppProductMedia::class)->where('is_main', 1);

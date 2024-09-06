@@ -119,7 +119,7 @@ class ShopInfoResource extends Resource
                     ->label('Số tài khoản ngân hàng'),
                 TextColumn::make('profile_number')
                     ->label('Thông tin'),
-            ])
+            ])->defaultSort('created_at','desc')
             ->filters([
                 //
             ])

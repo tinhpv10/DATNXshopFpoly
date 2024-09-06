@@ -7,7 +7,7 @@
     <div class="item-img">
         <a href="{{ route('product.detail', ['id' => $productItem->id]) }}">
             <img
-                src="{{ $productItem->main_image !== null ? $productItem->main_image : 'https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg' }}"
+                src="{{ $productItem->main_image !== null ? asset('storage/'.$productItem->main_image )  : 'https://thudaumot.binhduong.gov.vn/Portals/0/images/default.jpg' }}"
                 alt="">
         </a>
     </div>

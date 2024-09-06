@@ -125,10 +125,10 @@ class CategoryResource extends Resource
 //            ->query(Category::query()->whereNull('parent_id')->with('children'))
             ->defaultGroup('name')
             ->columns([
-//                ImageColumn::make('image')
-//                    ->width(100)
-//                    ->height(100)
-//                    ->label('Ảnh đại diện'),
+                ImageColumn::make('image')
+                    ->width(100)
+                    ->height(100)
+                    ->label('Ảnh đại diện'),
                 TextColumn::make('indented_name')
                     ->label('Danh mục')
                     ->searchable()

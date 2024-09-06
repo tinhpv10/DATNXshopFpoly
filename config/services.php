@@ -34,6 +34,10 @@ return [
         'client_id' => '70345024332-cscs1nl23ifotd7g5cg9uli9ebarqqgp.apps.googleusercontent.com',
         'client_secret' => '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',
         'redirect' => 'http://127.0.0.1:8000/auth/google/callback',
-    ]
+    ],
+    'ghn' => [
+        'tokenAPI' => 'dad593b8-5165-11ef-ada2-4270ba03c110',
+        'shopId' => 5238093,
+    ],
 
 ];

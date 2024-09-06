@@ -82,30 +82,30 @@
             }
 
             .sale-item {
-
                 border-left: 1px solid $color-border;
                 padding: 1rem;
-
 
                 @media screen and (max-width: 540px) {
                     border-top: 1px solid $color-border;
                 }
 
-
-
                 .box-img {
-                    height: 140px;
+                    height: 140px; /* Giữ chiều cao cố định */
                     overflow: hidden;
+                    position: relative; /* Để tạo không gian cho hình ảnh */
 
-                    // text-align: center;
-                    // margin-left: auto;
-                    // margin-right: auto;
                     img {
-                        height: 90%;
-                        object-fit: cover;
+                        position: absolute; /* Đặt hình ảnh ở vị trí tuyệt đối */
+                        top: 50%; /* Căn giữa theo chiều dọc */
+                        left: 50%; /* Căn giữa theo chiều ngang */
+                        width: 100%; /* Đặt chiều rộng bằng 100% */
+                        height: 100%; /* Đặt chiều cao bằng 100% */
+                        object-fit: cover; /* Đảm bảo hình ảnh bao khít mà không bị biến dạng */
+                        transform: translate(-50%, -50%); /* Đẩy hình ảnh về giữa */
                     }
                 }
             }
+
         }
 
 

@@ -1,11 +1,11 @@
 .header-wrapper {
-    align-items: center;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin: auto;
     padding: 22px 0 24px;
-    position: relative;
     width: 82%;
+    position: relative;
     z-index: 2;
 }
 
@@ -14,8 +14,8 @@
 }
 
 .header-wrapper .logo {
-    align-items: center;
     display: flex;
+    align-items: center;
 }
 
 img {
@@ -23,24 +23,19 @@ img {
     overflow: clip;
 }
 
-a:-webkit-any-link {
+a {
     color: -webkit-link;
     cursor: pointer;
     text-decoration: underline;
 }
 
 .header-wrapper form {
-    align-items: center;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start; /* Đặt các phần tử bên trái */
     max-width: 576px;
     width: 100%;
-}
-
-form {
-    display: block;
-    margin-top: 0em;
-    unicode-bidi: isolate;
+    margin-left: 20px; /* Khoảng cách giữa form và các biểu tượng */
 }
 
 .header-wrapper form .input {
@@ -48,7 +43,6 @@ form {
     border-radius: 6px 0 0 6px;
     color: #8b96a5;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
     font-size: 16px;
     height: 41.5px;
     max-width: 420px;
@@ -57,83 +51,10 @@ form {
     width: 100%;
 }
 
-//input[type="text" i] {
-//    padding-block: 1px;
-//    padding-inline: 2px;
-//}
-
-/* input:not([type="file" i], [type="image" i], [type="checkbox" i], [type="radio" i]) {}
-
-input {
-    font-style: ;
-    font-variant-ligatures: ;
-    font-variant-caps: ;
-    font-variant-numeric: ;
-    font-variant-east-asian: ;
-    font-variant-alternates: ;
-    font-variant-position: ;
-    font-weight: ;
-    font-stretch: ;
-    font-size: ;
-    font-family: ;
-    font-optical-sizing: ;
-    font-kerning: ;
-    font-feature-settings: ;
-    font-variation-settings: ;
-    text-rendering: auto;
-    color: fieldtext;
-    letter-spacing: normal;
-    word-spacing: normal;
-    line-height: normal;
-    text-transform: none;
-    text-indent: 0px;
-    text-shadow: none;
-    display: inline-block;
-    text-align: start;
-    appearance: auto;
-    -webkit-rtl-ordering: logical;
-    cursor: text;
-    background-color: field;
-    margin: 0em;
-    padding: 1px 0px;
-    border-width: 2px;
-    border-style: inset;
-    border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
-    border-image: initial;
-    padding-block: 1px;
-    padding-inline: 2px;
-} */
-
-.header-wrapper form .search-category {
-    align-items: center;
-    border: 1px solid #0d6efd;
-    border-left: none;
-    color: #1c1c1c;
-    cursor: pointer;
-    display: flex;
-    font-family: Inter;
-    font-size: 16px;
-    height: 41.5px;
-    justify-content: space-between;
-    max-width: 145px;
-    padding: 0 11px;
-    width: 100%;
-}
-
-p {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    unicode-bidi: isolate;
-}
-
 .header-wrapper form .search-button {
     background: linear-gradient(0deg, #127fff, #0067ff);
     border: none;
     border-radius: 0 6px 6px 0;
-    box-shadow: none;
     color: #fff;
     cursor: pointer;
     font-family: Inter-bold;
@@ -141,39 +62,31 @@ p {
     max-width: 100px;
     outline: none;
     padding: 10px 12px;
-    width: 100%;
 }
 
-.header-wrapper .icons,
-.header-wrapper .icons div {
-    align-items: center;
-    display: flex;
-    justify-content: center;
+.header-wrapper form .upload-label {
+    cursor: pointer;
+    color: #007bff; /* Màu sắc cho nhãn tải lên */
+    font-family: Inter; /* Font cho nhãn */
+    margin-left: 10px; /* Khoảng cách giữa nhãn tải lên và trường tìm kiếm */
+}
+
+.header-wrapper form .input[type="file"] {
+    display: none; /* Ẩn trường tải lên hình ảnh */
 }
 
 .header-wrapper .icons {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Khoảng cách giữa các biểu tượng */
     position: relative;
 }
 
-div {
-    display: block;
-    unicode-bidi: isolate;
-}
-
 .header-wrapper .icons div {
-    cursor: pointer;
+    display: flex;
     flex-direction: column;
-    margin-left: 23px;
-}
-
-img {
-    overflow-clip-margin: content-box;
-    overflow: clip;
-}
-
-.header-wrapper .icons div {
+    align-items: center;
     cursor: pointer;
-    flex-direction: column;
     margin-left: 23px;
 }
 
@@ -184,41 +97,11 @@ img {
     margin-top: 7px;
 }
 
-p {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    unicode-bidi: isolate;
-}
-
-.header-wrapper .icons div {
-    cursor: pointer;
-    flex-direction: column;
-    margin-left: 23px;
-}
-
-.header-wrapper .icons div a {
-    color: black;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-a:-webkit-any-link {
-    color: -webkit-link;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
 .desktop-icons a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-decoration: none;
-    /* Remove underline */
+    text-decoration: none; /* Remove underline */
 }
 
 .desktop-icons p {
@@ -226,8 +109,6 @@ a:-webkit-any-link {
     font-family: Inter;
     font-size: 12px;
     margin-top: 7px;
-    text-decoration: none;
-    /* Remove underline */
 }
 
 .desktop-icons .number {
@@ -236,106 +117,31 @@ a:-webkit-any-link {
     border-radius: 50%;
     padding: 5px;
     margin-left: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Add shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow */
 }
 
-.header-wrapper .icons {
-    display: flex;
-    align-items: center;
-    /* Căn các biểu tượng theo chiều dọc */
-    gap: 20px;
-    /* Khoảng cách giữa các biểu tượng */
-}
-
-.header-wrapper form {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    /* Để form mở rộng để lấp đầy khoảng trống */
-    margin-left: 20px;
-    /* Khoảng cách giữa form và các biểu tượng */
-}
-
-/* Đảm bảo giao diện responsive cho menu và các thành phần khác */
-@media (max-width: 1024px) {
-    .header-wrapper {
-        width: 90%;
-        /* Giảm chiều rộng của header-wrapper để tránh tràn khỏi màn hình */
-    }
-
-    .header-wrapper .mobile-menu {
-        display: block;
-        /* Hiển thị nút menu trên màn hình nhỏ hơn 1024px */
-    }
-
-    .header-wrapper .logo {
-        margin-right: auto;
-        /* Đẩy logo về phía trái */
-    }
-
-    .header-wrapper form {
-        max-width: 320px;
-        /* Giảm chiều rộng của form */
-    }
-
-    .header-wrapper .icons {
-        display: none;
-        /* Ẩn các icons khi hiển thị nút menu */
-    }
-}
-
-@media (max-width: 768px) {
-    .header-wrapper form {
-        max-width: 240px;
-        /* Giảm chiều rộng của form khi độ rộng màn hình nhỏ hơn 768px */
-    }
-}
-
-@media (max-width: 480px) {
-    .header-wrapper form .input {
-        font-size: 14px;
-        /* Giảm kích thước font input khi độ rộng màn hình nhỏ hơn 480px */
-    }
-
-    .header-wrapper form .search-category {
-        max-width: 100px;
-        /* Giảm chiều rộng của search category */
-    }
-
-    .header-wrapper form .search-button {
-        max-width: 70px;
-        /* Giảm chiều rộng của search button */
-    }
-}
-
-/* Cải thiện giao diện cho nút menu di động */
-.mobile-menu {
-    display: none;
-    /* Ẩn ban đầu nút menu di động */
-    cursor: pointer;
-}
-
-/* Hiển thị menu khi nhấp vào nút menu di động */
-.menu-open .icons {
-    display: block !important;
-    /* Hiển thị icons khi mở menu */
-}
-.nav-item a{
+.nav-item a {
     text-decoration: none;
     color: black;
 }
 
 .user-menu {
-    min-width: auto;
     text-decoration: none;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 14px;
 }
 
+.mobile-menu {
+    display: none; /* Ẩn nút menu di động */
+    cursor: pointer;
+}
+
+.menu-open .icons {
+    display: block !important; /* Hiển thị icons khi mở menu */
+}
 
 .offcanvas-backdrop.show {
-    opacity: .0;
+    opacity: 0; /* Đặt độ mờ cho backdrop */
 }
 
 .offcanvas.offcanvas-start {
@@ -345,8 +151,45 @@ a:-webkit-any-link {
 }
 
 .offcanvas-body {
-    height: calc(100vh - 60px); /* Điều chỉnh giá trị 60px tương ứng với chiều cao của header */
-    overflow-y: auto;
+    height: calc(100vh - 60px); /* Điều chỉnh chiều cao của body */
+    overflow-y: auto; /* Thêm cuộn dọc */
 }
 
+/* Responsive design */
+@media (max-width: 1024px) {
+    .header-wrapper {
+        width: 90%; /* Giảm chiều rộng của header-wrapper */
+    }
 
+    .header-wrapper .mobile-menu {
+        display: block; /* Hiển thị nút menu trên màn hình nhỏ hơn 1024px */
+    }
+
+    .header-wrapper .logo {
+        margin-right: auto; /* Đẩy logo về phía trái */
+    }
+
+    .header-wrapper form {
+        max-width: 320px; /* Giảm chiều rộng của form */
+    }
+
+    .header-wrapper .icons {
+        display: none; /* Ẩn icons khi hiển thị nút menu */
+    }
+}
+
+@media (max-width: 768px) {
+    .header-wrapper form {
+        max-width: 240px; /* Giảm chiều rộng của form khi màn hình nhỏ hơn 768px */
+    }
+}
+
+@media (max-width: 480px) {
+    .header-wrapper form .input {
+        font-size: 14px; /* Giảm kích thước font input */
+    }
+
+    .header-wrapper form .search-button {
+        max-width: 70px; /* Giảm chiều rộng của search button */
+    }
+}

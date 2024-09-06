@@ -213,7 +213,7 @@ class ProductResource extends Resource
                     ->label('Lượt xem'),
                 TextColumn::make('sold_count')
                     ->label('Lượt bán'),
-            ])
+            ])->defaultSort('created_at','desc')
             ->filters([
                 SelectFilter::make('supplier_id')
                     ->label('Nhà cung cấp')

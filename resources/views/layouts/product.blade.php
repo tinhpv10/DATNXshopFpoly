@@ -15,7 +15,7 @@
                     <div class="col-md-3 sidebar">
                         <form id="filterForm" action="{{ route('product.index') }}" method="GET">
                             <div class="filter-heading">
-                                <i class="fas fa-filter"></i> Bộ lọc tìm kiếm
+                                <i class="fas fa-filter"></i> Bộ lọc
                             </div>
                             <input type="hidden" name="category_id" id="selectedCategoryId"
                                    value="{{ request('category_id') }}">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppProductMedia;
 use App\Models\AppProductStock;
 use App\Models\AppProductVariationValue;
 use App\Models\Cart;
@@ -104,7 +105,25 @@ class CartController extends Controller
 
             $orderCode = 'ORD-' . uniqid();
 
-            return view('layouts.cart', compact('groupedItems', 'totalPrice', 'totalPayment', 'orderCode'));
+
+            $user_id = Auth::user()->id;
+
+        // Lấy danh sách sản phẩm có trong wishlist của user với eager loading cho productMedia
+            $recommendedProducts = Product::whereIn('id', function ($query) use ($user_id) {
+                $query->select('product_id')
+                    ->from('wishlist')
+                    ->where('user_id', $user_id);
+            })->with('productMedia')->paginate(12);
+
+            // Thêm thuộc tính main_image cho từng sản phẩm
+            foreach ($recommendedProducts as $productItem) {
+                $productItem->main_image = $productItem->productMedia->isNotEmpty() ? $productItem->productMedia->first()->media : null;
+            }
+
+
+
+
+            return view('layouts.cart', compact('groupedItems', 'totalPrice', 'totalPayment', 'orderCode','recommendedProducts'));
         }
 
         // Nếu không có sản phẩm trong giỏ hàng
@@ -412,5 +431,28 @@ class CartController extends Controller
         return response()->json(['quantity' => $quantity]);
     }
 
+    public function showitem()
+    {
+        try {
+            $user_id = Auth::user()->id;
+            $products = Product::whereIn('id', function ($query) use ($user_id) {
+                $query->select('product_id')
+                    ->from('wishlist')
+                    ->where('user_id', $user_id);
+            })->paginate(12);
+
+            foreach ($products as $productItem) {
+                $productMedia = AppProductMedia::where('product_id', $productItem->id)->get();
+                $productItem->main_image = $productMedia->isNotEmpty() ? $productMedia->first()->media : null;
+            }
+
+            return view('layouts.wishlist', [
+                'products' => $products,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['status' => 500, 'message' => $e->getMessage()]);
+        }
+    }
 
 }

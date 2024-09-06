@@ -231,8 +231,8 @@ class OrderResource extends Resource
                     ->label('Đơn vị vận chuyển'),
                 TextColumn::make('User.name')
                     ->label('Người dùng'),
-                TextColumn::make('Voucher.name')
-                    ->label('Giảm giá'),
+//                TextColumn::make('Voucher.name')
+//                    ->label('Giảm giá'),
                 SelectColumn::make('status')
                     ->options(Order::getOrderStatusOptions())
                     ->default(function ($record) {

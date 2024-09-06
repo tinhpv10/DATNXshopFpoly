@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
+
+
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -204,7 +207,7 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(UserAddress::class)->where('is_default',1);
     }
-    // lấy địa chỉ dưới dạng chuỗi để hiển thị ra shop
+
     public function getUserAddressFormattedAttribute()
     {
         $address = $this->UserAddress;
@@ -214,10 +217,10 @@ class User extends Authenticatable implements FilamentUser
 
         return sprintf(
             '%s, %s, %s, %s',
-            $address->address_specific,
-            $address->ward ? $address->ward->name : '',
-            $address->district ? $address->district->name : '',
-            $address->province ? $address->province->name : ''
+            Str::ascii($address->address_specific),
+            $address->ward ? Str::ascii($address->ward->name) : '',
+            $address->district ? Str::ascii($address->district->name) : '',
+            $address->province ? Str::ascii($address->province->name) : ''
         );
     }
 }

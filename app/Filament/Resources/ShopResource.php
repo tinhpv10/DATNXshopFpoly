@@ -30,7 +30,7 @@ class ShopResource extends Resource
     protected static ?string $model = Shop::class;
 
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-home-modern';
     protected static ?string $label = 'Cửa hàng';
 
     public static function form(Form $form): Form
@@ -147,12 +147,7 @@ class ShopResource extends Resource
                         '1' => 'heroicon-o-check-badge',
                         '2' => 'heroicon-o-clock',
                     }),
-//                    ->boolean()
-//                    ->trueIcon('heroicon-o-check-badge')
-//                    ->falseIcon('heroicon-o-clock'),
-
-
-            ])
+            ])->defaultSort('created_at','desc')
             ->filters([
                 //
             ])

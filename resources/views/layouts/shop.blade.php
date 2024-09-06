@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="shop-follow">
-                    <button class="btn btn-primary" id="follow-shop-btn" data-shop-id="{{ $informationShop->id }}"
+                    <button class="btn btn-primary" data-shop-id="{{ $informationShop->id }}"
                             onclick="toggleFollow(this)">{{ Auth::user()->followerShop->contains($informationShop->id) ? 'Đang theo dõi' : 'Theo dõi' }}
                     </button>
                 </div>
@@ -51,10 +51,10 @@
                                            class="text-decoration-none">{{ $item->name }}</a>
                                     </li>
                                 @endforeach
-                                    <li class="list-group-item list-group-custom {{ request()->routeIs('shop') ? 'active' : ''}}">
-                                        <a href="{{ route('shop', ['id' => $informationShop->id]) }}"
-                                           class="text-decoration-none">Tất cả sản phẩm</a>
-                                    </li>
+                                <li class="list-group-item list-group-custom {{ request()->routeIs('shop') ? 'active' : ''}}">
+                                    <a href="{{ route('shop', ['id' => $informationShop->id]) }}"
+                                       class="text-decoration-none">Tất cả sản phẩm</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                 },
                 success: function (data) {
                     if (data.status === 200) {
-                        if (button.textContent === 'Theo dõi') {
+                        if (button.textContent.trim() === 'Theo dõi') {
                             button.textContent = 'Đang theo dõi';
                         } else {
                             button.textContent = 'Theo dõi';

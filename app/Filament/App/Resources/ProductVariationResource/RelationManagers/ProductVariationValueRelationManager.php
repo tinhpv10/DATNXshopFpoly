@@ -13,6 +13,7 @@ class ProductVariationValueRelationManager extends RelationManager
 {
     protected static string $relationship = 'appProductVariationValue';
     protected static ?string $label = 'Giá trị biến thể';
+    protected static ?string $title = 'Quản biến thể';
 
     public function form(Form $form): Form
     {

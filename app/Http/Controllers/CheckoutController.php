@@ -21,12 +21,10 @@ class CheckoutController extends Controller
         // Nếu có yêu cầu POST từ form thanh toán
         if ($request->isMethod('post')) {
             return $this->processCheckout($request);
-
         }
 
         // Lấy dữ liệu giỏ hàng từ session
         $cartData = Session::get('selectedItems', []);
-
         $user_id = Auth::id();
         $address = UserAddress::where('user_id', $user_id)
             ->where('is_default', 1)
@@ -39,9 +37,16 @@ class CheckoutController extends Controller
 
         // Tính toán tổng tiền hàng và chi tiết sản phẩm
         $products = [];
+        $shopTotals = []; // Mảng để lưu tổng tiền của từng shop
+        $shopProductCounts = []; // Mảng để lưu số lượng sản phẩm của từng shop
+        $shopShippingFees = []; // Mảng để lưu phí vận chuyển của từng shop
+
         foreach ($cartData as $itemId) {
             $cartItem = CartItem::find($itemId);
             if ($cartItem) {
+                // Lấy thông tin shop_id
+                $shopId = $cartItem->shop_id;
+
                 // Kiểm tra nếu sản phẩm có biến thể (productStock)
                 $productStock = $cartItem->productstock;
 
@@ -64,39 +69,88 @@ class CheckoutController extends Controller
                     $variations = collect(); // Không có biến thể
                 }
 
+                // Tính toán giá sản phẩm
+                $productPrice = $productStock ? $productStock->retail_price : $product->getPrice();
+                $productTotal = $productPrice * $cartItem->quantity;
+
+                // Thêm tổng tiền sản phẩm vào tổng tiền của shop
+                if (!isset($shopTotals[$shopId])) {
+                    $shopTotals[$shopId] = 0;
+                    $shopShippingFees[$shopId] = $this->generateRandomShippingFee(); // Tính phí vận chuyển cho shop
+                }
+                $shopTotals[$shopId] += $productTotal;
+
+                // Thêm số lượng sản phẩm vào đếm số lượng của shop
+                if (!isset($shopProductCounts[$shopId])) {
+                    $shopProductCounts[$shopId] = 0;
+                }
+                $shopProductCounts[$shopId]++; // Đếm số lượng sản phẩm cho shop này
+
                 // Thêm thông tin sản phẩm vào danh sách
                 $products[] = [
                     'product' => $product,
                     'productStock' => $productStock,
                     'media' => $cartItem->media,
                     'quantity' => $cartItem->quantity,
-                    'price' => $productStock ? $productStock->retail_price : $product->getPrice(), // Giá từ biến thể hoặc sản phẩm gốc
+                    'price' => $productPrice, // Giá từ biến thể hoặc sản phẩm gốc
                     'variations' => $variations,
                 ];
-
             }
         }
 
-
+        // Lấy thông tin shop từ danh sách shop_ids
+        $shop = Shop::with(['products.productMedia'])
+            ->whereIn('id', array_keys($shopTotals)) // Chỉ lấy thông tin các shop có sản phẩm trong giỏ
+            ->get();
 
         // Tính toán tổng tiền hàng và phí vận chuyển
-        $totalPayment = $this->calculateTotal($products);
+        $totalPayment = array_sum($shopTotals); // Tổng tiền của tất cả các shop
+        $totalShippingFee = array_sum($shopShippingFees); // Tổng phí vận chuyển của tất cả các shop
 
-        $shippingFee = 30000; // Phí vận chuyển cố định
         $paymentmethod = PaymentMethod::all();
 
-
-
-
-
+        $grandTotal = $totalPayment + $totalShippingFee; // Tổng tiền bao gồm cả phí vận chuyển
+        Session::put('totalship',$totalShippingFee);
+        // Lưu tổng tiền vào session
+        Session::put('grandTotal', $grandTotal);
         return view('layouts.checkout', [
+            'shop' => $shop,
             'paymentmethod' => $paymentmethod,
             'address' => $address,
             'products' => $products,
             'totalPayment' => $totalPayment,
-            'shippingFee' => $shippingFee,
+            'shippingFee' => $totalShippingFee, // Thay đổi phí vận chuyển trong view
+            'shopTotals' => $shopTotals, // Thêm biến này vào view
+            'shopProductCounts' => $shopProductCounts, // Thêm biến này vào view để đếm sản phẩm theo shop
+            'shopShippingFees' => $shopShippingFees, // Thêm phí vận chuyển của từng shop vào view
         ]);
     }
+
+
+    private $shippingFee = null;
+
+    private function generateRandomShippingFee()
+    {
+        if ($this->shippingFee === null) {
+            // Đặt phạm vi cho giá trị tối thiểu và tối đa
+            $min = 31000;
+            $max = 50000;
+
+            // Tạo dãy số chẵn trong khoảng từ $min đến $max
+            $evenNumbers = range($min, $max, 2000); // Bước nhảy là 2000 để có số chẵn trong khoảng
+
+            // Chọn một số ngẫu nhiên từ dãy số chẵn
+            $this->shippingFee = $evenNumbers[array_rand($evenNumbers)];
+        }
+
+        return $this->shippingFee;
+    }
+
+
+
+
+
+
 
     public function processCheckout(Request $request)
     {

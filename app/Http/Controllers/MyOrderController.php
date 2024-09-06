@@ -18,7 +18,7 @@ class MyOrderController extends Controller
             'OrderDetail.Product.mainMedia',
             'OrderDetail.appProductStock.productAttribute.appProductVariation',
             'OrderDetail.appProductStock.productAttribute.appProductVariationValue'
-        ])->get();
+        ]) ->orderBy('created_at', 'desc')->get();
 
         // Các trạng thái đơn hàng
         $CancelledReasons = CancelledStatus::cases();

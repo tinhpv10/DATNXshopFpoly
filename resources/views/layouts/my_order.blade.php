@@ -101,7 +101,7 @@
                                                 <p class="m-0">Số lượng: {{ $detail->product_quantity ?? '0' }}</p>
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
-                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +114,7 @@
                                 <div class="order-actions mt-3">
                                     <p class="text-danger fw-bold">
                                         <strong class="text-black money">Thành tiền :</strong>
-                                        {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                        {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                     </p>
                                     <button class="btn btn-secondary" disabled>chờ</button>
                                     <button class="btn btn-light border" data-bs-toggle="modal"
@@ -173,7 +173,7 @@
                                                 <p class="m-0">Số lượng: {{ $detail->product_quantity ?? '0' }}</p>
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
-                                                <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                             </div>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@
                                 <div class="order-actions mt-3">
                                     <p class="text-danger fw-bold">
                                         <strong class="text-black money">Thành tiền :</strong>
-                                        {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                        {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                     </p>
                                     <button class="btn btn-secondary" disabled>chờ</button>
                                     <button class="btn btn-light border" data-bs-toggle="modal"
@@ -246,7 +246,7 @@
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
                                                 @if(!isset($detail->Product->sale_price))
-                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                                 @endif
                                             </div>
                                         </div>
@@ -260,7 +260,7 @@
                                 <div class="order-actions mt-3">
                                     <p class="text-danger fw-bold">
                                         <strong class="text-black money">Thành tiền :</strong>
-                                        {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                        {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                     </p>
                                     <button class="btn btn-secondary" disabled>chờ</button>
                                     <button class="btn btn-light border" data-bs-toggle="modal"
@@ -320,7 +320,7 @@
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
                                                 @if(!isset($detail->Product->sale_price))
-                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                                 @endif
                                             </div>
                                         </div>
@@ -334,7 +334,7 @@
                                 <div class="order-actions mt-3">
                                     <p class="text-danger fw-bold">
                                         <strong class="text-black money">Thành tiền :</strong>
-                                        {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                        {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                     </p>
                                     <button class="btn btn-secondary" disabled>chờ</button>
                                     <button class="btn btn-light border" data-bs-toggle="modal"
@@ -394,11 +394,11 @@
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center gap-2">
                                                 @if(!isset($detail->Product->sale_price))
-                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                    <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                                 @else
-                                                    <p class="text-secondary text-decoration-line-through mb-0">{{ number_format($detail->Product->regular_price ?? 0, 0, ',', '.') }} VND</p>
+                                                    <p class="text-secondary text-decoration-line-through mb-0">{{ number_format($detail->Product->regular_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                                     @isset($detail->Product->sale_price)
-                                                        <p class="text-danger mb-0">{{ number_format((float)$detail->Product->sale_price, 0, ',', '.') }} VND</p>
+                                                        <p class="text-danger mb-0">{{ number_format((float)$detail->Product->sale_price, 0, ',', '.') }} VNĐ</p>
                                                     @endisset
                                                 @endif
                                             </div>
@@ -413,7 +413,7 @@
                                 <div class="order-actions mt-3">
                                     <p class="text-danger fw-bold">
                                         <strong class="text-black money">Thành tiền :</strong>
-                                        {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                        {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                     </p>
                                     <button class="btn btn-secondary" disabled>chờ</button>
                                     <button class="btn btn-light border" data-bs-toggle="modal"
@@ -473,11 +473,11 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center gap-2">
                                             @if(!isset($detail->Product->sale_price))
-                                                <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VND</p>
+                                                <p class="text-danger mb-0">{{ number_format($detail->product_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                             @else
-                                                <p class="text-secondary text-decoration-line-through mb-0">{{ number_format($detail->Product->regular_price ?? 0, 0, ',', '.') }} VND</p>
+                                                <p class="text-secondary text-decoration-line-through mb-0">{{ number_format($detail->Product->regular_price ?? 0, 0, ',', '.') }} VNĐ</p>
                                                 @isset($detail->Product->sale_price)
-                                                    <p class="text-danger mb-0">{{ number_format((float)$detail->Product->sale_price, 0, ',', '.') }} VND</p>
+                                                    <p class="text-danger mb-0">{{ number_format((float)$detail->Product->sale_price, 0, ',', '.') }} VNĐ</p>
                                                 @endisset
                                             @endif
                                         </div>
@@ -492,7 +492,7 @@
                             <div class="order-actions mt-3">
                                 <p class="text-danger fw-bold">
                                     <strong class="text-black money">Thành tiền :</strong>
-                                    {{ number_format($order->total_price, 0, ',', '.') }} VND
+                                    {{ number_format($order->total_price, 0, ',', '.') }} VNĐ
                                 </p>
                                 <button class="btn btn-secondary" disabled>chờ</button>
                                 <button class="btn btn-light border" data-bs-toggle="modal"

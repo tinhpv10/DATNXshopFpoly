@@ -169,7 +169,7 @@ class ProductResource extends Resource
 //                    ->label('Lượt xem'),
 //                TextColumn::make('sold_count')
 //                    ->label('Lượt bán'),
-            ])
+            ])->defaultSort('created_at','desc')
             ->filters([
             ])
             ->actions([

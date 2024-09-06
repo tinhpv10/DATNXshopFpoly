@@ -81,9 +81,15 @@
                         <div>
                             <div class="d-flex justify-content-center mb-4">
                                 <label for="customFile2">
-                                    <img id="selectedAvatar" src="{{ asset('storage/'.$user->avatar) }}"
-                                         class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
-                                         alt="Bấm vào đây để chọn ảnh đại diện"/>
+                                    @if($user->avatar == '')
+                                        <img id="selectedAvatar" src="{{ asset('storage/avatars/PXQ9arQvm1y8wfwSFhl8znusNxX43SRCX1dGli76.jpg') }}"
+                                             class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
+                                             alt="Bấm vào đây để chọn ảnh đại diện"/>
+                                    @else
+                                        <img id="selectedAvatar" src="{{ asset('storage/'.$user->avatar) }}"
+                                             class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;"
+                                             alt="Bấm vào đây để chọn ảnh đại diện"/>
+                                    @endif
                                 </label>
                             </div>
                             <div class="d-flex justify-content-center">
